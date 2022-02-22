@@ -1,0 +1,9 @@
+node_modules
+src
+test
+.idea
+.eslintignore
+.eslint
+.prettierrc
+tsconfig.json
+tsconfig.tsbuildinfo
