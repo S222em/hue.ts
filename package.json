@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "eslint": "eslint src/**",
-    "prettier": "prettier --check src/**"
+    "prettier": "prettier --check src/**",
+    "build": "tsc --build"
   },
   "keywords": [
     "Hue"
