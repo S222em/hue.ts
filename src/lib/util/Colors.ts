@@ -1,0 +1,17 @@
+export enum Colors {
+	LightRed = '#fc0000',
+	DarkRed = '#852626',
+	LightGreen = '#2afc00',
+	DarkGreen = '#368526',
+	DarkBlue = '#0400fc',
+	LightBlue = '#00cafc',
+	LightYellow = '#fff200',
+	DarkYellow = '#858126',
+	LightOrange = '#ff8400',
+	DarkOrange = '#855f26',
+	White = '#ffffff',
+	LightPink = '#f700ff',
+	DarkPink = '#852675',
+	LightPurple = '#9900ff',
+	DarkPurple = '#6f2685',
+}
