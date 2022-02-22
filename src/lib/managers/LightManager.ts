@@ -7,14 +7,12 @@ import { ApiLight } from '../../api';
 import { DimmableLight } from '../structures/DimmableLight';
 import { ResourceManager } from './ResourceManager';
 
-// TODO add device search
-
 export class LightManager extends ResourceManager<Light> {
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 100 });
 	}
 
-	public _add(data: ApiLight.Object): Light {
+	public _add(data: ApiLight.Data): Light {
 		const light = this.cache.ensure(data.id, () => {
 			if ('gradient' in data) return new GradientLight(this.bridge);
 			else if ('color' in data) return new ColorLight(this.bridge);

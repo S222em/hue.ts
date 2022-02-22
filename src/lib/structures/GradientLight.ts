@@ -6,7 +6,7 @@ export class GradientLight extends ColorLight {
 	type = ResourceType.GradientLight;
 	public gradient: Array<string>;
 
-	public _patch(data: ApiLight.Object): void {
+	public _patch(data: ApiLight.Data): void {
 		super._patch(data);
 		if ('gradient' in data) {
 			if ('points' in data.gradient) {

@@ -9,7 +9,7 @@ export class ColorLight extends TemperatureLight {
 	public gamutType: 'A' | 'B' | 'C';
 	protected _colorResolver: ColorResolver;
 
-	public _patch(data: ApiLight.Object): void {
+	public _patch(data: ApiLight.Data): void {
 		super._patch(data);
 		if ('color' in data) {
 			if ('gamut_type' in data.color) {

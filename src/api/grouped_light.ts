@@ -1,11 +1,12 @@
 import type { DeepPartial } from '../types/DeepPartial';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ApiGroupedLight {
 	export function route(id?: string) {
 		return `/resource/grouped_light${id ? `/${id}` : ''}`;
 	}
 
-	export interface Object {
+	export interface Data {
 		type?: 'grouped_light';
 		id: string;
 		id_v1?: string;
@@ -18,6 +19,6 @@ export namespace ApiGroupedLight {
 		};
 	}
 
-	export type Get = Object[];
-	export type Put = DeepPartial<Object>;
+	export type Get = Data[];
+	export type Put = DeepPartial<Data>;
 }

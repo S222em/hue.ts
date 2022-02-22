@@ -55,7 +55,7 @@ export class LightCapabilities {
 	public minTemperature?: number;
 	public minBrightnessLevel?: number;
 
-	public _patch(data: Pick<ApiLight.Object, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
+	public _patch(data: Pick<ApiLight.Data, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
 		if ('gradient' in data) {
 			if ('points_capable' in data.gradient) this.maxGradientPoints = data.gradient.points_capable;
 		}

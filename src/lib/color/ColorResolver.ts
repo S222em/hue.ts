@@ -28,21 +28,21 @@ export class ColorResolver {
 	}
 
 	public checkPointInLampsReach(point: XyPoint): boolean {
-		let v1 = new XyPoint({
+		const v1 = new XyPoint({
 			x: this.capabilities.green.x - this.capabilities.red.x,
 			y: this.capabilities.green.y - this.capabilities.red.y,
 		});
-		let v2 = new XyPoint({
+		const v2 = new XyPoint({
 			x: this.capabilities.blue.x - this.capabilities.red.x,
 			y: this.capabilities.blue.y - this.capabilities.red.y,
 		});
 
-		let q = new XyPoint({
+		const q = new XyPoint({
 			x: point.x - this.capabilities.red.x,
 			y: point.y - this.capabilities.red.y,
 		});
-		let s = ColorResolver.crossPoints(q, v2) / ColorResolver.crossPoints(v1, v2);
-		let t = ColorResolver.crossPoints(v1, q) / ColorResolver.crossPoints(v1, v2);
+		const s = ColorResolver.crossPoints(q, v2) / ColorResolver.crossPoints(v1, v2);
+		const t = ColorResolver.crossPoints(v1, q) / ColorResolver.crossPoints(v1, v2);
 
 		return s >= 0.0 && t >= 0.0 && s + t <= 1.0;
 	}
@@ -88,7 +88,6 @@ export class ColorResolver {
 		}
 
 		if (dbc < lowest) {
-			lowest = dbc;
 			closestPoint = pbc;
 		}
 

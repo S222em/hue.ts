@@ -11,7 +11,7 @@ export class Scene extends NamedResource {
 	public groupId: string;
 	public actions = new SceneActionManager(this);
 
-	public _patch(data: ApiScene.Object) {
+	public _patch(data: ApiScene.Data) {
 		super._patch(data);
 		if ('group' in data) {
 			if ('rid' in data.group) this.groupId = data.group.rid;

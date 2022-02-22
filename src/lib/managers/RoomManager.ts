@@ -9,7 +9,7 @@ export class RoomManager extends ResourceManager<Room> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiRoom.Object): Room {
+	public _add(data: ApiRoom.Data): Room {
 		const room = this.cache.ensure(data.id, () => {
 			return new Room(this.bridge);
 		});

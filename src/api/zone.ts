@@ -1,11 +1,12 @@
 import type { DeepPartial } from '../types/DeepPartial';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ApiZone {
 	export function route(id?: string) {
 		return `/resource/zone${id ? `/${id}` : ''}`;
 	}
 
-	export interface Object {
+	export interface Data {
 		type?: 'room';
 		id: string;
 		id_v1?: string;
@@ -23,6 +24,6 @@ export namespace ApiZone {
 		}>;
 	}
 
-	export type Get = Object[];
-	export type Put = DeepPartial<Object>;
+	export type Get = Data[];
+	export type Put = DeepPartial<Data>;
 }

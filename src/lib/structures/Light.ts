@@ -16,7 +16,7 @@ export class Light extends NamedResource {
 	public capabilities = new LightCapabilities();
 	protected _on: boolean;
 
-	public _patch(data: ApiLight.Object): void {
+	public _patch(data: ApiLight.Data): void {
 		super._patch(data);
 		this.capabilities._patch(data);
 		if ('on' in data) this._on = data.on.on;

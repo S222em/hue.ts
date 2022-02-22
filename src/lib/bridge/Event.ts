@@ -3,7 +3,7 @@ import { ApiEventStream } from '../../api';
 import type { Bridge } from './Bridge';
 
 export class Event extends EventSource {
-	private bridge: Bridge;
+	private readonly bridge: Bridge;
 
 	constructor(bridge: Bridge, ip: string, applicationKey: string) {
 		super(ApiEventStream.route(ip), {

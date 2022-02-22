@@ -2,7 +2,7 @@ import type { Bridge } from '../Bridge';
 import type { ApiScene } from '../../../api';
 import { Events } from '../../util/Events';
 
-export default function sceneAdd(bridge: Bridge, data: ApiScene.Object) {
+export default function sceneAdd(bridge: Bridge, data: ApiScene.Data) {
 	const existing = bridge.scenes.cache.get(data.id);
 	const scene = bridge.scenes._add(data);
 	if (!existing && scene) {

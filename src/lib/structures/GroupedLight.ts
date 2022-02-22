@@ -8,7 +8,7 @@ export class GroupedLight extends Resource {
 	type = ResourceType.GroupedLight;
 	protected _on: boolean;
 
-	public _patch(data: ApiGroupedLight.Object) {
+	public _patch(data: ApiGroupedLight.Data) {
 		super._patch(data);
 		if ('on' in data) {
 			if ('on' in data) this._on = data.on.on;

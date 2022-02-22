@@ -9,7 +9,7 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiGroupedLight.Object): GroupedLight {
+	public _add(data: ApiGroupedLight.Data): GroupedLight {
 		const groupedLight = this.cache.ensure(data.id, () => {
 			return new GroupedLight(this.bridge);
 		});

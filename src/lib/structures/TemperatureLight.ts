@@ -6,7 +6,7 @@ export class TemperatureLight extends DimmableLight {
 	type = ResourceType.TemperatureLight;
 	public temperature: number;
 
-	public patch(data: ApiLight.Object) {
+	public patch(data: ApiLight.Data) {
 		super._patch(data);
 		if ('color_temperature' in data) {
 			if ('mirek' in data) this.temperature = data.color_temperature.mirek;

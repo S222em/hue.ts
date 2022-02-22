@@ -8,7 +8,7 @@ export class SceneManager extends ResourceManager<Scene> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiScene.Object): Scene {
+	public _add(data: ApiScene.Data): Scene {
 		const scene = this.cache.ensure(data.id, () => {
 			return new Scene(this.bridge);
 		});

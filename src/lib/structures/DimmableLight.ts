@@ -6,7 +6,7 @@ export class DimmableLight extends Light {
 	type = ResourceType.DimmableLight;
 	public brightness: number;
 
-	public _patch(data: ApiLight.Object) {
+	public _patch(data: ApiLight.Data) {
 		super._patch(data);
 		if ('dimming' in data) this.brightness = data.dimming.brightness;
 	}

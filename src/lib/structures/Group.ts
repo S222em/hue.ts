@@ -13,7 +13,7 @@ export abstract class Group extends NamedResource {
 	public scenes: GroupSceneManager = new GroupSceneManager(this);
 	public lights: GroupLightManager = new GroupLightManager(this);
 
-	public _patch(data: ApiRoom.Object) {
+	public _patch(data: ApiRoom.Data) {
 		super._patch(data);
 		if ('services' in data) {
 			this.lightIds = data.services.filter((service) => service.rtype === 'light').map((service) => service.rid);

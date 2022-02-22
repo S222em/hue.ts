@@ -9,7 +9,7 @@ export class ZoneManager extends ResourceManager<Zone> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiZone.Object): Zone {
+	public _add(data: ApiZone.Data): Zone {
 		const zone = this.cache.ensure(data.id, () => {
 			return new Zone(this.bridge);
 		});
