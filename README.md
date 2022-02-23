@@ -6,20 +6,27 @@
 
 **WARNING: this library is still under heavy construction**
 
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#About">About</a>
+    </li>
+    <li>
+      <a href="#example-usage">Getting Started</a>
+    </li>
+    <li>
+      <a href="#installation">Installation</a>
+    </li>
+  </ol>
+</details>
+
 # About
 
 hue.js is a node module that allows you to easily interact with the hue API.
 
 - Object-oriented
 - 100%-coverage of the hue API (still work in progress)
-
-# Installation (Not available yet!)
-
-**NodeJS v16.13.0 or newer is required**
-
-```shell
-npm install hue.js
-```
 
 # Example usage
 
@@ -39,6 +46,14 @@ bridge.on('ready', async () => {
 
   await room.applyScene(scene, { duration: 3000 });
 });
+```
+
+# Installation (Not available yet!)
+
+**NodeJS v16.13.0 or newer is required**
+
+```shell
+npm install hue.js
 ```
 
 [contributors-shield]: https://img.shields.io/github/contributors/S222em/hue.js.svg?style=for-the-badge
