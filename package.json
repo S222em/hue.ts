@@ -1,5 +1,5 @@
 {
-  "name": "hue.js",
+  "name": "hue.ts",
   "version": "0.1.0",
   "description": "A powerful library to interact with the Hue API",
   "main": "dist/index.js",

@@ -50,7 +50,7 @@
 
 # About
 
-hue.js is a node module that allows you to easily interact with the hue API (V2).
+hue.ts is a node module that allows you to easily interact with the hue API (V2).
 
 - Object-oriented
 - Written in TypeScript
@@ -59,7 +59,7 @@ hue.js is a node module that allows you to easily interact with the hue API (V2)
 # Example usage
 
 ```js
-const { Bridge } = require('hue.js');
+const { Bridge } = require('hue.ts');
 
 const bridge = new Bridge({
   ip: 'some-ip',
@@ -83,7 +83,7 @@ bridge.on('ready', async () => {
 **Hue bridge version 1948086000 or higher is required**
 
 ```shell
-npm install hue.js
+npm install hue.ts
 ```
 
 # Bridge
@@ -91,7 +91,7 @@ npm install hue.js
 Let's get started by creating new **Bridge** instance
 
 ```js
-const { Bridge } = require('hue.js');
+const { Bridge } = require('hue.ts');
 
 const bridge = new Bridge({
   // You can find the local ip of your bridge in the Hue app -> Settings -> My Hue system -> (Select your bridge)
