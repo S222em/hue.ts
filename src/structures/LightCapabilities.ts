@@ -46,15 +46,43 @@ const GamutC = {
 	}),
 };
 
+/**
+ * Represents the capabilities of a Light
+ */
 export class LightCapabilities {
+	/**
+	 * The max amount of gradient points the light is able to display
+	 */
 	public maxGradientPoints?: number;
+	/**
+	 * The max amount of red intensity the light is able to display
+	 */
 	public red?: XyPoint;
+	/**
+	 * The max amount of green intensity the light is able to display
+	 */
 	public green?: XyPoint;
+	/**
+	 * The max amount of blue intensity the light is able to display
+	 */
 	public blue?: XyPoint;
+	/**
+	 * The max temperature the light is able to display
+	 */
 	public maxTemperature?: number;
+	/**
+	 * The min temperature the light is able to display
+	 */
 	public minTemperature?: number;
+	/**
+	 * The min brightness level the light is able to display
+	 */
 	public minBrightnessLevel?: number;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: Pick<ApiLight, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
 		if ('gradient' in data) {
 			if ('points_capable' in data.gradient) this.maxGradientPoints = data.gradient.points_capable;

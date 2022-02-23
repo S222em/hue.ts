@@ -7,10 +7,20 @@ export interface GradientLightStateOptions extends ColorLightStateOptions {
 	gradient: string[];
 }
 
+/**
+ * Represents a hue light capable of gradient
+ */
 export class GradientLight extends ColorLight {
 	type = ResourceType.GradientLight;
+	/**
+	 * The current gradient of the light
+	 */
 	public gradient: Array<string>;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiLight): void {
 		super._patch(data);
 		if ('gradient' in data) {
@@ -26,6 +36,9 @@ export class GradientLight extends ColorLight {
 		}
 	}
 
+	/**
+	 * Edits the state of the light
+	 */
 	public async state(state: GradientLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await this._edit(
 			{

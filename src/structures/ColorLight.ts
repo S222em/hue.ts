@@ -8,17 +8,25 @@ export interface ColorLightStateOptions extends TemperatureLightStateOptions {
 	color?: string;
 }
 
+/**
+ * Represents a hue light capable of colors
+ */
 export class ColorLight extends TemperatureLight {
 	type = ResourceType.ColorLight;
+	/**
+	 * The current color of the light
+	 */
 	public color: string;
-	public gamutType: 'A' | 'B' | 'C';
 	protected _colorResolver: ColorResolver;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiLight): void {
 		super._patch(data);
 		if ('color' in data) {
 			if ('gamut_type' in data.color) {
-				this.gamutType = data.color.gamut_type;
 				this._colorResolver = new ColorResolver(this.capabilities);
 			}
 			if ('xy' in data.color) {
@@ -31,6 +39,9 @@ export class ColorLight extends TemperatureLight {
 		}
 	}
 
+	/**
+	 * Edits the state of the light
+	 */
 	public async state(state: ColorLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await this._edit(
 			{

@@ -5,18 +5,40 @@ import type { GradientLight } from './GradientLight';
 import type { TransitionOptions } from '../types/common';
 import type { ApiSceneAction } from '../types/api';
 
+/**
+ * Represents a Scene Action
+ */
 export class SceneAction extends Base {
-	public lightId: string;
+	/**
+	 * Whether the target light is on in this Scene
+	 */
 	public on: boolean;
+	/**
+	 * The brightness of the target Light in this Scene
+	 */
 	public brightness: number;
+	/**
+	 * The temperature of the target Light in this Scene
+	 */
 	public temperature: number;
+	/**
+	 * The color of the target Light in this Scene
+	 */
 	public color: string;
+	/**
+	 * The gradient of the target Light in this Scene
+	 */
 	public gradient: string[];
 	private _colorResolver: ColorResolver;
+	protected _lightId: string;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiSceneAction) {
 		if ('target' in data) {
-			if ('rid' in data.target) this.lightId = data.target.rid;
+			if ('rid' in data.target) this._lightId = data.target.rid;
 		}
 		if ('action' in data) {
 			if ('on' in data.action) {
@@ -53,10 +75,16 @@ export class SceneAction extends Base {
 		}
 	}
 
+	/**
+	 * The target Light
+	 */
 	get light(): Light {
-		return this.bridge.lights.cache.get(this.lightId);
+		return this.bridge.lights.cache.get(this._lightId);
 	}
 
+	/**
+	 * Applies this Scene Action to the target light
+	 */
 	public async apply(transitionOptions?: TransitionOptions) {
 		const light = this.light as GradientLight;
 

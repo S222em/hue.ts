@@ -10,6 +10,10 @@ export class RoomManager extends ResourceManager<Room> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
+	/**
+	 * Patches/creates a Room
+	 * @internal
+	 */
 	public _add(data: ApiRoom): Room {
 		const room = this.cache.ensure(data.id, () => {
 			return new Room(this.bridge);
@@ -19,6 +23,9 @@ export class RoomManager extends ResourceManager<Room> {
 		return room;
 	}
 
+	/**
+	 * Resolves a Room resolvable
+	 */
 	public resolve(resolvable: GroupResolvable): Room {
 		if (typeof resolvable === 'string') {
 			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
@@ -29,6 +36,9 @@ export class RoomManager extends ResourceManager<Room> {
 		}
 	}
 
+	/**
+	 * Syncs all the Rooms of the bridge with this manager
+	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.room());
 		const data = response.data.data as ApiRoom[];

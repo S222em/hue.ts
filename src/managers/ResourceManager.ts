@@ -4,6 +4,10 @@ import axiosRateLimit from 'axios-rate-limit';
 import { BaseManager } from './BaseManager';
 
 export class ResourceManager<Resource> extends BaseManager<Resource> {
+	/**
+	 * Used to send requests to a specific resource
+	 * @internal
+	 */
 	public rest: AxiosInstance;
 
 	constructor(bridge: Bridge, rateLimitOptions: { maxRequests: number; perMilliseconds: number }) {

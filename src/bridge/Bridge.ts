@@ -49,16 +49,52 @@ export interface BridgeEvents {
 	sceneDelete: [scene: Scene];
 }
 
+/**
+ * Represents a hue Bridge
+ */
 export class Bridge extends EventEmitter {
+	/**
+	 * The ip of the Bridge
+	 */
 	public readonly ip: string;
+	/**
+	 * The application key of the user
+	 */
 	public applicationKey: string;
+	/**
+	 * Used to send requests to the Bridge
+	 * @internal
+	 */
 	public rest: AxiosInstance;
+	/**
+	 * Used to listen to events send by the Bridge
+	 * @internal
+	 */
 	public event: Event;
+	/**
+	 * A manager with the Lights of this Bridge
+	 */
 	public lights: LightManager;
+	/**
+	 * A manager with the Grouped Lights of this Bridge
+	 */
 	public groupedLights: GroupedLightManager;
+	/**
+	 * A manager with the Rooms of this Bridge
+	 */
 	public rooms: RoomManager;
+	/**
+	 * A manager with the Zones of this Bridge
+	 */
 	public zones: ZoneManager;
+	/**
+	 * A manager with the Scenes of this Bridge
+	 */
 	public scenes: SceneManager;
+	/**
+	 * A manager with the Actions for this Bridge
+	 * @internal
+	 */
 	public actions: ActionManager;
 	public on: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public once: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;

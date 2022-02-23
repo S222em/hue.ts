@@ -9,6 +9,10 @@ export class SceneManager extends ResourceManager<Scene> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
+	/**
+	 * Patches/creates a Scene
+	 * @internal
+	 */
 	public _add(data: ApiScene): Scene {
 		const scene = this.cache.ensure(data.id, () => {
 			return new Scene(this.bridge);
@@ -18,6 +22,9 @@ export class SceneManager extends ResourceManager<Scene> {
 		return scene;
 	}
 
+	/**
+	 * Resolves a Scene resolvable
+	 */
 	public resolve(resolvable: SceneResolvable): Scene {
 		if (typeof resolvable === 'string') {
 			return this.cache.find((scene) => scene.name === resolvable || scene.id === resolvable);
@@ -26,6 +33,9 @@ export class SceneManager extends ResourceManager<Scene> {
 		}
 	}
 
+	/**
+	 * Syncs all the Scenes of the bridge with this manager
+	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.scene());
 		const data = response.data.data as ApiScene[];

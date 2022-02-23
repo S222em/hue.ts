@@ -10,6 +10,10 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
+	/**
+	 * Patches/creates a Grouped Light
+	 * @internal
+	 */
 	public _add(data: ApiGroupedLight): GroupedLight {
 		const groupedLight = this.cache.ensure(data.id, () => {
 			return new GroupedLight(this.bridge);
@@ -19,6 +23,9 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 		return groupedLight;
 	}
 
+	/**
+	 * Resolves a Grouped Light resolvable
+	 */
 	public resolve(resolvable: GroupedLightResolvable): GroupedLight {
 		if (typeof resolvable === 'string') {
 			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
@@ -27,6 +34,9 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 		}
 	}
 
+	/**
+	 * Syncs all the Grouped Lights of the bridge with this manager
+	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.groupedLight());
 		const data = response.data.data as ApiGroupedLight[];

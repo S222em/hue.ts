@@ -13,6 +13,10 @@ export class LightManager extends ResourceManager<Light> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 100 });
 	}
 
+	/**
+	 * Patches/creates a Light
+	 * @internal
+	 */
 	public _add(data: ApiLight): Light {
 		const light = this.cache.ensure(data.id, () => {
 			if ('gradient' in data) return new GradientLight(this.bridge);
@@ -26,6 +30,9 @@ export class LightManager extends ResourceManager<Light> {
 		return light;
 	}
 
+	/**
+	 * Resolves a Light resolvable
+	 */
 	public resolve(resolvable: LightResolvable): Light {
 		if (typeof resolvable === 'string') {
 			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
@@ -36,6 +43,9 @@ export class LightManager extends ResourceManager<Light> {
 		}
 	}
 
+	/**
+	 * Syncs all the Lights of the bridge with this manager
+	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.light());
 		const data = response.data.data as ApiLight[];

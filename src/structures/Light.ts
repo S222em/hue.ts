@@ -17,27 +17,52 @@ export interface LightStateOptions {
 	on?: boolean;
 }
 
+/**
+ * Represents a hue light
+ */
 export class Light extends NamedResource {
 	type = ResourceType.Light;
+	/**
+	 * The capabilities of this light
+	 */
 	public capabilities = new LightCapabilities();
+	/**
+	 * A manager with all the groups this light belongs too
+	 */
 	public groups = new LightGroupManager(this);
+	/**
+	 * The current on state of this light
+	 */
 	public on: boolean;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiLight): void {
 		super._patch(data);
 		this.capabilities._patch(data);
 		if ('on' in data) this.on = data.on.on;
 	}
 
+	/**
+	 * Edits the state of the Light
+	 */
 	public async state(state: LightStateOptions, transition: TransitionOptions): Promise<void> {
 		await this._edit({ on: { on: state.on ?? true } }, transition);
 	}
 
+	/**
+	 * Applies a scene to this Light
+	 */
 	public async applyScene(resolvable: SceneResolvable, transitionOptions?: TransitionOptions): Promise<void> {
 		const scene = this.bridge.scenes.resolve(resolvable);
 		await scene.actions.cache.get(this.id)?.apply(transitionOptions);
 	}
 
+	/**
+	 * Whether this light is capable of dimming
+	 */
 	public isDimmable(): this is DimmableLight | TemperatureLight | ColorLight | GradientLight {
 		return Boolean(
 			[
@@ -49,16 +74,25 @@ export class Light extends NamedResource {
 		);
 	}
 
+	/**
+	 * Whether this light is capable of displaying temperatures
+	 */
 	public isTemperature(): this is TemperatureLight | ColorLight | GradientLight {
 		return Boolean(
 			[ResourceType.TemperatureLight, ResourceType.ColorLight, ResourceType.GradientLight].includes(this.type),
 		);
 	}
 
+	/**
+	 * Whether this light is capable of displaying colors
+	 */
 	public isColor(): this is ColorLight | GradientLight {
 		return Boolean([ResourceType.ColorLight, ResourceType.GradientLight].includes(this.type));
 	}
 
+	/**
+	 * Whether this light is capable of gradient
+	 */
 	public isGradient(): this is GradientLight {
 		return Boolean(this.type === ResourceType.GradientLight);
 	}

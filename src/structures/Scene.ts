@@ -8,15 +8,25 @@ import { Routes } from '../util/Routes';
 
 export type SceneResolvable = Scene | string;
 
+/**
+ * Represents a hue Scene
+ */
 export class Scene extends NamedResource {
 	type = ResourceType.Scene;
-	public groupId: string;
+	/**
+	 * A manager with all the actions this scene has
+	 */
 	public actions = new SceneActionManager(this);
+	protected _groupId: string;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiScene) {
 		super._patch(data);
 		if ('group' in data) {
-			if ('rid' in data.group) this.groupId = data.group.rid;
+			if ('rid' in data.group) this._groupId = data.group.rid;
 		}
 		if ('actions' in data) {
 			data.actions.forEach((action) => {
@@ -25,8 +35,11 @@ export class Scene extends NamedResource {
 		}
 	}
 
+	/**
+	 * The Group this Scene belongs to
+	 */
 	get group(): Group {
-		const find = (group: Group) => group.id === this.groupId;
+		const find = (group: Group) => group.id === this._groupId;
 
 		const room = this.bridge.rooms.cache.find(find);
 		if (room) return room;
@@ -35,6 +48,9 @@ export class Scene extends NamedResource {
 		if (zone) return zone;
 	}
 
+	/**
+	 * Applies this scene
+	 */
 	public async apply(transitionOptions?: TransitionOptions) {
 		for await (const action of this.actions.cache.values()) {
 			await action.apply(transitionOptions);

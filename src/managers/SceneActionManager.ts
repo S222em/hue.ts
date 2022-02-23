@@ -11,6 +11,10 @@ export class SceneActionManager extends BaseManager<SceneAction> {
 		this.scene = scene;
 	}
 
+	/**
+	 * Patches/creates a Scene Action
+	 * @internal
+	 */
 	public _add(data: ApiSceneAction): SceneAction {
 		const sceneAction = this.cache.ensure(data.target.rid, () => {
 			return new SceneAction(this.bridge);

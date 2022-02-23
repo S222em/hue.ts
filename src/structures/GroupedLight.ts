@@ -10,10 +10,20 @@ export interface GroupedLightStateOptions {
 	on?: boolean;
 }
 
+/**
+ * Represents a hue Grouped Light
+ */
 export class GroupedLight extends Resource {
 	type = ResourceType.GroupedLight;
+	/**
+	 * The current on state of the Grouped Light
+	 */
 	public on: boolean;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public _patch(data: ApiGroupedLight) {
 		super._patch(data);
 		if ('on' in data) {
@@ -21,6 +31,9 @@ export class GroupedLight extends Resource {
 		}
 	}
 
+	/**
+	 * The group belonging to this Grouped Light
+	 */
 	get group(): Group {
 		const find = (group: Group) => group.groupedLight === this;
 
@@ -31,10 +44,9 @@ export class GroupedLight extends Resource {
 		if (zone) return zone;
 	}
 
-	get groupId(): string {
-		return this.group?.id;
-	}
-
+	/**
+	 * Edits the state of the Grouped Light
+	 */
 	public async state(state: GroupedLightStateOptions) {
 		await this._edit({ on: { on: state.on ?? true } });
 	}

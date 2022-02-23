@@ -10,6 +10,10 @@ export class ZoneManager extends ResourceManager<Zone> {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
+	/**
+	 * Patches/creates a Zone
+	 * @internal
+	 */
 	public _add(data: ApiZone): Zone {
 		const zone = this.cache.ensure(data.id, () => {
 			return new Zone(this.bridge);
@@ -19,6 +23,9 @@ export class ZoneManager extends ResourceManager<Zone> {
 		return zone;
 	}
 
+	/**
+	 * Resolves a Zone resolvable
+	 */
 	public resolve(resolvable: GroupResolvable): Zone {
 		if (typeof resolvable === 'string') {
 			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
@@ -29,6 +36,9 @@ export class ZoneManager extends ResourceManager<Zone> {
 		}
 	}
 
+	/**
+	 * Syncs all the Zones of the bridge with this manager
+	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.zone());
 		const data = response.data.data as ApiZone[];

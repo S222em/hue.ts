@@ -7,10 +7,20 @@ export interface TemperatureLightStateOptions extends DimmableLightStateOptions 
 	temperature: number;
 }
 
+/**
+ * Represents a hue Light capable of temperature
+ */
 export class TemperatureLight extends DimmableLight {
 	type = ResourceType.TemperatureLight;
+	/**
+	 * The current temperature of the light
+	 */
 	public temperature: number;
 
+	/**
+	 * Patches the resource with received data
+	 * @internal
+	 */
 	public patch(data: ApiLight) {
 		super._patch(data);
 		if ('color_temperature' in data) {
@@ -18,6 +28,9 @@ export class TemperatureLight extends DimmableLight {
 		}
 	}
 
+	/**
+	 * Edits the state of the Light
+	 */
 	public async state(state: TemperatureLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await this._edit(
 			{

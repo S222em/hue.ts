@@ -3,6 +3,9 @@ import { ResourceType } from './Resource';
 import type { ApiZone } from '../types/api';
 import { Routes } from '../util/Routes';
 
+/**
+ * Represents a hue zone
+ */
 export class Zone extends Group {
 	type = ResourceType.Zone;
 
