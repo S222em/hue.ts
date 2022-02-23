@@ -3,7 +3,7 @@ src
 test
 .idea
 .eslintignore
-.eslint
+.eslintrc.json
 .prettierrc
 tsconfig.json
 tsconfig.tsbuildinfo
