@@ -39,8 +39,6 @@ bridge.on('ready', async () => {
 
   await room.applyScene(scene, { duration: 3000 });
 });
-
-bridge.on('lightUpdate', (light) => console.log(light.name, light.on));
 ```
 
 [contributors-shield]: https://img.shields.io/github/contributors/S222em/hue.js.svg?style=for-the-badge
