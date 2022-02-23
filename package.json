@@ -4,6 +4,7 @@
   "description": "A powerful library to interact with the Hue API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/S222em/hue.ts",
   "scripts": {
     "eslint": "eslint src/**",
     "prettier": "prettier --check src/**",
