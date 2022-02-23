@@ -1,47 +1,47 @@
 // Bridge
-export * from './lib/bridge/Bridge';
+export * from './bridge/Bridge';
 
 // Managers
-export * from './lib/managers/ResourceManager';
-export * from './lib/managers/GroupResourceManager';
-export * from './lib/managers/LightManager';
-export * from './lib/managers/GroupedLightManager';
-export * from './lib/managers/RoomManager';
-export * from './lib/managers/ZoneManager';
-export * from './lib/managers/SceneManager';
-export * from './lib/managers/SceneActionManager';
-export * from './lib/managers/GroupLightManager';
-export * from './lib/managers/GroupSceneManager';
+export * from './managers/ResourceManager';
+export * from './managers/GroupResourceManager';
+export * from './managers/LightManager';
+export * from './managers/GroupedLightManager';
+export * from './managers/RoomManager';
+export * from './managers/ZoneManager';
+export * from './managers/SceneManager';
+export * from './managers/SceneActionManager';
+export * from './managers/GroupLightManager';
+export * from './managers/GroupSceneManager';
 
 // Resource
-export * from './lib/structures/Resource';
-export * from './lib/structures/NamedResource';
+export * from './structures/Resource';
+export * from './structures/NamedResource';
 
 // Lights
-export * from './lib/structures/Light';
-export * from './lib/structures/DimmableLight';
-export * from './lib/structures/TemperatureLight';
-export * from './lib/structures/ColorLight';
-export * from './lib/structures/GradientLight';
-export * from './lib/structures/LightCapabilities';
+export * from './structures/Light';
+export * from './structures/DimmableLight';
+export * from './structures/TemperatureLight';
+export * from './structures/ColorLight';
+export * from './structures/GradientLight';
+export * from './structures/LightCapabilities';
 
 // Groups
-export * from './lib/structures/Group';
-export * from './lib/structures/GroupedLight';
-export * from './lib/structures/Room';
-export * from './lib/structures/Zone';
+export * from './structures/Group';
+export * from './structures/GroupedLight';
+export * from './structures/Room';
+export * from './structures/Zone';
 
 // Scene
-export * from './lib/structures/Scene';
-export * from './lib/structures/SceneAction';
+export * from './structures/Scene';
+export * from './structures/SceneAction';
 
 // Api types
 export * as ApiTypes from './api';
 
 // Color
-export * from './lib/color/ColorResolver';
-export * from './lib/color/XyPoint';
-export * from './lib/color/Gamut';
+export * from './color/ColorResolver';
+export * from './color/XyPoint';
+export * from './color/Gamut';
 
 // Util
-export * from './lib/util/Colors';
+export * from './util/Colors';

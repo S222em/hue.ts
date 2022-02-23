@@ -8,7 +8,7 @@
 
 # About
 
-hue.js is a node module that allows you to interaction with the hue API.
+hue.js is a node module that allows you to easily interact with the hue API.
 
 - Object-oriented
 - 100%-coverage of the hue API (still work in progress)
@@ -34,12 +34,13 @@ const bridge = new Bridge({
 bridge.on('ready', async () => {
   console.log('Ready!');
 
-  const room = await bridge.rooms.cache.get('some-id');
+  const room = bridge.rooms.cache.get('some-id');
+  const scene = bridge.scenes.cache.get('some-id');
 
-  await room.applyScene('Default', { transition: 3000 });
+  await room.applyScene(scene, { duration: 3000 });
 });
 
-bridge.on('lightUpdate', (light) => console.log('lightUpdate', light.name));
+bridge.on('lightUpdate', (light) => console.log(light.name, light.on));
 ```
 
 [contributors-shield]: https://img.shields.io/github/contributors/S222em/hue.js.svg?style=for-the-badge
