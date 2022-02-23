@@ -1,6 +1,8 @@
 import { Resource, ResourceType } from './Resource';
-import { ApiGroupedLight } from '../api';
 import type { Group } from './Group';
+import type { ApiGroupedLight } from '../types/api';
+import type { DeepPartial } from '../types/common';
+import { Routes } from '../util/Routes';
 
 export type GroupedLightResolvable = GroupedLight | 'string';
 
@@ -12,7 +14,7 @@ export class GroupedLight extends Resource {
 	type = ResourceType.GroupedLight;
 	public on: boolean;
 
-	public _patch(data: ApiGroupedLight.Data) {
+	public _patch(data: ApiGroupedLight) {
 		super._patch(data);
 		if ('on' in data) {
 			if ('on' in data) this.on = data.on.on;
@@ -20,7 +22,7 @@ export class GroupedLight extends Resource {
 	}
 
 	get group(): Group {
-		const find = (group: Group) => group.groupedLightId === this.id;
+		const find = (group: Group) => group.groupedLight === this;
 
 		const room = this.bridge.rooms.cache.find(find);
 		if (room) return room;
@@ -37,7 +39,7 @@ export class GroupedLight extends Resource {
 		await this._edit({ on: { on: state.on ?? true } });
 	}
 
-	protected async _edit(data: ApiGroupedLight.Put): Promise<void> {
-		await this.bridge.groupedLights.rest.put(ApiGroupedLight.route(this.id), data);
+	protected async _edit(data: DeepPartial<ApiGroupedLight>): Promise<void> {
+		await this.bridge.groupedLights.rest.put(Routes.groupedLight(this.id), data);
 	}
 }

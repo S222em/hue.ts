@@ -1,15 +1,16 @@
 import type { Bridge } from '../bridge/Bridge';
-import { ApiZone } from '../api';
 import type { GroupResolvable } from '../structures/Group';
 import { Zone } from '../structures/Zone';
 import { ResourceManager } from './ResourceManager';
+import type { ApiZone } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export class ZoneManager extends ResourceManager<Zone> {
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiZone.Data): Zone {
+	public _add(data: ApiZone): Zone {
 		const zone = this.cache.ensure(data.id, () => {
 			return new Zone(this.bridge);
 		});
@@ -29,8 +30,8 @@ export class ZoneManager extends ResourceManager<Zone> {
 	}
 
 	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(ApiZone.route());
-		const data = response.data.data as ApiZone.Get;
+		const response = await this.rest.get(Routes.zone());
+		const data = response.data.data as ApiZone[];
 		data.forEach((data) => {
 			this._add(data);
 		});

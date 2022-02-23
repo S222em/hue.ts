@@ -3,16 +3,17 @@ import type { Bridge } from '../bridge/Bridge';
 import { Light, LightResolvable } from '../structures/Light';
 import { ColorLight } from '../structures/ColorLight';
 import { GradientLight } from '../structures/GradientLight';
-import { ApiLight } from '../api';
 import { DimmableLight } from '../structures/DimmableLight';
 import { ResourceManager } from './ResourceManager';
+import type { ApiLight } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export class LightManager extends ResourceManager<Light> {
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 100 });
 	}
 
-	public _add(data: ApiLight.Data): Light {
+	public _add(data: ApiLight): Light {
 		const light = this.cache.ensure(data.id, () => {
 			if ('gradient' in data) return new GradientLight(this.bridge);
 			else if ('color' in data) return new ColorLight(this.bridge);
@@ -36,8 +37,8 @@ export class LightManager extends ResourceManager<Light> {
 	}
 
 	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(ApiLight.route());
-		const data = response.data.data as ApiLight.Get;
+		const response = await this.rest.get(Routes.light());
+		const data = response.data.data as ApiLight[];
 		data.forEach((data) => {
 			this._add(data);
 		});

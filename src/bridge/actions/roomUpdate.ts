@@ -1,8 +1,8 @@
 import type { Bridge } from '../Bridge';
-import type { ApiRoom } from '../../api';
 import { Events } from '../../util/Events';
+import type { ApiRoom } from '../../types/api';
 
-export default function roomUpdate(bridge: Bridge, data: ApiRoom.Data) {
+export default function roomUpdate(bridge: Bridge, data: ApiRoom) {
 	const room = bridge.rooms.cache.get(data.id);
 	if (room) {
 		const old = room._update(data);

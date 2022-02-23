@@ -1,7 +1,7 @@
 import { ColorLight, ColorLightStateOptions } from './ColorLight';
-import type { ApiLight } from '../api';
 import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
+import type { ApiLight } from '../types/api';
 
 export interface GradientLightStateOptions extends ColorLightStateOptions {
 	gradient: string[];
@@ -11,7 +11,7 @@ export class GradientLight extends ColorLight {
 	type = ResourceType.GradientLight;
 	public gradient: Array<string>;
 
-	public _patch(data: ApiLight.Data): void {
+	public _patch(data: ApiLight): void {
 		super._patch(data);
 		if ('gradient' in data) {
 			if ('points' in data.gradient) {

@@ -1,11 +1,12 @@
 import { Group } from './Group';
 import { ResourceType } from './Resource';
-import { ApiRoom } from '../api';
+import type { ApiRoom } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export class Room extends Group {
 	type = ResourceType.Room;
 
-	protected async _edit(data: ApiRoom.Put): Promise<void> {
-		await this.bridge.rooms.rest.put(ApiRoom.route(this.id), data);
+	protected async _edit(data: ApiRoom): Promise<void> {
+		await this.bridge.rooms.rest.put(Routes.room(this.id), data);
 	}
 }

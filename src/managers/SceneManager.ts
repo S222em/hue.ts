@@ -1,14 +1,15 @@
 import type { Bridge } from '../bridge/Bridge';
-import { ApiScene } from '../api';
 import { ResourceManager } from './ResourceManager';
 import { Scene, SceneResolvable } from '../structures/Scene';
+import type { ApiScene } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export class SceneManager extends ResourceManager<Scene> {
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiScene.Data): Scene {
+	public _add(data: ApiScene): Scene {
 		const scene = this.cache.ensure(data.id, () => {
 			return new Scene(this.bridge);
 		});
@@ -26,8 +27,8 @@ export class SceneManager extends ResourceManager<Scene> {
 	}
 
 	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(ApiScene.route());
-		const data = response.data.data as ApiScene.Get;
+		const response = await this.rest.get(Routes.scene());
+		const data = response.data.data as ApiScene[];
 		data.forEach((data) => {
 			this._add(data);
 		});

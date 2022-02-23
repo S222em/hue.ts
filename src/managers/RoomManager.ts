@@ -1,15 +1,16 @@
 import type { Bridge } from '../bridge/Bridge';
-import { ApiRoom } from '../api';
 import { Room } from '../structures/Room';
 import type { GroupResolvable } from '../structures/Group';
 import { ResourceManager } from './ResourceManager';
+import type { ApiRoom } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export class RoomManager extends ResourceManager<Room> {
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
 	}
 
-	public _add(data: ApiRoom.Data): Room {
+	public _add(data: ApiRoom): Room {
 		const room = this.cache.ensure(data.id, () => {
 			return new Room(this.bridge);
 		});
@@ -29,8 +30,8 @@ export class RoomManager extends ResourceManager<Room> {
 	}
 
 	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(ApiRoom.route());
-		const data = response.data.data as ApiRoom.Get;
+		const response = await this.rest.get(Routes.room());
+		const data = response.data.data as ApiRoom[];
 		data.forEach((data) => {
 			this._add(data);
 		});

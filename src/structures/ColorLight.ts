@@ -1,8 +1,8 @@
 import { ColorResolver } from '../color/ColorResolver';
 import { TemperatureLight, TemperatureLightStateOptions } from './TemperatureLight';
-import type { ApiLight } from '../api';
 import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
+import type { ApiLight } from '../types/api';
 
 export interface ColorLightStateOptions extends TemperatureLightStateOptions {
 	color?: string;
@@ -14,7 +14,7 @@ export class ColorLight extends TemperatureLight {
 	public gamutType: 'A' | 'B' | 'C';
 	protected _colorResolver: ColorResolver;
 
-	public _patch(data: ApiLight.Data): void {
+	public _patch(data: ApiLight): void {
 		super._patch(data);
 		if ('color' in data) {
 			if ('gamut_type' in data.color) {

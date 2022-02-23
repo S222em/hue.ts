@@ -3,12 +3,13 @@ import type { ColorLight } from './ColorLight';
 import type { DimmableLight } from './DimmableLight';
 import type { GradientLight } from './GradientLight';
 import { ResourceType } from './Resource';
-import { ApiLight } from '../api';
 import { NamedResource } from './NamedResource';
 import type { SceneResolvable } from './Scene';
 import { LightCapabilities } from './LightCapabilities';
-import type { TransitionOptions } from '../types/common';
+import type { DeepPartial, TransitionOptions } from '../types/common';
 import { LightGroupManager } from '../managers/LightGroupManager';
+import type { ApiLight } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export type LightResolvable = Light | string;
 
@@ -22,7 +23,7 @@ export class Light extends NamedResource {
 	public groups = new LightGroupManager(this);
 	public on: boolean;
 
-	public _patch(data: ApiLight.Data): void {
+	public _patch(data: ApiLight): void {
 		super._patch(data);
 		this.capabilities._patch(data);
 		if ('on' in data) this.on = data.on.on;
@@ -62,8 +63,8 @@ export class Light extends NamedResource {
 		return Boolean(this.type === ResourceType.GradientLight);
 	}
 
-	protected async _edit(data: ApiLight.Put, transition: TransitionOptions): Promise<void> {
-		await this.bridge.lights.rest.put(ApiLight.route(this.id), {
+	protected async _edit(data: DeepPartial<ApiLight>, transition: TransitionOptions): Promise<void> {
+		await this.bridge.lights.rest.put(Routes.light(this.id), {
 			...data,
 			dynamics: { duration: transition.duration },
 		});

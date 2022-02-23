@@ -1,12 +1,12 @@
 import EventSource from 'eventsource';
-import { ApiEventStream } from '../api';
 import type { Bridge } from './Bridge';
+import { Routes } from '../util/Routes';
 
 export class Event extends EventSource {
 	private readonly bridge: Bridge;
 
 	constructor(bridge: Bridge, ip: string, applicationKey: string) {
-		super(ApiEventStream.route(ip), {
+		super(Routes.eventStream(ip), {
 			https: { rejectUnauthorized: false },
 			headers: {
 				'hue-application-key': applicationKey,
@@ -16,7 +16,7 @@ export class Event extends EventSource {
 	}
 
 	onmessage = (message: MessageEvent) => {
-		const data = JSON.parse(message.data) as ApiEventStream.Event;
+		const data = JSON.parse(message.data);
 		data.forEach((event) => {
 			const deviceType = String(event.data[0].type).replaceAll('_', '');
 			const eventType = String(event.type);

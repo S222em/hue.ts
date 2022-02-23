@@ -1,9 +1,10 @@
 import { NamedResource } from './NamedResource';
 import { ResourceType } from './Resource';
-import { ApiScene } from '../api';
 import type { Group } from './Group';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import type { TransitionOptions } from '../types/common';
+import type { ApiScene } from '../types/api';
+import { Routes } from '../util/Routes';
 
 export type SceneResolvable = Scene | string;
 
@@ -12,7 +13,7 @@ export class Scene extends NamedResource {
 	public groupId: string;
 	public actions = new SceneActionManager(this);
 
-	public _patch(data: ApiScene.Data) {
+	public _patch(data: ApiScene) {
 		super._patch(data);
 		if ('group' in data) {
 			if ('rid' in data.group) this.groupId = data.group.rid;
@@ -40,7 +41,7 @@ export class Scene extends NamedResource {
 		}
 	}
 
-	protected async _edit(data: ApiScene.Put) {
-		await this.bridge.rest.put(ApiScene.route(this.id), data);
+	protected async _edit(data: ApiScene) {
+		await this.bridge.rest.put(Routes.scene(this.id), data);
 	}
 }

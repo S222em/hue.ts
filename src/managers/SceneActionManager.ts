@@ -1,6 +1,7 @@
 import { BaseManager } from './BaseManager';
-import { SceneAction, SceneActionData } from '../structures/SceneAction';
+import { SceneAction } from '../structures/SceneAction';
 import type { Scene } from '../structures/Scene';
+import type { ApiSceneAction } from '../types/api';
 
 export class SceneActionManager extends BaseManager<SceneAction> {
 	private scene: Scene;
@@ -10,7 +11,7 @@ export class SceneActionManager extends BaseManager<SceneAction> {
 		this.scene = scene;
 	}
 
-	public _add(data: SceneActionData): SceneAction {
+	public _add(data: ApiSceneAction): SceneAction {
 		const sceneAction = this.cache.ensure(data.target.rid, () => {
 			return new SceneAction(this.bridge);
 		});

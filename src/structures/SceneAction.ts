@@ -3,40 +3,7 @@ import type { Light } from './Light';
 import { ColorResolver } from '../color/ColorResolver';
 import type { GradientLight } from './GradientLight';
 import type { TransitionOptions } from '../types/common';
-
-export interface SceneActionData {
-	target: {
-		rid: string;
-		rtype: string;
-	};
-	action: {
-		on: {
-			on: boolean;
-		};
-		dimming?: {
-			brightness: number;
-		};
-		color?: {
-			xy: {
-				x: number;
-				y: number;
-			};
-		};
-		color_temperature?: {
-			mirek: number;
-		};
-		gradient?: {
-			points: Array<{
-				color: {
-					xy: {
-						x: number;
-						y: number;
-					};
-				};
-			}>;
-		};
-	};
-}
+import type { ApiSceneAction } from '../types/api';
 
 export class SceneAction extends Base {
 	public lightId: string;
@@ -47,7 +14,7 @@ export class SceneAction extends Base {
 	public gradient: string[];
 	private _colorResolver: ColorResolver;
 
-	public _patch(data: SceneActionData) {
+	public _patch(data: ApiSceneAction) {
 		if ('target' in data) {
 			if ('rid' in data.target) this.lightId = data.target.rid;
 		}

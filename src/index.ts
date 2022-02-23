@@ -35,13 +35,16 @@ export * from './structures/Zone';
 export * from './structures/Scene';
 export * from './structures/SceneAction';
 
-// Api types
-export * as ApiTypes from './api';
-
 // Color
 export * from './color/ColorResolver';
 export * from './color/XyPoint';
 export * from './color/Gamut';
 
+// Types
+export * from './types/api';
+export * from './types/common';
+
 // Util
 export * from './util/Colors';
+export * from './util/Events';
+export * from './util/Routes';

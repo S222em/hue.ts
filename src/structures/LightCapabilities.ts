@@ -1,5 +1,5 @@
 import { XyPoint } from '../color/XyPoint';
-import type { ApiLight } from '../api';
+import type { ApiLight } from '../types/api';
 
 const GamutA = {
 	red: new XyPoint({
@@ -55,7 +55,7 @@ export class LightCapabilities {
 	public minTemperature?: number;
 	public minBrightnessLevel?: number;
 
-	public _patch(data: Pick<ApiLight.Data, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
+	public _patch(data: Pick<ApiLight, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
 		if ('gradient' in data) {
 			if ('points_capable' in data.gradient) this.maxGradientPoints = data.gradient.points_capable;
 		}

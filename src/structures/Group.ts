@@ -1,10 +1,10 @@
-import type { ApiRoom } from '../api';
 import { NamedResource } from './NamedResource';
 import type { GroupedLight } from './GroupedLight';
 import type { SceneResolvable } from './Scene';
 import { GroupSceneManager } from '../managers/GroupSceneManager';
 import { GroupLightManager } from '../managers/GroupLightManager';
-import type { TransitionOptions } from '../types/common';
+import type { DeepPartial, TransitionOptions } from '../types/common';
+import type { ApiGroup } from '../types/api';
 
 export type GroupResolvable = Group | 'string';
 
@@ -22,7 +22,7 @@ export abstract class Group extends NamedResource {
 	public lights: GroupLightManager = new GroupLightManager(this);
 	protected _groupedLightId: string;
 
-	public _patch(data: ApiRoom.Data) {
+	public _patch(data: ApiGroup) {
 		super._patch(data);
 		if ('services' in data) {
 			this.lightIds = data.services.filter((service) => service.rtype === 'light').map((service) => service.rid);
@@ -50,5 +50,5 @@ export abstract class Group extends NamedResource {
 		await scene?.apply(transitionOptions);
 	}
 
-	protected abstract _edit(data: ApiRoom.Put): Promise<void>;
+	protected abstract _edit(data: DeepPartial<ApiGroup>): Promise<void>;
 }

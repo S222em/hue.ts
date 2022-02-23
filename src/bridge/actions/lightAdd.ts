@@ -1,8 +1,8 @@
 import type { Bridge } from '../Bridge';
-import type { ApiLight } from '../../api';
 import { Events } from '../../util/Events';
+import type { ApiLight } from '../../types/api';
 
-export default function lightAdd(bridge: Bridge, data: ApiLight.Data) {
+export default function lightAdd(bridge: Bridge, data: ApiLight) {
 	const existing = bridge.lights.cache.get(data.id);
 	const light = bridge.lights._add(data);
 	if (!existing && light) {
