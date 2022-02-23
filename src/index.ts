@@ -4,6 +4,7 @@ export * from './bridge/Bridge';
 // Managers
 export * from './managers/ResourceManager';
 export * from './managers/GroupResourceManager';
+export * from './managers/LightResourceManager';
 export * from './managers/LightManager';
 export * from './managers/GroupedLightManager';
 export * from './managers/RoomManager';
@@ -12,6 +13,7 @@ export * from './managers/SceneManager';
 export * from './managers/SceneActionManager';
 export * from './managers/GroupLightManager';
 export * from './managers/GroupSceneManager';
+export * from './managers/LightZoneManager';
 
 // Resource
 export * from './structures/Resource';
