@@ -29,8 +29,11 @@ export class SceneAction extends Base {
 	 * The gradient of the target Light in this Scene
 	 */
 	public gradient: string[];
+	/**
+	 * The id of the target Light
+	 */
+	public lightId: string;
 	private _colorResolver: ColorResolver;
-	protected _lightId: string;
 
 	/**
 	 * Patches the resource with received data
@@ -38,7 +41,7 @@ export class SceneAction extends Base {
 	 */
 	public _patch(data: ApiSceneAction) {
 		if ('target' in data) {
-			if ('rid' in data.target) this._lightId = data.target.rid;
+			if ('rid' in data.target) this.lightId = data.target.rid;
 		}
 		if ('action' in data) {
 			if ('on' in data.action) {
@@ -79,7 +82,7 @@ export class SceneAction extends Base {
 	 * The target Light
 	 */
 	get light(): Light {
-		return this.bridge.lights.cache.get(this._lightId);
+		return this.bridge.lights.cache.get(this.lightId);
 	}
 
 	/**

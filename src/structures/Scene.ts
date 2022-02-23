@@ -17,7 +17,7 @@ export class Scene extends NamedResource {
 	 * A manager with all the actions this scene has
 	 */
 	public actions = new SceneActionManager(this);
-	protected _groupId: string;
+	public groupId: string;
 
 	/**
 	 * Patches the resource with received data
@@ -26,7 +26,7 @@ export class Scene extends NamedResource {
 	public _patch(data: ApiScene) {
 		super._patch(data);
 		if ('group' in data) {
-			if ('rid' in data.group) this._groupId = data.group.rid;
+			if ('rid' in data.group) this.groupId = data.group.rid;
 		}
 		if ('actions' in data) {
 			data.actions.forEach((action) => {
@@ -39,7 +39,7 @@ export class Scene extends NamedResource {
 	 * The Group this Scene belongs to
 	 */
 	get group(): Group {
-		const find = (group: Group) => group.id === this._groupId;
+		const find = (group: Group) => group.id === this.groupId;
 
 		const room = this.bridge.rooms.cache.find(find);
 		if (room) return room;

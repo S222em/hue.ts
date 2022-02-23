@@ -7,6 +7,6 @@ export class GroupLightManager extends GroupResourceManager {
 	 * The cache of this manager
 	 */
 	get cache(): Collection<string, Light> {
-		return this.group.bridge.lights.cache.filter((light) => this.group.lights.cache.has(light.id));
+		return this.group.bridge.lights.cache.filter((light) => this.group.lightIds.includes(light.id));
 	}
 }

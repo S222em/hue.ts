@@ -32,16 +32,23 @@ export class GroupedLight extends Resource {
 	}
 
 	/**
-	 * The group belonging to this Grouped Light
+	 * The Group this Grouped Light belongs to
 	 */
 	get group(): Group {
-		const find = (group: Group) => group.groupedLight === this;
+		const find = (group: Group) => group.groupedLight?.id === this.id;
 
 		const room = this.bridge.rooms.cache.find(find);
 		if (room) return room;
 
 		const zone = this.bridge.zones.cache.find(find);
 		if (zone) return zone;
+	}
+
+	/**
+	 * The id of the Group this Grouped Light belongs to
+	 */
+	get groupId(): string {
+		return this.group?.id;
 	}
 
 	/**

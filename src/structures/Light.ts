@@ -7,9 +7,10 @@ import { NamedResource } from './NamedResource';
 import type { SceneResolvable } from './Scene';
 import { LightCapabilities } from './LightCapabilities';
 import type { DeepPartial, TransitionOptions } from '../types/common';
-import { LightGroupManager } from '../managers/LightGroupManager';
+import { LightZoneManager } from '../managers/LightZoneManager';
 import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
+import type { Room } from './Room';
 
 export type LightResolvable = Light | string;
 
@@ -27,9 +28,9 @@ export class Light extends NamedResource {
 	 */
 	public capabilities = new LightCapabilities();
 	/**
-	 * A manager with all the groups this light belongs too
+	 * A manager with all the zones this light belongs too
 	 */
-	public groups = new LightGroupManager(this);
+	public zones = new LightZoneManager(this);
 	/**
 	 * The current on state of this light
 	 */
@@ -43,6 +44,20 @@ export class Light extends NamedResource {
 		super._patch(data);
 		this.capabilities._patch(data);
 		if ('on' in data) this.on = data.on.on;
+	}
+
+	/**
+	 * The room this light belongs to
+	 */
+	get room(): Room {
+		return this.bridge.rooms.cache.find((room) => room.lights.cache.has(this.id));
+	}
+
+	/**
+	 * The id of the Room this light belongs to
+	 */
+	get roomId(): string {
+		return this.room?.id;
 	}
 
 	/**

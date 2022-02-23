@@ -28,8 +28,14 @@ export abstract class Group extends NamedResource {
 	 * A manager with all the lights that belong to this Group
 	 */
 	public lights: GroupLightManager = new GroupLightManager(this);
-	protected _lightIds: Array<string>;
-	protected _groupedLightId: string;
+	/**
+	 * All the ids of the Lights that belong to this Group
+	 */
+	public lightIds: Array<string>;
+	/**
+	 * The id of the Grouped Light that belongs to this Group
+	 */
+	public groupedLightId: string;
 
 	/**
 	 * Patches the resource with received data
@@ -38,8 +44,8 @@ export abstract class Group extends NamedResource {
 	public _patch(data: ApiGroup) {
 		super._patch(data);
 		if ('services' in data) {
-			this._lightIds = data.services.filter((service) => service.rtype === 'light').map((service) => service.rid);
-			this._groupedLightId = data.services.find((service) => service.rtype === 'grouped_light')?.rid;
+			this.lightIds = data.services.filter((service) => service.rtype === 'light').map((service) => service.rid);
+			this.groupedLightId = data.services.find((service) => service.rtype === 'grouped_light')?.rid;
 		}
 	}
 
@@ -47,7 +53,7 @@ export abstract class Group extends NamedResource {
 	 * The groupedLight belonging to this Group
 	 */
 	get groupedLight(): GroupedLight {
-		return this.bridge.groupedLights.cache.get(this._groupedLightId);
+		return this.bridge.groupedLights.cache.get(this.groupedLightId);
 	}
 
 	/**
