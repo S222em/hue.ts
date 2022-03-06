@@ -1,63 +1,81 @@
-import { NamedResource } from './NamedResource';
 import { ResourceType } from './Resource';
 import type { Group } from './Group';
-import { SceneActionManager } from '../managers/SceneActionManager';
-import type { TransitionOptions } from '../types/common';
+import type { DeepPartial, TransitionOptions } from '../types/common';
 import type { ApiScene } from '../types/api';
 import { Routes } from '../util/Routes';
+import type { SceneActionOptions } from './SceneAction';
+import { Base } from './Base';
+import type { Bridge } from '../bridge/Bridge';
+import { SceneActionManager } from '../managers/SceneActionManager';
+import { Util } from '../util/Util';
 
 export type SceneResolvable = Scene | string;
+
+export interface SceneOptions {
+	name?: string;
+	actions?: SceneActionOptions[];
+}
+
+export interface SceneApplyOptions extends TransitionOptions {
+	brightness?: number;
+}
 
 /**
  * Represents a hue Scene
  */
-export class Scene extends NamedResource {
+export class Scene extends Base<ApiScene> {
 	type = ResourceType.Scene;
-	/**
-	 * A manager with all the actions this scene has
-	 */
-	public actions = new SceneActionManager(this);
-	public groupId: string;
+	public readonly actions: SceneActionManager;
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
+	constructor(bridge: Bridge) {
+		super(bridge);
+		this.actions = new SceneActionManager(this);
+	}
+
 	public _patch(data: ApiScene) {
 		super._patch(data);
-		if ('group' in data) {
-			if ('rid' in data.group) this.groupId = data.group.rid;
-		}
-		if ('actions' in data) {
-			data.actions.forEach((action) => {
-				this.actions._add(action);
-			});
+		for (const action of data.actions || []) {
+			this.actions._add(action);
 		}
 	}
 
-	/**
-	 * The Group this Scene belongs to
-	 */
+	get id(): string {
+		return this.data.id;
+	}
+
+	get name(): string {
+		return this.data.metadata?.name;
+	}
+
 	get group(): Group {
-		const find = (group: Group) => group.id === this.groupId;
+		return this.bridge.rooms.cache.get(this.groupId) || this.bridge.zones.cache.get(this.groupId);
+	}
 
-		const room = this.bridge.rooms.cache.find(find);
-		if (room) return room;
-
-		const zone = this.bridge.zones.cache.find(find);
-		if (zone) return zone;
+	get groupId(): string {
+		return this.data.group?.rid;
 	}
 
 	/**
 	 * Applies this scene
 	 */
-	public async apply(transitionOptions?: TransitionOptions) {
-		for await (const action of this.actions.cache.values()) {
-			await action.apply(transitionOptions);
-		}
+	public async apply(options?: SceneApplyOptions) {
+		await this._edit({
+			recall: {
+				action: 'active',
+				duration: options?.duration,
+				dimming: { brightness: options?.brightness },
+			},
+		});
 	}
 
-	protected async _edit(data: ApiScene) {
+	/**
+	 * Edits the scene with new data e.g. new name
+	 */
+	public async edit(options: SceneOptions) {
+		await this._edit(Util.parseSceneOptions(options, this.bridge));
+	}
+
+	protected async _edit(data: DeepPartial<ApiScene>) {
 		await this.bridge.rest.put(Routes.scene(this.id), data);
 	}
 }

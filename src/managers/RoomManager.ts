@@ -1,13 +1,16 @@
 import type { Bridge } from '../bridge/Bridge';
-import { Room } from '../structures/Room';
-import type { GroupResolvable } from '../structures/Group';
+import { Room, RoomResolvable } from '../structures/Room';
 import { ResourceManager } from './ResourceManager';
 import type { ApiRoom } from '../types/api';
 import { Routes } from '../util/Routes';
+import Collection from '@discordjs/collection';
 
-export class RoomManager extends ResourceManager<Room> {
+export class RoomManager extends ResourceManager<RoomResolvable> {
+	public readonly cache: Collection<string, Room>;
+
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		this.cache = new Collection();
 	}
 
 	/**
@@ -15,25 +18,9 @@ export class RoomManager extends ResourceManager<Room> {
 	 * @internal
 	 */
 	public _add(data: ApiRoom): Room {
-		const room = this.cache.ensure(data.id, () => {
-			return new Room(this.bridge);
-		});
+		const room = this.cache.ensure(data.id, () => new Room(this.bridge));
 		room._patch(data);
-
 		return room;
-	}
-
-	/**
-	 * Resolves a Room resolvable
-	 */
-	public resolve(resolvable: GroupResolvable): Room {
-		if (typeof resolvable === 'string') {
-			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
-			const find = this.cache.find((room) => room.name === resolvable);
-			if (find) return find;
-		} else if (resolvable instanceof Room) {
-			return this.cache.get(resolvable.id);
-		}
 	}
 
 	/**

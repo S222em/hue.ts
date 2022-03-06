@@ -3,6 +3,8 @@ import { ResourceType } from './Resource';
 import type { ApiZone } from '../types/api';
 import { Routes } from '../util/Routes';
 
+export type ZoneResolvable = Zone | string;
+
 /**
  * Represents a hue zone
  */

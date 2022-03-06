@@ -3,6 +3,7 @@ import type { Group } from './Group';
 import type { ApiGroupedLight } from '../types/api';
 import type { DeepPartial } from '../types/common';
 import { Routes } from '../util/Routes';
+import { Util } from '../util/Util';
 
 export type GroupedLightResolvable = GroupedLight | 'string';
 
@@ -13,22 +14,11 @@ export interface GroupedLightStateOptions {
 /**
  * Represents a hue Grouped Light
  */
-export class GroupedLight extends Resource {
+export class GroupedLight extends Resource<ApiGroupedLight> {
 	type = ResourceType.GroupedLight;
-	/**
-	 * The current on state of the Grouped Light
-	 */
-	public on: boolean;
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: ApiGroupedLight) {
-		super._patch(data);
-		if ('on' in data) {
-			if ('on' in data) this.on = data.on.on;
-		}
+	get id(): string {
+		return this.data.id;
 	}
 
 	/**
@@ -51,11 +41,15 @@ export class GroupedLight extends Resource {
 		return this.group?.id;
 	}
 
+	get on(): boolean {
+		return this.data.on?.on;
+	}
+
 	/**
 	 * Edits the state of the Grouped Light
 	 */
 	public async state(state: GroupedLightStateOptions) {
-		await this._edit({ on: { on: state.on ?? true } });
+		await this._edit(Util.parseGroupedLightStateOptions(state));
 	}
 
 	protected async _edit(data: DeepPartial<ApiGroupedLight>): Promise<void> {

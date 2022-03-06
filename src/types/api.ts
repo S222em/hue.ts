@@ -1,3 +1,13 @@
+export interface ApiResource {
+	id: string;
+}
+
+export interface ApiNamedResource extends ApiResource {
+	metadata: {
+		name: string;
+	};
+}
+
 export interface ApiMetadata {
 	name: string;
 	archetype: string;
@@ -144,4 +154,12 @@ export interface ApiScene {
 		};
 	};
 	speed: number;
+	recall?: {
+		action: 'active' | 'dynamic_palette';
+		status: 'active' | null;
+		duration: number;
+		dimming: {
+			brightness: number;
+		};
+	};
 }

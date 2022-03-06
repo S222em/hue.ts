@@ -1,105 +1,82 @@
 import { Base } from './Base';
-import type { Light } from './Light';
-import { ColorResolver } from '../color/ColorResolver';
+import type { Light, LightResolvable } from './Light';
 import type { GradientLight } from './GradientLight';
-import type { TransitionOptions } from '../types/common';
 import type { ApiSceneAction } from '../types/api';
+import type { Scene } from './Scene';
 
-/**
- * Represents a Scene Action
- */
-export class SceneAction extends Base {
-	/**
-	 * Whether the target light is on in this Scene
-	 */
-	public on: boolean;
-	/**
-	 * The brightness of the target Light in this Scene
-	 */
-	public brightness: number;
-	/**
-	 * The temperature of the target Light in this Scene
-	 */
-	public temperature: number;
-	/**
-	 * The color of the target Light in this Scene
-	 */
-	public color: string;
-	/**
-	 * The gradient of the target Light in this Scene
-	 */
-	public gradient: string[];
-	/**
-	 * The id of the target Light
-	 */
-	public lightId: string;
-	private _colorResolver: ColorResolver;
+export interface SceneActionOptions {
+	light: LightResolvable;
+	on?: boolean;
+	brightness?: number;
+	temperature?: number;
+	color?: string;
+	gradient?: string[];
+}
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: ApiSceneAction) {
-		if ('target' in data) {
-			if ('rid' in data.target) this.lightId = data.target.rid;
-		}
-		if ('action' in data) {
-			if ('on' in data.action) {
-				if ('on' in data.action.on) this.on = data.action.on.on;
-			}
-			if ('dimming' in data.action) {
-				if ('brightness' in data.action.dimming) this.brightness = data.action.dimming.brightness;
-			}
-			if ('color_temperature' in data.action) {
-				if ('mirek' in data.action.color_temperature) this.temperature = data.action.color_temperature.mirek;
-			}
-			if ('color' in data.action) {
-				if ('xy' in data.action.color) {
-					if (!this._colorResolver) this._colorResolver = new ColorResolver(this.light.capabilities);
-					this.color = this._colorResolver.rgbToHex(
-						this._colorResolver.xyPointToRgb({
-							...data.action.color.xy,
-							bri: data.action.dimming?.brightness,
-						}),
-					);
-				}
-			}
-			if ('gradient' in data.action) {
-				if ('points' in data.action.gradient)
-					this.gradient = data.action.gradient.points.map((point) =>
-						this._colorResolver.rgbToHex(
-							this._colorResolver.xyPointToRgb({
-								...point.color.xy,
-								bri: data.action.dimming?.brightness,
-							}),
-						),
-					);
-			}
-		}
+export class SceneAction extends Base<ApiSceneAction> {
+	public readonly scene: Scene;
+
+	constructor(scene: Scene) {
+		super(scene.bridge);
+		this.scene = scene;
 	}
 
-	/**
-	 * The target Light
-	 */
+	get on(): boolean {
+		return this.data.action?.on?.on;
+	}
+
+	get brightness(): number {
+		return this.light.isDimmable() ? this.data.action?.dimming.brightness : null;
+	}
+
+	get temperature(): number {
+		return this.light.isTemperature() ? this.data.action?.color_temperature?.mirek : null;
+	}
+
+	get color(): string {
+		return this.light.isColor()
+			? this.light.colorResolver.rgbToHex(
+					this.light.colorResolver.xyPointToRgb({
+						x: this.data.action?.color?.xy?.x,
+						y: this.data.action?.color?.xy?.y,
+						bri: this.data.action?.dimming?.brightness,
+					}),
+			  )
+			: null;
+	}
+
+	get gradient(): string[] {
+		return this.light.isGradient()
+			? this.data.action?.gradient?.points?.map((point) => {
+					const light = this.light as GradientLight;
+					return light.colorResolver.rgbToHex(
+						light.colorResolver.xyPointToRgb({
+							x: point.color?.xy?.x,
+							y: point.color?.xy?.y,
+							bri: this.data.action?.dimming?.brightness,
+						}),
+					);
+			  })
+			: null;
+	}
+
 	get light(): Light {
 		return this.bridge.lights.cache.get(this.lightId);
 	}
 
-	/**
-	 * Applies this Scene Action to the target light
-	 */
-	public async apply(transitionOptions?: TransitionOptions) {
-		const light = this.light as GradientLight;
+	get lightId(): string {
+		return this.data.target?.rid;
+	}
 
-		await light.state(
-			{
-				on: this.on,
-				brightness: this.brightness,
-				temperature: this.temperature,
-				color: this.color,
-				gradient: this.gradient,
-			},
-			transitionOptions,
-		);
+	public async edit(options: Omit<SceneActionOptions, 'light'>) {
+		await this.scene.edit({
+			actions: [
+				{
+					...options,
+					light: this.light,
+				},
+				...this.scene.actions.cache.filter((action) => action.lightId !== this.lightId).values(),
+			],
+		});
 	}
 }

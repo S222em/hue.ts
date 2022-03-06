@@ -1,13 +1,16 @@
 import type { Bridge } from '../bridge/Bridge';
-import { Light } from '../structures/Light';
 import { GroupedLight, GroupedLightResolvable } from '../structures/GroupedLight';
 import { ResourceManager } from './ResourceManager';
 import type { ApiGroupedLight } from '../types/api';
 import { Routes } from '../util/Routes';
+import Collection from '@discordjs/collection';
 
-export class GroupedLightManager extends ResourceManager<GroupedLight> {
+export class GroupedLightManager extends ResourceManager<GroupedLightResolvable> {
+	public readonly cache: Collection<string, GroupedLight>;
+
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		this.cache = new Collection();
 	}
 
 	/**
@@ -15,23 +18,9 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 	 * @internal
 	 */
 	public _add(data: ApiGroupedLight): GroupedLight {
-		const groupedLight = this.cache.ensure(data.id, () => {
-			return new GroupedLight(this.bridge);
-		});
+		const groupedLight = this.cache.ensure(data.id, () => new GroupedLight(this.bridge));
 		groupedLight._patch(data);
-
 		return groupedLight;
-	}
-
-	/**
-	 * Resolves a Grouped Light resolvable
-	 */
-	public resolve(resolvable: GroupedLightResolvable): GroupedLight {
-		if (typeof resolvable === 'string') {
-			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
-		} else if (resolvable instanceof Light) {
-			return this.cache.get(resolvable.id);
-		}
 	}
 
 	/**

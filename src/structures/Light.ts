@@ -2,15 +2,15 @@ import type { TemperatureLight } from './TemperatureLight';
 import type { ColorLight } from './ColorLight';
 import type { DimmableLight } from './DimmableLight';
 import type { GradientLight } from './GradientLight';
-import { ResourceType } from './Resource';
-import { NamedResource } from './NamedResource';
-import type { SceneResolvable } from './Scene';
+import { Resource, ResourceType } from './Resource';
 import { LightCapabilities } from './LightCapabilities';
 import type { DeepPartial, TransitionOptions } from '../types/common';
 import { LightZoneManager } from '../managers/LightZoneManager';
 import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import type { Room } from './Room';
+import type { Bridge } from '../bridge/Bridge';
+import { Util } from '../util/Util';
 
 export type LightResolvable = Light | string;
 
@@ -21,29 +21,29 @@ export interface LightStateOptions {
 /**
  * Represents a hue light
  */
-export class Light extends NamedResource {
+export class Light extends Resource<ApiLight> {
 	type = ResourceType.Light;
 	/**
 	 * The capabilities of this light
 	 */
-	public capabilities = new LightCapabilities();
+	public capabilities: LightCapabilities;
 	/**
 	 * A manager with all the zones this light belongs too
 	 */
-	public zones = new LightZoneManager(this);
-	/**
-	 * The current on state of this light
-	 */
-	public on: boolean;
+	public zones: LightZoneManager;
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: ApiLight): void {
-		super._patch(data);
-		this.capabilities._patch(data);
-		if ('on' in data) this.on = data.on.on;
+	constructor(bridge: Bridge) {
+		super(bridge);
+		this.capabilities = new LightCapabilities(this);
+		this.zones = new LightZoneManager(this);
+	}
+
+	get id(): string {
+		return this.data.id;
+	}
+
+	get name(): string {
+		return this.data.metadata?.name;
 	}
 
 	/**
@@ -60,19 +60,15 @@ export class Light extends NamedResource {
 		return this.room?.id;
 	}
 
-	/**
-	 * Edits the state of the Light
-	 */
-	public async state(state: LightStateOptions, transition: TransitionOptions): Promise<void> {
-		await this._edit({ on: { on: state.on ?? true } }, transition);
+	get on(): boolean {
+		return this.data.on?.on;
 	}
 
 	/**
-	 * Applies a scene to this Light
+	 * Edits the state of the Light
 	 */
-	public async applyScene(resolvable: SceneResolvable, transitionOptions?: TransitionOptions): Promise<void> {
-		const scene = this.bridge.scenes.resolve(resolvable);
-		await scene.actions.cache.get(this.id)?.apply(transitionOptions);
+	public async state(state: LightStateOptions, transition?: TransitionOptions): Promise<void> {
+		await this._edit(Util.parseLightStateOptions(state, this), transition);
 	}
 
 	/**
@@ -112,10 +108,11 @@ export class Light extends NamedResource {
 		return Boolean(this.type === ResourceType.GradientLight);
 	}
 
-	protected async _edit(data: DeepPartial<ApiLight>, transition: TransitionOptions): Promise<void> {
+	protected async _edit(data: DeepPartial<ApiLight>, transition?: TransitionOptions): Promise<void> {
+		console.log(data);
 		await this.bridge.lights.rest.put(Routes.light(this.id), {
 			...data,
-			dynamics: { duration: transition.duration },
+			dynamics: { duration: transition?.duration },
 		});
 	}
 }

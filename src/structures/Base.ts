@@ -1,13 +1,16 @@
 import type { Bridge } from '../bridge/Bridge';
+import { Util } from '../util/Util';
 
 /**
  * The base for all Structures
  */
-export abstract class Base {
+export class Base<D extends object> {
 	/**
 	 * The bridge that this resource belongs too
 	 */
 	public readonly bridge: Bridge;
+
+	public data: D;
 
 	public constructor(bridge: Bridge) {
 		this.bridge = bridge;
@@ -17,14 +20,16 @@ export abstract class Base {
 	 * Patches the resource with received data
 	 * @internal
 	 */
-	public abstract _patch(data: any): void;
+	public _patch(data: D) {
+		this.data = Util.mergeDeep(this.data ? Util.clone(this.data) : {}, data);
+	}
 
 	/**
 	 * Clones the resource
 	 * @internal
 	 */
 	public _clone(): this {
-		return Object.assign(Object.create(this), this);
+		return Util.clone(this);
 	}
 
 	/**

@@ -18,7 +18,7 @@ export class Event extends EventSource {
 	onmessage = (message: MessageEvent) => {
 		const data = JSON.parse(message.data);
 		data.forEach((event) => {
-			const deviceType = String(event.data[0].type).replaceAll('_', '');
+			const deviceType = String(event.data[0].type).replace(/_/g, '');
 			const eventType = String(event.type);
 
 			const action = this.bridge.actions[deviceType + eventType];

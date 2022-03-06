@@ -3,10 +3,14 @@ import { ResourceManager } from './ResourceManager';
 import { Scene, SceneResolvable } from '../structures/Scene';
 import type { ApiScene } from '../types/api';
 import { Routes } from '../util/Routes';
+import Collection from '@discordjs/collection';
 
-export class SceneManager extends ResourceManager<Scene> {
+export class SceneManager extends ResourceManager<SceneResolvable> {
+	public readonly cache: Collection<string, Scene>;
+
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		this.cache = new Collection();
 	}
 
 	/**
@@ -14,23 +18,9 @@ export class SceneManager extends ResourceManager<Scene> {
 	 * @internal
 	 */
 	public _add(data: ApiScene): Scene {
-		const scene = this.cache.ensure(data.id, () => {
-			return new Scene(this.bridge);
-		});
+		const scene = this.cache.ensure(data.id, () => new Scene(this.bridge));
 		scene._patch(data);
-
 		return scene;
-	}
-
-	/**
-	 * Resolves a Scene resolvable
-	 */
-	public resolve(resolvable: SceneResolvable): Scene {
-		if (typeof resolvable === 'string') {
-			return this.cache.find((scene) => scene.name === resolvable || scene.id === resolvable);
-		} else if (resolvable instanceof Scene) {
-			return this.cache.find((scene) => scene.id === resolvable.id);
-		}
 	}
 
 	/**

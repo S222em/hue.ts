@@ -1,5 +1,5 @@
 import { XyPoint } from '../color/XyPoint';
-import type { ApiLight } from '../types/api';
+import type { Light } from './Light';
 
 const GamutA = {
 	red: new XyPoint({
@@ -46,67 +46,57 @@ const GamutC = {
 	}),
 };
 
+function resolveGamut(gamutType: 'A' | 'B' | 'C') {
+	return gamutType === 'A' ? GamutA : gamutType === 'B' ? GamutB : GamutC;
+}
+
 /**
  * Represents the capabilities of a Light
  */
 export class LightCapabilities {
-	/**
-	 * The max amount of gradient points the light is able to display
-	 */
-	public maxGradientPoints?: number;
-	/**
-	 * The max amount of red intensity the light is able to display
-	 */
-	public red?: XyPoint;
-	/**
-	 * The max amount of green intensity the light is able to display
-	 */
-	public green?: XyPoint;
-	/**
-	 * The max amount of blue intensity the light is able to display
-	 */
-	public blue?: XyPoint;
-	/**
-	 * The max temperature the light is able to display
-	 */
-	public maxTemperature?: number;
-	/**
-	 * The min temperature the light is able to display
-	 */
-	public minTemperature?: number;
-	/**
-	 * The min brightness level the light is able to display
-	 */
-	public minBrightnessLevel?: number;
+	public readonly light: Light;
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: Pick<ApiLight, 'gradient' | 'color' | 'color_temperature' | 'dimming'>) {
-		if ('gradient' in data) {
-			if ('points_capable' in data.gradient) this.maxGradientPoints = data.gradient.points_capable;
-		}
-		if ('color' in data) {
-			if ('gamut' in data.color) {
-				this.red = new XyPoint(data.color.gamut.red);
-				this.green = new XyPoint(data.color.gamut.green);
-				this.blue = new XyPoint(data.color.gamut.blue);
-			} else if ('gamut_type' in data.color) {
-				const gamut = data.color.gamut_type === 'A' ? GamutA : data.color.gamut_type === 'B' ? GamutB : GamutC;
-				this.red = gamut.red;
-				this.green = gamut.green;
-				this.blue = gamut.blue;
-			}
-		}
-		if ('color_temperature' in data) {
-			if ('mirek_schema' in data.color_temperature) {
-				this.maxTemperature = data.color_temperature.mirek_schema.mirek_maximum;
-				this.minTemperature = data.color_temperature.mirek_schema.mirek_minimum;
-			}
-		}
-		if ('dimming' in data) {
-			if ('min_dim_level' in data.dimming) this.minBrightnessLevel = data.dimming.min_dim_level;
-		}
+	constructor(light: Light) {
+		this.light = light;
+	}
+
+	get maxGradientPoints(): number {
+		return this.light.isGradient() ? this.light.data.gradient?.points_capable : null;
+	}
+
+	get red(): XyPoint {
+		return this.light.isColor()
+			? this.light.data.color?.gamut
+				? this.light.data.color.gamut.red
+				: resolveGamut(this.light.data.color?.gamut_type).red
+			: null;
+	}
+
+	get green(): XyPoint {
+		return this.light.isColor()
+			? this.light.data.color?.gamut
+				? this.light.data.color.gamut.green
+				: resolveGamut(this.light.data.color?.gamut_type).green
+			: null;
+	}
+
+	get blue(): XyPoint {
+		return this.light.isColor()
+			? this.light.data.color?.gamut
+				? this.light.data.color.gamut.blue
+				: resolveGamut(this.light.data.color?.gamut_type).blue
+			: null;
+	}
+
+	get maxTemperature(): number {
+		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_maximum : null;
+	}
+
+	get minTemperature(): number {
+		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_minimum : null;
+	}
+
+	get minBrightnessLevel(): number {
+		return this.light.isDimmable() ? this.light.data.dimming?.min_dim_level : null;
 	}
 }

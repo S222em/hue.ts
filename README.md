@@ -236,7 +236,7 @@ await zone.state({ on: true }, { duration: 5000 })
 bridge.scenes.cache.forEach((scene) => console.log(scene.id, scene.group.name, scene.name));
 ```
 
-## Getting a specific zone in the cache
+## Getting a specific scene in the cache
 
 ```js
 // By id
@@ -260,20 +260,6 @@ await group.applyScene(scene);
 await group.applyScene('some-id');
 // Or by name
 await group.applyScene('some-name');
-```
-
-## Partially applying a scene
-
-You can partially apply a scene with a **SceneAction** or a **Light** instance.
-
-```js
-// This will only apply the scene to this light and not the whole group
-await light.applyScene(scene);
-
-// Or
-// Get the action for the light
-const action = scene.actions.cache.get(light.id);
-await action.apply({ duration: 2000 });
 ```
 
 # Colors

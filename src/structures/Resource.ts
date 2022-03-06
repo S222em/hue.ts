@@ -15,21 +15,9 @@ export enum ResourceType {
 /**
  * Represents a Resource
  */
-export abstract class Resource extends Base {
+export abstract class Resource<R extends object> extends Base<R> {
 	/**
 	 * The type of this Resource
 	 */
 	public abstract type: ResourceType;
-	/**
-	 * The id of this Resource
-	 */
-	public id: string;
-
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: { id?: string; metadata?: { name?: string } }) {
-		if ('id' in data) this.id = data.id;
-	}
 }

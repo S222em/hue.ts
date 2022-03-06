@@ -3,6 +3,8 @@ import { ResourceType } from './Resource';
 import type { ApiRoom } from '../types/api';
 import { Routes } from '../util/Routes';
 
+export type RoomResolvable = Room | string;
+
 /**
  * Represents a hue Room
  */

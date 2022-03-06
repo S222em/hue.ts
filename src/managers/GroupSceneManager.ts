@@ -1,12 +1,17 @@
+import { Manager } from './Manager';
+import type { Scene, SceneResolvable } from '../structures/Scene';
+import type { Group } from '../structures/Group';
 import type Collection from '@discordjs/collection';
-import type { Scene } from '../structures/Scene';
-import { GroupResourceManager } from './GroupResourceManager';
 
-export class GroupSceneManager extends GroupResourceManager {
-	/**
-	 * The cache of this manager
-	 */
+export class GroupSceneManager extends Manager<SceneResolvable> {
+	public readonly group: Group;
+
+	constructor(group: Group) {
+		super();
+		this.group = group;
+	}
+
 	get cache(): Collection<string, Scene> {
-		return this.group.bridge.scenes.cache.filter((scene) => scene.group?.id === this.group.id);
+		return this.group.bridge.scenes.cache.filter((scene) => scene.groupId === this.group.id);
 	}
 }

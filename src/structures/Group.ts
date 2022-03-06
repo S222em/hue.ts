@@ -1,10 +1,11 @@
-import { NamedResource } from './NamedResource';
 import type { GroupedLight } from './GroupedLight';
-import type { SceneResolvable } from './Scene';
+import type { SceneApplyOptions, SceneResolvable } from './Scene';
 import { GroupSceneManager } from '../managers/GroupSceneManager';
 import { GroupLightManager } from '../managers/GroupLightManager';
 import type { DeepPartial, TransitionOptions } from '../types/common';
 import type { ApiGroup } from '../types/api';
+import { Resource } from './Resource';
+import type { Bridge } from '../bridge/Bridge';
 
 export type GroupResolvable = Group | 'string';
 
@@ -19,34 +20,22 @@ export interface GroupStateOptions {
 /**
  * Represents a hue room/zone
  */
-export abstract class Group extends NamedResource {
-	/**
-	 * A manager with all the scenes that belong to this Group
-	 */
-	public scenes: GroupSceneManager = new GroupSceneManager(this);
-	/**
-	 * A manager with all the lights that belong to this Group
-	 */
-	public lights: GroupLightManager = new GroupLightManager(this);
-	/**
-	 * All the ids of the Lights that belong to this Group
-	 */
-	public lightIds: Array<string>;
-	/**
-	 * The id of the Grouped Light that belongs to this Group
-	 */
-	public groupedLightId: string;
+export abstract class Group extends Resource<ApiGroup> {
+	public readonly scenes: GroupSceneManager;
+	public readonly lights: GroupLightManager;
 
-	/**
-	 * Patches the resource with received data
-	 * @internal
-	 */
-	public _patch(data: ApiGroup) {
-		super._patch(data);
-		if ('services' in data) {
-			this.lightIds = data.services.filter((service) => service.rtype === 'light').map((service) => service.rid);
-			this.groupedLightId = data.services.find((service) => service.rtype === 'grouped_light')?.rid;
-		}
+	constructor(bridge: Bridge) {
+		super(bridge);
+		this.scenes = new GroupSceneManager(this);
+		this.lights = new GroupLightManager(this);
+	}
+
+	get id(): string {
+		return this.data.id;
+	}
+
+	get name(): string {
+		return this.data.metadata?.name;
 	}
 
 	/**
@@ -54,6 +43,10 @@ export abstract class Group extends NamedResource {
 	 */
 	get groupedLight(): GroupedLight {
 		return this.bridge.groupedLights.cache.get(this.groupedLightId);
+	}
+
+	get groupedLightId(): string {
+		return this.data.services.find((service) => service.rtype === 'grouped_light')?.rid;
 	}
 
 	/**
@@ -66,7 +59,7 @@ export abstract class Group extends NamedResource {
 	/**
 	 * Edits the state of the Group
 	 */
-	public async state(state: GroupStateOptions, transitionOptions: TransitionOptions) {
+	public async state(state: GroupStateOptions, transitionOptions?: TransitionOptions) {
 		for await (const light of this.lights.cache.values()) {
 			await light.state(state, transitionOptions);
 		}
@@ -75,10 +68,9 @@ export abstract class Group extends NamedResource {
 	/**
 	 * Applies a scene to this group
 	 */
-	public async applyScene(resolvable: SceneResolvable, transitionOptions: TransitionOptions) {
+	public async applyScene(resolvable: SceneResolvable, options?: SceneApplyOptions) {
 		const scene = this.bridge.scenes.resolve(resolvable);
-		if (!this.scenes.cache.has(scene.id)) return;
-		await scene?.apply(transitionOptions);
+		await scene?.apply(options);
 	}
 
 	protected abstract _edit(data: DeepPartial<ApiGroup>): Promise<void>;

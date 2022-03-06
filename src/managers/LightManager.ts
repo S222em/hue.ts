@@ -7,10 +7,14 @@ import { DimmableLight } from '../structures/DimmableLight';
 import { ResourceManager } from './ResourceManager';
 import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
+import Collection from '@discordjs/collection';
 
-export class LightManager extends ResourceManager<Light> {
+export class LightManager extends ResourceManager<LightResolvable> {
+	public readonly cache: Collection<string, Light>;
+
 	public constructor(bridge: Bridge) {
 		super(bridge, { maxRequests: 1, perMilliseconds: 100 });
+		this.cache = new Collection();
 	}
 
 	/**
@@ -26,21 +30,7 @@ export class LightManager extends ResourceManager<Light> {
 			else return new Light(this.bridge);
 		});
 		light._patch(data);
-
 		return light;
-	}
-
-	/**
-	 * Resolves a Light resolvable
-	 */
-	public resolve(resolvable: LightResolvable): Light {
-		if (typeof resolvable === 'string') {
-			if (this.cache.has(resolvable)) return this.cache.get(resolvable);
-			const find = this.cache.find((light) => light.name === resolvable);
-			if (find) return find;
-		} else if (resolvable instanceof Light) {
-			return this.cache.get(resolvable.id);
-		}
 	}
 
 	/**

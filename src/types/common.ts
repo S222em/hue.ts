@@ -1,5 +1,5 @@
 export interface TransitionOptions {
-	duration: number;
+	duration?: number;
 }
 
 export type DeepPartial<T> = T extends object
