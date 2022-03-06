@@ -17,10 +17,6 @@ export class LightManager extends ResourceManager<LightResolvable> {
 		this.cache = new Collection();
 	}
 
-	/**
-	 * Patches/creates a Light
-	 * @internal
-	 */
 	public _add(data: ApiLight): Light {
 		const light = this.cache.ensure(data.id, () => {
 			if ('gradient' in data) return new GradientLight(this.bridge);
@@ -33,9 +29,6 @@ export class LightManager extends ResourceManager<LightResolvable> {
 		return light;
 	}
 
-	/**
-	 * Syncs all the Lights of the bridge with this manager
-	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.light());
 		const data = response.data.data as ApiLight[];

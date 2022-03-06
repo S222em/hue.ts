@@ -6,9 +6,6 @@ export interface GradientLightStateOptions extends ColorLightStateOptions {
 	gradient: string[];
 }
 
-/**
- * Represents a hue light capable of gradient
- */
 export class GradientLight extends ColorLight {
 	type = ResourceType.GradientLight;
 
@@ -24,9 +21,6 @@ export class GradientLight extends ColorLight {
 		});
 	}
 
-	/**
-	 * Edits the state of the light
-	 */
 	public async state(state: GradientLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}

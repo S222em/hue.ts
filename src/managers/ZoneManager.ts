@@ -13,19 +13,12 @@ export class ZoneManager extends ResourceManager<ZoneResolvable> {
 		this.cache = new Collection();
 	}
 
-	/**
-	 * Patches/creates a Zone
-	 * @internal
-	 */
 	public _add(data: ApiZone): Zone {
 		const zone = this.cache.ensure(data.id, () => new Zone(this.bridge));
 		zone._patch(data);
 		return zone;
 	}
 
-	/**
-	 * Syncs all the Zones of the bridge with this manager
-	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.zone());
 		const data = response.data.data as ApiZone[];

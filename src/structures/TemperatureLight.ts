@@ -6,9 +6,6 @@ export interface TemperatureLightStateOptions extends DimmableLightStateOptions 
 	temperature: number;
 }
 
-/**
- * Represents a hue Light capable of temperature
- */
 export class TemperatureLight extends DimmableLight {
 	type = ResourceType.TemperatureLight;
 
@@ -16,9 +13,6 @@ export class TemperatureLight extends DimmableLight {
 		return this.data.color_temperature?.mirek;
 	}
 
-	/**
-	 * Edits the state of the Light
-	 */
 	public async state(state: TemperatureLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}

@@ -13,19 +13,12 @@ export class RoomManager extends ResourceManager<RoomResolvable> {
 		this.cache = new Collection();
 	}
 
-	/**
-	 * Patches/creates a Room
-	 * @internal
-	 */
 	public _add(data: ApiRoom): Room {
 		const room = this.cache.ensure(data.id, () => new Room(this.bridge));
 		room._patch(data);
 		return room;
 	}
 
-	/**
-	 * Syncs all the Rooms of the bridge with this manager
-	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.room());
 		const data = response.data.data as ApiRoom[];

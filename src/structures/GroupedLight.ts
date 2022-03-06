@@ -11,9 +11,6 @@ export interface GroupedLightStateOptions {
 	on?: boolean;
 }
 
-/**
- * Represents a hue Grouped Light
- */
 export class GroupedLight extends Resource<ApiGroupedLight> {
 	type = ResourceType.GroupedLight;
 
@@ -21,9 +18,6 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		return this.data.id;
 	}
 
-	/**
-	 * The Group this Grouped Light belongs to
-	 */
 	get group(): Group {
 		const find = (group: Group) => group.groupedLight?.id === this.id;
 
@@ -34,9 +28,6 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		if (zone) return zone;
 	}
 
-	/**
-	 * The id of the Group this Grouped Light belongs to
-	 */
 	get groupId(): string {
 		return this.group?.id;
 	}
@@ -45,9 +36,6 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		return this.data.on?.on;
 	}
 
-	/**
-	 * Edits the state of the Grouped Light
-	 */
 	public async state(state: GroupedLightStateOptions) {
 		await this._edit(Util.parseGroupedLightStateOptions(state));
 	}

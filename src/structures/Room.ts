@@ -5,9 +5,6 @@ import { Routes } from '../util/Routes';
 
 export type RoomResolvable = Room | string;
 
-/**
- * Represents a hue Room
- */
 export class Room extends Group {
 	type = ResourceType.Room;
 

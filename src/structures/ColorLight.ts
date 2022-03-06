@@ -8,14 +8,8 @@ export interface ColorLightStateOptions extends TemperatureLightStateOptions {
 	color?: string;
 }
 
-/**
- * Represents a hue light capable of colors
- */
 export class ColorLight extends TemperatureLight {
 	type = ResourceType.ColorLight;
-	/**
-	 * The current color of the light
-	 */
 	public colorResolver: ColorResolver;
 
 	constructor(bridge: Bridge) {

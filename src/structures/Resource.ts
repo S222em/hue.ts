@@ -12,12 +12,6 @@ export enum ResourceType {
 	Scene = 'scene',
 }
 
-/**
- * Represents a Resource
- */
 export abstract class Resource<R extends object> extends Base<R> {
-	/**
-	 * The type of this Resource
-	 */
 	public abstract type: ResourceType;
 }

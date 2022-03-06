@@ -13,19 +13,12 @@ export class GroupedLightManager extends ResourceManager<GroupedLightResolvable>
 		this.cache = new Collection();
 	}
 
-	/**
-	 * Patches/creates a Grouped Light
-	 * @internal
-	 */
 	public _add(data: ApiGroupedLight): GroupedLight {
 		const groupedLight = this.cache.ensure(data.id, () => new GroupedLight(this.bridge));
 		groupedLight._patch(data);
 		return groupedLight;
 	}
 
-	/**
-	 * Syncs all the Grouped Lights of the bridge with this manager
-	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.groupedLight());
 		const data = response.data.data as ApiGroupedLight[];

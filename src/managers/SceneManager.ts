@@ -13,19 +13,12 @@ export class SceneManager extends ResourceManager<SceneResolvable> {
 		this.cache = new Collection();
 	}
 
-	/**
-	 * Patches/creates a Scene
-	 * @internal
-	 */
 	public _add(data: ApiScene): Scene {
 		const scene = this.cache.ensure(data.id, () => new Scene(this.bridge));
 		scene._patch(data);
 		return scene;
 	}
 
-	/**
-	 * Syncs all the Scenes of the bridge with this manager
-	 */
 	public async sync(): Promise<boolean | void> {
 		const response = await this.rest.get(Routes.scene());
 		const data = response.data.data as ApiScene[];

@@ -17,9 +17,6 @@ export interface GroupStateOptions {
 	gradient?: string[];
 }
 
-/**
- * Represents a hue room/zone
- */
 export abstract class Group extends Resource<ApiGroup> {
 	public readonly scenes: GroupSceneManager;
 	public readonly lights: GroupLightManager;
@@ -38,9 +35,6 @@ export abstract class Group extends Resource<ApiGroup> {
 		return this.data.metadata?.name;
 	}
 
-	/**
-	 * The groupedLight belonging to this Group
-	 */
 	get groupedLight(): GroupedLight {
 		return this.bridge.groupedLights.cache.get(this.groupedLightId);
 	}
@@ -49,25 +43,16 @@ export abstract class Group extends Resource<ApiGroup> {
 		return this.data.services.find((service) => service.rtype === 'grouped_light')?.rid;
 	}
 
-	/**
-	 * The current on state of the Group
-	 */
 	get on(): boolean {
 		return this.groupedLight.on;
 	}
 
-	/**
-	 * Edits the state of the Group
-	 */
 	public async state(state: GroupStateOptions, transitionOptions?: TransitionOptions) {
 		for await (const light of this.lights.cache.values()) {
 			await light.state(state, transitionOptions);
 		}
 	}
 
-	/**
-	 * Applies a scene to this group
-	 */
 	public async applyScene(resolvable: SceneResolvable, options?: SceneApplyOptions) {
 		const scene = this.bridge.scenes.resolve(resolvable);
 		await scene?.apply(options);

@@ -50,9 +50,6 @@ function resolveGamut(gamutType: 'A' | 'B' | 'C') {
 	return gamutType === 'A' ? GamutA : gamutType === 'B' ? GamutB : GamutC;
 }
 
-/**
- * Represents the capabilities of a Light
- */
 export class LightCapabilities {
 	public readonly light: Light;
 

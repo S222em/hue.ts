@@ -20,9 +20,6 @@ export interface SceneApplyOptions extends TransitionOptions {
 	brightness?: number;
 }
 
-/**
- * Represents a hue Scene
- */
 export class Scene extends Base<ApiScene> {
 	type = ResourceType.Scene;
 	public readonly actions: SceneActionManager;
@@ -55,9 +52,6 @@ export class Scene extends Base<ApiScene> {
 		return this.data.group?.rid;
 	}
 
-	/**
-	 * Applies this scene
-	 */
 	public async apply(options?: SceneApplyOptions) {
 		await this._edit({
 			recall: {
@@ -68,9 +62,6 @@ export class Scene extends Base<ApiScene> {
 		});
 	}
 
-	/**
-	 * Edits the scene with new data e.g. new name
-	 */
 	public async edit(options: SceneOptions) {
 		await this._edit(Util.parseSceneOptions(options, this.bridge));
 	}
