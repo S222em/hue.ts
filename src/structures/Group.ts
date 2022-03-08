@@ -4,8 +4,8 @@ import { GroupSceneManager } from '../managers/GroupSceneManager';
 import { GroupLightManager } from '../managers/GroupLightManager';
 import type { DeepPartial, TransitionOptions } from '../types/common';
 import type { ApiGroup } from '../types/api';
-import { Resource } from './Resource';
 import type { Bridge } from '../bridge/Bridge';
+import { NamedResource } from './NamedResource';
 
 export type GroupResolvable = Group | 'string';
 
@@ -17,7 +17,7 @@ export interface GroupStateOptions {
 	gradient?: string[];
 }
 
-export abstract class Group extends Resource<ApiGroup> {
+export abstract class Group extends NamedResource<ApiGroup> {
 	public readonly scenes: GroupSceneManager;
 	public readonly lights: GroupLightManager;
 
@@ -25,14 +25,6 @@ export abstract class Group extends Resource<ApiGroup> {
 		super(bridge);
 		this.scenes = new GroupSceneManager(this);
 		this.lights = new GroupLightManager(this);
-	}
-
-	get id(): string {
-		return this.data.id;
-	}
-
-	get name(): string {
-		return this.data.metadata?.name;
 	}
 
 	get groupedLight(): GroupedLight {

@@ -4,10 +4,10 @@ import type { DeepPartial, TransitionOptions } from '../types/common';
 import type { ApiScene } from '../types/api';
 import { Routes } from '../util/Routes';
 import type { SceneActionOptions } from './SceneAction';
-import { Base } from './Base';
 import type { Bridge } from '../bridge/Bridge';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { Util } from '../util/Util';
+import { NamedResource } from './NamedResource';
 
 export type SceneResolvable = Scene | string;
 
@@ -20,7 +20,7 @@ export interface SceneApplyOptions extends TransitionOptions {
 	brightness?: number;
 }
 
-export class Scene extends Base<ApiScene> {
+export class Scene extends NamedResource<ApiScene> {
 	type = ResourceType.Scene;
 	public readonly actions: SceneActionManager;
 
@@ -34,14 +34,6 @@ export class Scene extends Base<ApiScene> {
 		for (const action of data.actions || []) {
 			this.actions._add(action);
 		}
-	}
-
-	get id(): string {
-		return this.data.id;
-	}
-
-	get name(): string {
-		return this.data.metadata?.name;
 	}
 
 	get group(): Group {

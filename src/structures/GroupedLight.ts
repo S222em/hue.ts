@@ -40,6 +40,10 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		await this._edit(Util.parseGroupedLightStateOptions(state));
 	}
 
+	public async toggle(): Promise<void> {
+		await this.state({ on: !this.on });
+	}
+
 	protected async _edit(data: DeepPartial<ApiGroupedLight>): Promise<void> {
 		await this.bridge.groupedLights.rest.put(Routes.groupedLight(this.id), data);
 	}

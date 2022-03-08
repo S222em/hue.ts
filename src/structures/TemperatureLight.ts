@@ -3,7 +3,7 @@ import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
 
 export interface TemperatureLightStateOptions extends DimmableLightStateOptions {
-	temperature: number;
+	temperature?: number;
 }
 
 export class TemperatureLight extends DimmableLight {
@@ -15,5 +15,12 @@ export class TemperatureLight extends DimmableLight {
 
 	public async state(state: TemperatureLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
+	}
+
+	public async setTemperature(
+		temperature: TemperatureLightStateOptions['temperature'],
+		transitionOptions: TransitionOptions,
+	): Promise<void> {
+		await this.state({ temperature }, transitionOptions);
 	}
 }

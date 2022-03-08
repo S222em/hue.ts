@@ -16,4 +16,11 @@ export class DimmableLight extends Light {
 	public async state(state: DimmableLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
+
+	public async setBrightness(
+		brightness: DimmableLightStateOptions['brightness'],
+		transitionOptions?: TransitionOptions,
+	): Promise<void> {
+		await this.state({ brightness }, transitionOptions);
+	}
 }

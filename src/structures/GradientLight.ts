@@ -24,4 +24,11 @@ export class GradientLight extends ColorLight {
 	public async state(state: GradientLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
+
+	public async setGradient(
+		gradient: GradientLightStateOptions['gradient'],
+		transitionOptions?: TransitionOptions,
+	): Promise<void> {
+		await this.state({ gradient }, transitionOptions);
+	}
 }

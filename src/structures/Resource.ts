@@ -12,6 +12,12 @@ export enum ResourceType {
 	Scene = 'scene',
 }
 
-export abstract class Resource<R extends object> extends Base<R> {
+export abstract class Resource<R extends object & { id: string }> extends Base<R> {
 	public abstract type: ResourceType;
+
+	get id(): string {
+		return this.data.id;
+	}
+
+	public abstract fetch(): Promise<Resource<any>>;
 }

@@ -27,10 +27,11 @@ export class ColorLight extends TemperatureLight {
 		);
 	}
 
-	/**
-	 * Edits the state of the light
-	 */
 	public async state(state: ColorLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
+	}
+
+	public async setColor(color: ColorLightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ color }, transitionOptions);
 	}
 }
