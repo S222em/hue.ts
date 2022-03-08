@@ -118,11 +118,11 @@ export class Bridge extends EventEmitter {
 		this.actions = new ActionManager(this);
 
 		setImmediate(async () => {
-			await this.lights.sync();
-			await this.groupedLights.sync();
-			await this.rooms.sync();
-			await this.zones.sync();
-			await this.scenes.sync();
+			await this.lights.fetch();
+			await this.groupedLights.fetch();
+			await this.rooms.fetch();
+			await this.zones.fetch();
+			await this.scenes.fetch();
 			this.emit(Events.Ready, this);
 		});
 	}

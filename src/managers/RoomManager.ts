@@ -19,8 +19,8 @@ export class RoomManager extends ResourceManager<RoomResolvable> {
 		return room;
 	}
 
-	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.room());
+	public async fetch(id?: string): Promise<boolean | void> {
+		const response = await this.rest.get(Routes.room(id));
 		const data = response.data.data as ApiRoom[];
 		data.forEach((data) => {
 			this._add(data);

@@ -2,7 +2,7 @@ import type { TemperatureLight } from './TemperatureLight';
 import type { ColorLight } from './ColorLight';
 import type { DimmableLight } from './DimmableLight';
 import type { GradientLight } from './GradientLight';
-import { Resource, ResourceType } from './Resource';
+import { ResourceType } from './Resource';
 import { LightCapabilities } from './LightCapabilities';
 import type { DeepPartial, TransitionOptions } from '../types/common';
 import { LightZoneManager } from '../managers/LightZoneManager';
@@ -11,6 +11,7 @@ import { Routes } from '../util/Routes';
 import type { Room } from './Room';
 import type { Bridge } from '../bridge/Bridge';
 import { Util } from '../util/Util';
+import { NamedResource } from './NamedResource';
 
 export type LightResolvable = Light | string;
 
@@ -18,7 +19,7 @@ export interface LightStateOptions {
 	on?: boolean;
 }
 
-export class Light extends Resource<ApiLight> {
+export class Light extends NamedResource<ApiLight> {
 	type = ResourceType.Light;
 	public capabilities: LightCapabilities;
 	public zones: LightZoneManager;
@@ -27,14 +28,6 @@ export class Light extends Resource<ApiLight> {
 		super(bridge);
 		this.capabilities = new LightCapabilities(this);
 		this.zones = new LightZoneManager(this);
-	}
-
-	get id(): string {
-		return this.data.id;
-	}
-
-	get name(): string {
-		return this.data.metadata?.name;
 	}
 
 	get room(): Room {
@@ -49,8 +42,17 @@ export class Light extends Resource<ApiLight> {
 		return this.data.on?.on;
 	}
 
-	public async state(state: LightStateOptions, transition?: TransitionOptions): Promise<void> {
-		await this._edit(Util.parseLightStateOptions(state, this), transition);
+	public async state(state: LightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
+		await this._edit(Util.parseLightStateOptions(state, this), transitionOptions);
+	}
+
+	public async toggle(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: !this.on }, transitionOptions);
+	}
+
+	public async fetch(): Promise<Light> {
+		await this.bridge.lights.fetch(this.id);
+		return this;
 	}
 
 	public isDimmable(): this is DimmableLight | TemperatureLight | ColorLight | GradientLight {
@@ -79,7 +81,6 @@ export class Light extends Resource<ApiLight> {
 	}
 
 	protected async _edit(data: DeepPartial<ApiLight>, transition?: TransitionOptions): Promise<void> {
-		console.log(data);
 		await this.bridge.lights.rest.put(Routes.light(this.id), {
 			...data,
 			dynamics: { duration: transition?.duration },

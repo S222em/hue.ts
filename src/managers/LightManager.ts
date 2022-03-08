@@ -29,8 +29,8 @@ export class LightManager extends ResourceManager<LightResolvable> {
 		return light;
 	}
 
-	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.light());
+	public async fetch(id?: string): Promise<boolean | void> {
+		const response = await this.rest.get(Routes.light(id));
 		const data = response.data.data as ApiLight[];
 		data.forEach((data) => {
 			this._add(data);

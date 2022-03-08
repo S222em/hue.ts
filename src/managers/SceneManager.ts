@@ -19,8 +19,8 @@ export class SceneManager extends ResourceManager<SceneResolvable> {
 		return scene;
 	}
 
-	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.scene());
+	public async fetch(id?: string): Promise<boolean | void> {
+		const response = await this.rest.get(Routes.scene(id));
 		const data = response.data.data as ApiScene[];
 		data.forEach((data) => {
 			this._add(data);

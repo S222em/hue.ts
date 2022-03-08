@@ -19,8 +19,8 @@ export class ZoneManager extends ResourceManager<ZoneResolvable> {
 		return zone;
 	}
 
-	public async sync(): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.zone());
+	public async fetch(id?: string): Promise<boolean | void> {
+		const response = await this.rest.get(Routes.zone(id));
 		const data = response.data.data as ApiZone[];
 		data.forEach((data) => {
 			this._add(data);
