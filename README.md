@@ -91,13 +91,17 @@ npm install hue.ts
 Let's get started by creating new **Bridge** instance
 
 ```js
-const { Bridge } = require('hue.ts');
+const { Bridge, BridgeResourceType } = require('hue.ts');
 
 const bridge = new Bridge({
   // You can find the local ip of your bridge in the Hue app -> Settings -> My Hue system -> (Select your bridge)
   ip: 'your-ip-goes-here',
   // You can read about creating a key here https://developers.meethue.com/develop/get-started-2/
-  applicationKey: 'your-applicationKey-goes-here'
+  applicationKey: 'your-applicationKey-goes-here',
+  // Select the resources you need, when not selected, the resource will not be fetched (for faster startups)
+  resources: [BridgeResourceType.Lights],
+  // For all resources
+  // resources: Object.values(BridgeResourceType)
 });
 ```
 
