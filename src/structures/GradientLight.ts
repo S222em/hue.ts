@@ -1,10 +1,7 @@
-import { ColorLight, ColorLightStateOptions } from './ColorLight';
+import { ColorLight } from './ColorLight';
 import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
-
-export interface GradientLightStateOptions extends ColorLightStateOptions {
-	gradient: string[];
-}
+import { LightStateOptions } from '../transformers/LightStateTransformer';
 
 export class GradientLight extends ColorLight {
 	type = ResourceType.GradientLight;
@@ -21,12 +18,12 @@ export class GradientLight extends ColorLight {
 		});
 	}
 
-	public async state(state: GradientLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
+	public async state(state: LightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
 	public async setGradient(
-		gradient: GradientLightStateOptions['gradient'],
+		gradient: LightStateOptions['gradient'],
 		transitionOptions?: TransitionOptions,
 	): Promise<void> {
 		await this.state({ gradient }, transitionOptions);

@@ -10,14 +10,10 @@ import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import type { Room } from './Room';
 import type { Bridge } from '../bridge/Bridge';
-import { Util } from '../util/Util';
 import { NamedResource } from './NamedResource';
+import { LightStateOptions, lightStateTransformer } from '../transformers/LightStateTransformer';
 
 export type LightResolvable = Light | string;
-
-export interface LightStateOptions {
-	on?: boolean;
-}
 
 export class Light extends NamedResource<ApiLight> {
 	type = ResourceType.Light;
@@ -42,8 +38,8 @@ export class Light extends NamedResource<ApiLight> {
 		return this.data.on?.on;
 	}
 
-	public async state(state: LightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
-		await this._edit(Util.parseLightStateOptions(state, this), transitionOptions);
+	public async state(state: Pick<LightStateOptions, 'on'>, transitionOptions?: TransitionOptions): Promise<void> {
+		await this._edit(lightStateTransformer(this, state), transitionOptions);
 	}
 
 	public async toggle(transitionOptions?: TransitionOptions): Promise<void> {

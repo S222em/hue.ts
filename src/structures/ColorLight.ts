@@ -1,12 +1,9 @@
 import { ColorResolver } from '../color/ColorResolver';
-import { TemperatureLight, TemperatureLightStateOptions } from './TemperatureLight';
+import { TemperatureLight } from './TemperatureLight';
 import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
 import type { Bridge } from '../bridge/Bridge';
-
-export interface ColorLightStateOptions extends TemperatureLightStateOptions {
-	color?: string;
-}
+import { LightStateOptions } from '../transformers/LightStateTransformer';
 
 export class ColorLight extends TemperatureLight {
 	type = ResourceType.ColorLight;
@@ -27,11 +24,14 @@ export class ColorLight extends TemperatureLight {
 		);
 	}
 
-	public async state(state: ColorLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
+	public async state(
+		state: Pick<LightStateOptions, 'on' | 'brightness' | 'temperature' | 'color'>,
+		transitionOptions?: TransitionOptions,
+	): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
-	public async setColor(color: ColorLightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
+	public async setColor(color: LightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
 		await this.state({ color }, transitionOptions);
 	}
 }

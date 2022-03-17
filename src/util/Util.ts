@@ -1,46 +1,12 @@
-import type { GradientLightStateOptions } from '../structures/GradientLight';
 import type { DeepPartial } from '../types/common';
-import type { ApiGroupedLight, ApiLight, ApiScene, ApiSceneAction } from '../types/api';
-import type { Light, LightStateOptions } from '../structures/Light';
+import type { ApiScene, ApiSceneAction } from '../types/api';
+import type { LightStateOptions } from '../structures/Light';
 import type { GroupedLightStateOptions } from '../structures/GroupedLight';
 import { SceneActionOptions } from '../structures/SceneAction';
 import { Bridge } from '../bridge/Bridge';
 import { SceneOptions } from '../structures/Scene';
 
 export class Util {
-	public static parseLightStateOptions(
-		state: LightStateOptions | GradientLightStateOptions,
-		light: Light,
-	): DeepPartial<ApiLight> {
-		const parsed = {} as DeepPartial<ApiLight>;
-
-		if ('on' in state) parsed.on = { on: state.on };
-		if ('brightness' in state && light.isDimmable()) parsed.dimming = { brightness: state.brightness };
-		if ('temperature' in state && light.isTemperature()) parsed.color_temperature = { mirek: state.temperature };
-		if ('color' in state && light.isColor())
-			parsed.color = { xy: light.colorResolver.rgbToXyPoint(light.colorResolver.hexToRgb(state.color)) };
-		if ('gradient' in state && light.isGradient())
-			parsed.gradient = {
-				points: state.gradient.map((color) => {
-					return {
-						color: {
-							xy: light.colorResolver.rgbToXyPoint(light.colorResolver.hexToRgb(color)),
-						},
-					};
-				}),
-			};
-
-		return parsed;
-	}
-
-	public static parseGroupedLightStateOptions(state: GroupedLightStateOptions): DeepPartial<ApiGroupedLight> {
-		const parsed = {} as DeepPartial<ApiGroupedLight>;
-
-		if ('on' in state) parsed.on = { on: state.on };
-
-		return parsed;
-	}
-
 	public static parseSceneActionOptions(options: SceneActionOptions, bridge: Bridge): DeepPartial<ApiSceneAction> {
 		const light = bridge.lights.resolve(options.light);
 

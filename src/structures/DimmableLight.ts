@@ -1,10 +1,7 @@
-import { Light, LightStateOptions } from './Light';
+import { Light } from './Light';
 import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
-
-export interface DimmableLightStateOptions extends LightStateOptions {
-	brightness?: number;
-}
+import { LightStateOptions } from '../transformers/LightStateTransformer';
 
 export class DimmableLight extends Light {
 	type = ResourceType.DimmableLight;
@@ -13,12 +10,15 @@ export class DimmableLight extends Light {
 		return this.data.dimming?.brightness;
 	}
 
-	public async state(state: DimmableLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
+	public async state(
+		state: Pick<LightStateOptions, 'on' | 'brightness'>,
+		transitionOptions?: TransitionOptions,
+	): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
 	public async setBrightness(
-		brightness: DimmableLightStateOptions['brightness'],
+		brightness: LightStateOptions['brightness'],
 		transitionOptions?: TransitionOptions,
 	): Promise<void> {
 		await this.state({ brightness }, transitionOptions);
