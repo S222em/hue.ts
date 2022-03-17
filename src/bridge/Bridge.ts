@@ -15,9 +15,18 @@ import type { AxiosInstance } from 'axios';
 import { getRest } from './Rest';
 import { Event } from './Event';
 
+export enum BridgeResourceType {
+	Lights,
+	GroupedLights,
+	Rooms,
+	Zones,
+	Scenes,
+}
+
 export interface BridgeOptions {
 	ip: string;
 	applicationKey: string;
+	resources: BridgeResourceType[];
 }
 
 export interface BridgeEvents {
@@ -118,11 +127,11 @@ export class Bridge extends EventEmitter {
 		this.actions = new ActionManager(this);
 
 		setImmediate(async () => {
-			await this.lights.fetch();
-			await this.groupedLights.fetch();
-			await this.rooms.fetch();
-			await this.zones.fetch();
-			await this.scenes.fetch();
+			if (options.resources.includes(BridgeResourceType.Lights)) await this.lights.fetch();
+			if (options.resources.includes(BridgeResourceType.GroupedLights)) await this.groupedLights.fetch();
+			if (options.resources.includes(BridgeResourceType.Rooms)) await this.rooms.fetch();
+			if (options.resources.includes(BridgeResourceType.Zones)) await this.zones.fetch();
+			if (options.resources.includes(BridgeResourceType.Scenes)) await this.scenes.fetch();
 			this.emit(Events.Ready, this);
 		});
 	}
