@@ -35,8 +35,16 @@ export abstract class Group extends NamedResource<ApiGroup> {
 		return this.data.services.find((service) => service.rtype === 'grouped_light')?.rid;
 	}
 
-	get on(): boolean {
-		return this.groupedLight.on;
+	public async on(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: true }, transitionOptions);
+	}
+
+	public async off(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: false }, transitionOptions);
+	}
+
+	public async toggle(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: !this.isOn() }, transitionOptions);
 	}
 
 	public async state(state: GroupStateOptions, transitionOptions?: TransitionOptions) {
@@ -48,6 +56,10 @@ export abstract class Group extends NamedResource<ApiGroup> {
 	public async applyScene(resolvable: SceneResolvable, options?: SceneApplyOptions) {
 		const scene = this.bridge.scenes.resolve(resolvable);
 		await scene?.apply(options);
+	}
+
+	public isOn(): boolean {
+		return this.groupedLight.isOn();
 	}
 
 	protected abstract _edit(data: DeepPartial<ApiGroup>): Promise<void>;

@@ -115,7 +115,7 @@ bridge.on('ready', () => {
 // Or
 
 bridge.on('lightUpdate', (before, after) => {
-  console.log(after.name, before.on, after.on);
+  console.log(after.name, before.isOn(), after.isOn());
 });
 ```
 

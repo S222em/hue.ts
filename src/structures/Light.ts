@@ -34,21 +34,29 @@ export class Light extends NamedResource<ApiLight> {
 		return this.room?.id;
 	}
 
-	get on(): boolean {
-		return this.data.on?.on;
-	}
-
 	public async state(state: Pick<LightStateOptions, 'on'>, transitionOptions?: TransitionOptions): Promise<void> {
 		await this._edit(lightStateTransformer(this, state), transitionOptions);
 	}
 
+	public async on(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: true }, transitionOptions);
+	}
+
+	public async off(transitionOptions?: TransitionOptions): Promise<void> {
+		await this.state({ on: false }, transitionOptions);
+	}
+
 	public async toggle(transitionOptions?: TransitionOptions): Promise<void> {
-		await this.state({ on: !this.on }, transitionOptions);
+		await this.state({ on: !this.isOn() }, transitionOptions);
 	}
 
 	public async fetch(): Promise<Light> {
 		await this.bridge.lights.fetch(this.id);
 		return this;
+	}
+
+	public isOn(): boolean {
+		return this.data.on?.on;
 	}
 
 	public isDimmable(): this is DimmableLight | TemperatureLight | ColorLight | GradientLight {

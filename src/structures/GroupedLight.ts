@@ -28,21 +28,29 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		return this.group?.id;
 	}
 
-	get on(): boolean {
-		return this.data.on?.on;
-	}
-
 	public async state(state: GroupedLightStateOptions) {
 		await this._edit(groupedLightStateTransformer(this, state));
 	}
 
+	public async on(): Promise<void> {
+		await this.state({ on: true });
+	}
+
+	public async off(): Promise<void> {
+		await this.state({ on: false });
+	}
+
 	public async toggle(): Promise<void> {
-		await this.state({ on: !this.on });
+		await this.state({ on: !this.isOn() });
 	}
 
 	public async fetch(): Promise<GroupedLight> {
 		await this.bridge.groupedLights.fetch(this.id);
 		return this;
+	}
+
+	public isOn(): boolean {
+		return this.data.on?.on;
 	}
 
 	protected async _edit(data: DeepPartial<ApiGroupedLight>): Promise<void> {
