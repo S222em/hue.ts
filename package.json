@@ -5,6 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "homepage": "https://github.com/S222em/hue.ts",
+  "bugs": {
+    "url": "https://github.com/S222em/hue.ts/issues"
+  },
   "scripts": {
     "eslint": "eslint src/**",
     "prettier": "prettier --check src/**",
@@ -33,5 +36,9 @@
     "prettier": "^2.5.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.5"
+  },
+  "engines": {
+    "node": ">=16.6.0",
+    "npm": ">=7.0.0"
   }
 }
