@@ -11,6 +11,7 @@
   "scripts": {
     "eslint": "eslint src/**",
     "prettier": "prettier --check src/**",
+    "typecheck": "tsc --noEmit",
     "build": "tsc --build"
   },
   "keywords": [
