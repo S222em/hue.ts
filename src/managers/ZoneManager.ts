@@ -1,11 +1,11 @@
 import type { Bridge } from '../bridge/Bridge';
-import { Zone, ZoneResolvable } from '../structures/Zone';
+import { Zone } from '../structures/Zone';
 import { ResourceManager } from './ResourceManager';
 import type { ApiZone } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 
-export class ZoneManager extends ResourceManager<ZoneResolvable> {
+export class ZoneManager extends ResourceManager<Zone> {
 	public readonly cache: Collection<string, Zone>;
 
 	public constructor(bridge: Bridge) {

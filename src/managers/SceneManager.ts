@@ -1,11 +1,11 @@
 import type { Bridge } from '../bridge/Bridge';
 import { ResourceManager } from './ResourceManager';
-import { Scene, SceneResolvable } from '../structures/Scene';
+import { Scene } from '../structures/Scene';
 import type { ApiScene } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 
-export class SceneManager extends ResourceManager<SceneResolvable> {
+export class SceneManager extends ResourceManager<Scene> {
 	public readonly cache: Collection<string, Scene>;
 
 	public constructor(bridge: Bridge) {

@@ -4,7 +4,7 @@ import { DeepPartial } from '../types/common';
 import { ApiGroupedLight } from '../types/api';
 
 export const groupedLightStateValidator = z.object({
-	on: z.boolean().optional(),
+	on: z.boolean().optional().nullable(),
 });
 
 export type GroupedLightStateOptions = z.infer<typeof groupedLightStateValidator>;

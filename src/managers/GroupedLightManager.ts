@@ -1,11 +1,11 @@
 import type { Bridge } from '../bridge/Bridge';
-import { GroupedLight, GroupedLightResolvable } from '../structures/GroupedLight';
+import { GroupedLight } from '../structures/GroupedLight';
 import { ResourceManager } from './ResourceManager';
 import type { ApiGroupedLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 
-export class GroupedLightManager extends ResourceManager<GroupedLightResolvable> {
+export class GroupedLightManager extends ResourceManager<GroupedLight> {
 	public readonly cache: Collection<string, GroupedLight>;
 
 	public constructor(bridge: Bridge) {

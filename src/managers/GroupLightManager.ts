@@ -1,9 +1,9 @@
 import { Manager } from './Manager';
 import type { Group } from '../structures/Group';
 import type Collection from '@discordjs/collection';
-import type { Light, LightResolvable } from '../structures/Light';
+import type { Light } from '../structures/Light';
 
-export class GroupLightManager extends Manager<LightResolvable> {
+export class GroupLightManager extends Manager<Light> {
 	public readonly group: Group;
 
 	constructor(group: Group) {

@@ -1,17 +1,9 @@
 import { Base } from './Base';
-import type { Light, LightResolvable } from './Light';
+import type { Light } from './Light';
 import type { GradientLight } from './GradientLight';
 import type { ApiSceneAction } from '../types/api';
 import type { Scene } from './Scene';
-
-export interface SceneActionOptions {
-	light: LightResolvable;
-	on?: boolean;
-	brightness?: number;
-	temperature?: number;
-	color?: string;
-	gradient?: string[];
-}
+import { SceneActionOptions } from '../transformers/SceneActionTransformer';
 
 export class SceneAction extends Base<ApiSceneAction> {
 	public readonly scene: Scene;

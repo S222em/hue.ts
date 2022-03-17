@@ -4,7 +4,7 @@ import Collection from '@discordjs/collection';
 import type { ApiSceneAction } from '../types/api';
 import type { Scene } from '../structures/Scene';
 
-export class SceneActionManager extends Manager<string> {
+export class SceneActionManager extends Manager<SceneAction> {
 	public readonly scene: Scene;
 	public readonly cache: Collection<string, SceneAction>;
 

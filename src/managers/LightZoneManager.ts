@@ -1,9 +1,9 @@
 import { Manager } from './Manager';
-import type { Zone, ZoneResolvable } from '../structures/Zone';
+import type { Zone } from '../structures/Zone';
 import type { Light } from '../structures/Light';
 import type Collection from '@discordjs/collection';
 
-export class LightZoneManager extends Manager<ZoneResolvable> {
+export class LightZoneManager extends Manager<Zone> {
 	public readonly light: Light;
 
 	constructor(light: Light) {

@@ -1,6 +1,6 @@
 import { TemperatureLight } from '../structures/TemperatureLight';
 import type { Bridge } from '../bridge/Bridge';
-import { Light, LightResolvable } from '../structures/Light';
+import { Light } from '../structures/Light';
 import { ColorLight } from '../structures/ColorLight';
 import { GradientLight } from '../structures/GradientLight';
 import { DimmableLight } from '../structures/DimmableLight';
@@ -9,7 +9,7 @@ import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 
-export class LightManager extends ResourceManager<LightResolvable> {
+export class LightManager extends ResourceManager<Light> {
 	public readonly cache: Collection<string, Light>;
 
 	public constructor(bridge: Bridge) {

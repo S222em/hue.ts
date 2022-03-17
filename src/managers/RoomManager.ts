@@ -1,11 +1,11 @@
 import type { Bridge } from '../bridge/Bridge';
-import { Room, RoomResolvable } from '../structures/Room';
+import { Room } from '../structures/Room';
 import { ResourceManager } from './ResourceManager';
 import type { ApiRoom } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 
-export class RoomManager extends ResourceManager<RoomResolvable> {
+export class RoomManager extends ResourceManager<Room> {
 	public readonly cache: Collection<string, Room>;
 
 	public constructor(bridge: Bridge) {

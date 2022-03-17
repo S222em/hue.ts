@@ -4,11 +4,11 @@ import { DeepPartial } from '../types/common';
 import { z } from 'zod';
 
 export const lightStateOptionsValidator = z.object({
-	on: z.boolean().optional(),
-	brightness: z.number().optional(),
-	temperature: z.number().optional(),
-	color: z.string().optional(),
-	gradient: z.string().array().optional(),
+	on: z.boolean().optional().nullable(),
+	brightness: z.number().optional().nullable(),
+	temperature: z.number().optional().nullable(),
+	color: z.string().optional().nullable(),
+	gradient: z.string().array().optional().nullable(),
 });
 
 export type LightStateOptions = z.infer<typeof lightStateOptionsValidator>;
@@ -17,7 +17,7 @@ export function lightStateTransformer(light: Light, options: LightStateOptions):
 	return lightStateOptionsValidator
 		.transform((o): DeepPartial<ApiLight> => {
 			return {
-				on: { on: o.on },
+				on: { on: o.on ?? true },
 				dimming: light.isDimmable() ? { brightness: o.brightness } : undefined,
 				color_temperature: light.isTemperature() ? { mirek: o.temperature } : undefined,
 				color: light.isColor()

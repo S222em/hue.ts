@@ -4,7 +4,7 @@ import axiosRateLimit from 'axios-rate-limit';
 import type { Resource } from '../structures/Resource';
 import { Manager } from './Manager';
 
-export abstract class ResourceManager<R extends string | (Resource<any> & { id: string })> extends Manager<R> {
+export abstract class ResourceManager<R extends Resource<any>> extends Manager<R> {
 	public readonly bridge: Bridge;
 	public rest: AxiosInstance;
 
