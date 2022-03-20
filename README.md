@@ -98,10 +98,6 @@ const bridge = new Bridge({
   ip: 'your-ip-goes-here',
   // You can read about creating a key here https://developers.meethue.com/develop/get-started-2/
   applicationKey: 'your-applicationKey-goes-here',
-  // Select the resources you need, when not selected, the resource will not be fetched (for faster startups)
-  resources: [BridgeResourceType.Lights],
-  // For all resources
-  // resources: Object.values(BridgeResourceType)
 });
 ```
 
