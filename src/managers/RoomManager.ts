@@ -1,15 +1,15 @@
 import type { Bridge } from '../bridge/Bridge';
 import { Room } from '../structures/Room';
 import { ResourceManager } from './ResourceManager';
-import type { ApiRoom } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
+import { ApiRoom, ApiRoomGet } from '../types/api/room';
 
 export class RoomManager extends ResourceManager<Room> {
 	public readonly cache: Collection<string, Room>;
 
 	public constructor(bridge: Bridge) {
-		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		super(bridge);
 		this.cache = new Collection();
 	}
 
@@ -20,9 +20,9 @@ export class RoomManager extends ResourceManager<Room> {
 	}
 
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.room(id));
-		const data = response.data.data as ApiRoom[];
-		data.forEach((data) => {
+		const response = await this.bridge.rest.get(Routes.room(id));
+		const data = response.data as ApiRoomGet;
+		data.data.forEach((data: ApiRoom) => {
 			this._add(data);
 		});
 	}

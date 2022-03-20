@@ -1,15 +1,15 @@
 import type { Bridge } from '../bridge/Bridge';
 import { Zone } from '../structures/Zone';
 import { ResourceManager } from './ResourceManager';
-import type { ApiZone } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
+import { ApiZone, ApiZoneGet } from '../types/api/zone';
 
 export class ZoneManager extends ResourceManager<Zone> {
 	public readonly cache: Collection<string, Zone>;
 
 	public constructor(bridge: Bridge) {
-		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		super(bridge);
 		this.cache = new Collection();
 	}
 
@@ -20,9 +20,9 @@ export class ZoneManager extends ResourceManager<Zone> {
 	}
 
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.zone(id));
-		const data = response.data.data as ApiZone[];
-		data.forEach((data) => {
+		const response = await this.bridge.rest.get(Routes.zone(id));
+		const data = response.data as ApiZoneGet;
+		data.data.forEach((data: ApiZone) => {
 			this._add(data);
 		});
 	}

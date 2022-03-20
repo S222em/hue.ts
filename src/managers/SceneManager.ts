@@ -1,15 +1,15 @@
 import type { Bridge } from '../bridge/Bridge';
 import { ResourceManager } from './ResourceManager';
 import { Scene } from '../structures/Scene';
-import type { ApiScene } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
+import { ApiScene, ApiSceneGet } from '../types/api/scene';
 
 export class SceneManager extends ResourceManager<Scene> {
 	public readonly cache: Collection<string, Scene>;
 
 	public constructor(bridge: Bridge) {
-		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		super(bridge);
 		this.cache = new Collection();
 	}
 
@@ -20,9 +20,9 @@ export class SceneManager extends ResourceManager<Scene> {
 	}
 
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.scene(id));
-		const data = response.data.data as ApiScene[];
-		data.forEach((data) => {
+		const response = await this.bridge.rest.get(Routes.scene(id));
+		const data = response.data as ApiSceneGet;
+		data.data.forEach((data: ApiScene) => {
 			this._add(data);
 		});
 	}

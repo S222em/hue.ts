@@ -5,15 +5,15 @@ import { ColorLight } from '../structures/ColorLight';
 import { GradientLight } from '../structures/GradientLight';
 import { DimmableLight } from '../structures/DimmableLight';
 import { ResourceManager } from './ResourceManager';
-import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
+import { ApiLight, ApiLightGet } from '../types/api/light';
 
 export class LightManager extends ResourceManager<Light> {
 	public readonly cache: Collection<string, Light>;
 
 	public constructor(bridge: Bridge) {
-		super(bridge, { maxRequests: 1, perMilliseconds: 100 });
+		super(bridge);
 		this.cache = new Collection();
 	}
 
@@ -30,9 +30,9 @@ export class LightManager extends ResourceManager<Light> {
 	}
 
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.light(id));
-		const data = response.data.data as ApiLight[];
-		data.forEach((data) => {
+		const response = await this.bridge.rest.get(Routes.light(id));
+		const data = response.data as ApiLightGet;
+		data.data.forEach((data: ApiLight) => {
 			this._add(data);
 		});
 	}

@@ -2,21 +2,30 @@ import type { TemperatureLight } from './TemperatureLight';
 import type { ColorLight } from './ColorLight';
 import type { DimmableLight } from './DimmableLight';
 import type { GradientLight } from './GradientLight';
-import { ResourceType } from './Resource';
 import { LightCapabilities } from './LightCapabilities';
-import type { DeepPartial, TransitionOptions } from '../types/common';
+import type { TransitionOptions } from '../types/common';
 import { LightZoneManager } from '../managers/LightZoneManager';
-import type { ApiLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import type { Room } from './Room';
 import type { Bridge } from '../bridge/Bridge';
 import { NamedResource } from './NamedResource';
 import { LightStateOptions, lightStateTransformer } from '../transformers/LightStateTransformer';
+import { ApiLight } from '../types/api/light';
+import { ApiResourceType } from '../types/api/common';
 
 export type LightResolvable = Light | string;
 
+export enum LightExtendedType {
+	Normal = 'normal',
+	Dimmable = 'dimmable',
+	Temperature = 'temperature',
+	Color = 'color',
+	Gradient = 'gradient',
+}
+
 export class Light extends NamedResource<ApiLight> {
-	type = ResourceType.Light;
+	type = ApiResourceType.Light;
+	public extendedType: LightExtendedType = LightExtendedType.Normal;
 	public capabilities: LightCapabilities;
 	public zones: LightZoneManager;
 
@@ -62,30 +71,30 @@ export class Light extends NamedResource<ApiLight> {
 	public isDimmable(): this is DimmableLight | TemperatureLight | ColorLight | GradientLight {
 		return Boolean(
 			[
-				ResourceType.DimmableLight,
-				ResourceType.TemperatureLight,
-				ResourceType.ColorLight,
-				ResourceType.GradientLight,
-			].includes(this.type),
+				LightExtendedType.Dimmable,
+				LightExtendedType.Temperature,
+				LightExtendedType.Color,
+				LightExtendedType.Gradient,
+			].includes(this.extendedType),
 		);
 	}
 
 	public isTemperature(): this is TemperatureLight | ColorLight | GradientLight {
 		return Boolean(
-			[ResourceType.TemperatureLight, ResourceType.ColorLight, ResourceType.GradientLight].includes(this.type),
+			[LightExtendedType.Temperature, LightExtendedType.Color, LightExtendedType.Gradient].includes(this.extendedType),
 		);
 	}
 
 	public isColor(): this is ColorLight | GradientLight {
-		return Boolean([ResourceType.ColorLight, ResourceType.GradientLight].includes(this.type));
+		return Boolean([LightExtendedType.Color, LightExtendedType.Gradient].includes(this.extendedType));
 	}
 
 	public isGradient(): this is GradientLight {
-		return Boolean(this.type === ResourceType.GradientLight);
+		return Boolean(this.extendedType === LightExtendedType.Gradient);
 	}
 
-	protected async _edit(data: DeepPartial<ApiLight>, transition?: TransitionOptions): Promise<void> {
-		await this.bridge.lights.rest.put(Routes.light(this.id), {
+	protected async _edit(data: ApiLight, transition?: TransitionOptions): Promise<void> {
+		await this.bridge.rest.put(Routes.light(this.id), {
 			...data,
 			dynamics: { duration: transition?.duration },
 		});

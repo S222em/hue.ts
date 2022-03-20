@@ -1,6 +1,6 @@
 import type { Bridge } from '../Bridge';
 import { Events } from '../../util/Events';
-import type { ApiLight } from '../../types/api';
+import { ApiLight } from '../../types/api/light';
 
 export default function lightUpdate(bridge: Bridge, data: ApiLight) {
 	const light = bridge.lights.cache.get(data.id);

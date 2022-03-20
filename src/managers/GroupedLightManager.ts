@@ -1,15 +1,15 @@
 import type { Bridge } from '../bridge/Bridge';
 import { GroupedLight } from '../structures/GroupedLight';
 import { ResourceManager } from './ResourceManager';
-import type { ApiGroupedLight } from '../types/api';
 import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
+import { ApiGroupedLight, ApiGroupedLightGet } from '../types/api/grouped_light';
 
 export class GroupedLightManager extends ResourceManager<GroupedLight> {
 	public readonly cache: Collection<string, GroupedLight>;
 
 	public constructor(bridge: Bridge) {
-		super(bridge, { maxRequests: 1, perMilliseconds: 1000 });
+		super(bridge);
 		this.cache = new Collection();
 	}
 
@@ -20,9 +20,9 @@ export class GroupedLightManager extends ResourceManager<GroupedLight> {
 	}
 
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.rest.get(Routes.groupedLight(id));
-		const data = response.data.data as ApiGroupedLight[];
-		data.forEach((data) => {
+		const response = await this.bridge.rest.get(Routes.groupedLight(id));
+		const data = response.data as ApiGroupedLightGet;
+		data.data.forEach((data: ApiGroupedLight) => {
 			this._add(data);
 		});
 	}

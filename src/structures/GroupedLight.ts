@@ -1,14 +1,14 @@
-import { Resource, ResourceType } from './Resource';
+import { Resource } from './Resource';
 import type { Group } from './Group';
-import type { ApiGroupedLight } from '../types/api';
-import type { DeepPartial } from '../types/common';
 import { Routes } from '../util/Routes';
 import { GroupedLightStateOptions, groupedLightStateTransformer } from '../transformers/GroupedLightStateTransformer';
+import { ApiResourceType } from '../types/api/common';
+import { ApiGroupedLight } from '../types/api/grouped_light';
 
 export type GroupedLightResolvable = GroupedLight | 'string';
 
 export class GroupedLight extends Resource<ApiGroupedLight> {
-	type = ResourceType.GroupedLight;
+	type = ApiResourceType.GroupedLight;
 
 	get id(): string {
 		return this.data.id;
@@ -53,7 +53,7 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 		return this.data.on?.on;
 	}
 
-	protected async _edit(data: DeepPartial<ApiGroupedLight>): Promise<void> {
-		await this.bridge.groupedLights.rest.put(Routes.groupedLight(this.id), data);
+	protected async _edit(data: ApiGroupedLight): Promise<void> {
+		await this.bridge.rest.put(Routes.groupedLight(this.id), data);
 	}
 }

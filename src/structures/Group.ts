@@ -2,10 +2,11 @@ import type { GroupedLight } from './GroupedLight';
 import type { SceneApplyOptions, SceneResolvable } from './Scene';
 import { GroupSceneManager } from '../managers/GroupSceneManager';
 import { GroupLightManager } from '../managers/GroupLightManager';
-import type { DeepPartial, TransitionOptions } from '../types/common';
-import type { ApiGroup } from '../types/api';
+import type { TransitionOptions } from '../types/common';
 import type { Bridge } from '../bridge/Bridge';
 import { NamedResource } from './NamedResource';
+import { ApiRoom } from '../types/api/room';
+import { ApiZone } from '../types/api/zone';
 
 export type GroupResolvable = Group | 'string';
 
@@ -17,7 +18,7 @@ export interface GroupStateOptions {
 	gradient?: string[];
 }
 
-export abstract class Group extends NamedResource<ApiGroup> {
+export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> extends NamedResource<R> {
 	public readonly scenes: GroupSceneManager;
 	public readonly lights: GroupLightManager;
 
@@ -62,5 +63,5 @@ export abstract class Group extends NamedResource<ApiGroup> {
 		return this.groupedLight.isOn();
 	}
 
-	protected abstract _edit(data: DeepPartial<ApiGroup>): Promise<void>;
+	protected abstract _edit(data: ApiRoom | ApiZone): Promise<void>;
 }

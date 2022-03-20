@@ -1,9 +1,9 @@
 import { Base } from './Base';
 import type { Light } from './Light';
 import type { GradientLight } from './GradientLight';
-import type { ApiSceneAction } from '../types/api';
 import type { Scene } from './Scene';
 import { SceneActionOptions } from '../transformers/SceneActionTransformer';
+import { ApiSceneAction } from '../types/api/scene_action';
 
 export class SceneAction extends Base<ApiSceneAction> {
 	public readonly scene: Scene;

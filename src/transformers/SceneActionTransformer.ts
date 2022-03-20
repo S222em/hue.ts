@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { Light } from '../structures/Light';
-import { DeepPartial } from '../types/common';
-import { ApiSceneAction } from '../types/api';
 import { lightStateTransformer } from './LightStateTransformer';
+import { ApiSceneAction } from '../types/api/scene_action';
+import { ApiResourceType } from '../types/api/common';
 
 export const sceneActionValidator = z.object({
 	light: z.string().or(z.instanceof(Light)).nullable(),
@@ -15,13 +15,13 @@ export const sceneActionValidator = z.object({
 
 export type SceneActionOptions = z.infer<typeof sceneActionValidator>;
 
-export function sceneActionTransformer(light: Light, options: SceneActionOptions): DeepPartial<ApiSceneAction> {
+export function sceneActionTransformer(light: Light, options: SceneActionOptions): ApiSceneAction {
 	return sceneActionValidator
-		.transform((data): DeepPartial<ApiSceneAction> => {
+		.transform((data): ApiSceneAction => {
 			return {
 				target: {
 					rid: light.id,
-					rtype: 'light',
+					rtype: ApiResourceType.Light,
 				},
 				action: lightStateTransformer(light, data),
 			};

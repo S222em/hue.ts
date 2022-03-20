@@ -1,7 +1,6 @@
 import { Light } from '../structures/Light';
-import { ApiLight } from '../types/api';
-import { DeepPartial } from '../types/common';
 import { z } from 'zod';
+import { ApiLight } from '../types/api/light';
 
 export const lightStateOptionsValidator = z.object({
 	on: z.boolean().optional().nullable(),
@@ -13,9 +12,9 @@ export const lightStateOptionsValidator = z.object({
 
 export type LightStateOptions = z.infer<typeof lightStateOptionsValidator>;
 
-export function lightStateTransformer(light: Light, options: LightStateOptions): DeepPartial<ApiLight> {
+export function lightStateTransformer(light: Light, options: LightStateOptions): ApiLight {
 	return lightStateOptionsValidator
-		.transform((o): DeepPartial<ApiLight> => {
+		.transform((o): ApiLight => {
 			return {
 				on: { on: o.on ?? true },
 				dimming: light.isDimmable() ? { brightness: o.brightness } : undefined,

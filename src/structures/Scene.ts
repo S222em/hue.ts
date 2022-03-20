@@ -1,12 +1,12 @@
-import { ResourceType } from './Resource';
 import type { Group } from './Group';
-import type { DeepPartial, TransitionOptions } from '../types/common';
-import type { ApiScene } from '../types/api';
+import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
 import type { Bridge } from '../bridge/Bridge';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
 import { SceneOptions, sceneTransformer } from '../transformers/SceneTransformer';
+import { ApiScene } from '../types/api/scene';
+import { ApiResourceType } from '../types/api/common';
 
 export type SceneResolvable = Scene | string;
 
@@ -15,7 +15,7 @@ export interface SceneApplyOptions extends TransitionOptions {
 }
 
 export class Scene extends NamedResource<ApiScene> {
-	type = ResourceType.Scene;
+	type = ApiResourceType.Scene;
 	public readonly actions: SceneActionManager;
 
 	constructor(bridge: Bridge) {
@@ -57,9 +57,7 @@ export class Scene extends NamedResource<ApiScene> {
 		return this;
 	}
 
-	protected async _edit(data: DeepPartial<ApiScene>) {
-		await this.bridge.rest.put(Routes.scene(this.id), data).catch((err) => {
-			console.log(err.response.data.errors);
-		});
+	protected async _edit(data: ApiScene) {
+		await this.bridge.rest.put(Routes.scene(this.id), data);
 	}
 }

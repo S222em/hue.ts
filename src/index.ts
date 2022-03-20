@@ -1,5 +1,6 @@
 // Bridge
 export * from './bridge/Bridge';
+export * from './bridge/rest/Rest';
 
 // Managers
 export * from './managers/Manager';
@@ -39,8 +40,16 @@ export * from './color/ColorResolver';
 export * from './color/XyPoint';
 export * from './color/Gamut';
 
+// Api Types
+export * from './types/api/common';
+export * from './types/api/light';
+export * from './types/api/grouped_light';
+export * from './types/api/room';
+export * from './types/api/zone';
+export * from './types/api/scene';
+export * from './types/api/scene_action';
+
 // Types
-export * from './types/api';
 export * from './types/common';
 
 // Util

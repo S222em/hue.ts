@@ -1,10 +1,10 @@
 import { ColorLight } from './ColorLight';
-import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
+import { LightExtendedType } from './Light';
 
 export class GradientLight extends ColorLight {
-	type = ResourceType.GradientLight;
+	extendedType = LightExtendedType.Gradient;
 
 	get gradient(): string[] {
 		return this.data.gradient?.points?.map((point) => {

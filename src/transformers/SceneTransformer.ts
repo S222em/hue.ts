@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { sceneActionTransformer, sceneActionValidator } from './SceneActionTransformer';
-import { DeepPartial } from '../types/common';
-import { ApiScene } from '../types/api';
 import { Scene } from '../structures/Scene';
+import { ApiScene } from '../types/api/scene';
 
 export const sceneValidator = z.object({
 	name: z.string().optional().nullable(),
@@ -11,9 +10,9 @@ export const sceneValidator = z.object({
 
 export type SceneOptions = z.infer<typeof sceneValidator>;
 
-export function sceneTransformer(scene: Scene, options: SceneOptions): DeepPartial<ApiScene> {
+export function sceneTransformer(scene: Scene, options: SceneOptions): ApiScene {
 	return sceneValidator
-		.transform((data): DeepPartial<ApiScene> => {
+		.transform((data): ApiScene => {
 			return {
 				metadata: data.name ? { name: data.name } : undefined,
 				actions: data.actions

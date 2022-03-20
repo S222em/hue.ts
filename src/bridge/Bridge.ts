@@ -11,22 +11,19 @@ import { ZoneManager } from '../managers/ZoneManager';
 import type { Zone } from '../structures/Zone';
 import { SceneManager } from '../managers/SceneManager';
 import type { Scene } from '../structures/Scene';
-import type { AxiosInstance } from 'axios';
-import { getRest } from './Rest';
+import { Rest } from './rest/Rest';
 import { Event } from './Event';
-
-export enum BridgeResourceType {
-	Lights,
-	GroupedLights,
-	Rooms,
-	Zones,
-	Scenes,
-}
+import { Routes } from '../util/Routes';
+import { ApiResourceType } from '../types/api/common';
+import { ApiResource, ApiResourceGet } from '../types/api/resource';
+import { ApiLight } from '../types/api/light';
+import { ApiGroupedLight } from '../types/api/grouped_light';
+import { ApiZone } from '../types/api/zone';
+import { ApiRoom } from '../types/api/room';
+import { ApiScene } from '../types/api/scene';
 
 export interface BridgeOptions {
 	ip: string;
-	applicationKey: string;
-	resources: BridgeResourceType[];
 }
 
 export interface BridgeEvents {
@@ -58,52 +55,16 @@ export interface BridgeEvents {
 	sceneDelete: [scene: Scene];
 }
 
-/**
- * Represents a hue Bridge
- */
 export class Bridge extends EventEmitter {
-	/**
-	 * The ip of the Bridge
-	 */
 	public readonly ip: string;
-	/**
-	 * The application key of the user
-	 */
 	public applicationKey: string;
-	/**
-	 * Used to send requests to the Bridge
-	 * @internal
-	 */
-	public rest: AxiosInstance;
-	/**
-	 * Used to listen to events send by the Bridge
-	 * @internal
-	 */
+	public rest: Rest;
 	public event: Event;
-	/**
-	 * A manager with the Lights of this Bridge
-	 */
 	public lights: LightManager;
-	/**
-	 * A manager with the Grouped Lights of this Bridge
-	 */
 	public groupedLights: GroupedLightManager;
-	/**
-	 * A manager with the Rooms of this Bridge
-	 */
 	public rooms: RoomManager;
-	/**
-	 * A manager with the Zones of this Bridge
-	 */
 	public zones: ZoneManager;
-	/**
-	 * A manager with the Scenes of this Bridge
-	 */
 	public scenes: SceneManager;
-	/**
-	 * A manager with the Actions for this Bridge
-	 * @internal
-	 */
 	public actions: ActionManager;
 	public on: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public once: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
@@ -114,10 +75,6 @@ export class Bridge extends EventEmitter {
 	constructor(options: BridgeOptions) {
 		super();
 		this.ip = options.ip;
-		this.applicationKey = options.applicationKey;
-
-		this.rest = getRest(options.ip, options.applicationKey);
-		this.event = new Event(this, options.ip, options.applicationKey);
 
 		this.lights = new LightManager(this);
 		this.groupedLights = new GroupedLightManager(this);
@@ -125,13 +82,40 @@ export class Bridge extends EventEmitter {
 		this.zones = new ZoneManager(this);
 		this.scenes = new SceneManager(this);
 		this.actions = new ActionManager(this);
+	}
+
+	public login(applicationKey: string): void {
+		this.applicationKey = applicationKey;
+		this.rest = new Rest(this.ip, applicationKey);
+		this.event = new Event(this, this.ip, applicationKey);
 
 		setImmediate(async () => {
-			if (options.resources.includes(BridgeResourceType.Lights)) await this.lights.fetch();
-			if (options.resources.includes(BridgeResourceType.GroupedLights)) await this.groupedLights.fetch();
-			if (options.resources.includes(BridgeResourceType.Rooms)) await this.rooms.fetch();
-			if (options.resources.includes(BridgeResourceType.Zones)) await this.zones.fetch();
-			if (options.resources.includes(BridgeResourceType.Scenes)) await this.scenes.fetch();
+			const response = await this.rest.get(Routes.resource());
+
+			const data = response.data as ApiResourceGet;
+
+			for (const light of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Light)) {
+				this.lights._add(light as ApiLight);
+			}
+
+			for (const groupedLight of data.data.filter(
+				(resource: ApiResource) => resource.type === ApiResourceType.GroupedLight,
+			)) {
+				this.groupedLights._add(groupedLight as ApiGroupedLight);
+			}
+
+			for (const room of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Room)) {
+				this.rooms._add(room as ApiRoom);
+			}
+
+			for (const zone of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Zone)) {
+				this.zones._add(zone as ApiZone);
+			}
+
+			for (const scene of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Scene)) {
+				this.scenes._add(scene as ApiScene);
+			}
+
 			this.emit(Events.Ready, this);
 		});
 	}

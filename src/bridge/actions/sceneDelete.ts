@@ -1,6 +1,6 @@
 import type { Bridge } from '../Bridge';
 import { Events } from '../../util/Events';
-import type { ApiScene } from '../../types/api';
+import { ApiScene } from '../../types/api/scene';
 
 export default function sceneDelete(bridge: Bridge, data: ApiScene) {
 	const existing = bridge.scenes.cache.get(data.id);

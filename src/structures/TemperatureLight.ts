@@ -1,10 +1,10 @@
 import { DimmableLight } from './DimmableLight';
-import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
+import { LightExtendedType } from './Light';
 
 export class TemperatureLight extends DimmableLight {
-	type = ResourceType.TemperatureLight;
+	extendedType = LightExtendedType.Temperature;
 
 	get temperature(): number {
 		return this.data.color_temperature?.mirek;

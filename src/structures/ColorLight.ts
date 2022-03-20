@@ -1,12 +1,12 @@
 import { ColorResolver } from '../color/ColorResolver';
 import { TemperatureLight } from './TemperatureLight';
-import { ResourceType } from './Resource';
 import type { TransitionOptions } from '../types/common';
 import type { Bridge } from '../bridge/Bridge';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
+import { LightExtendedType } from './Light';
 
 export class ColorLight extends TemperatureLight {
-	type = ResourceType.ColorLight;
+	extendedType = LightExtendedType.Color;
 	public colorResolver: ColorResolver;
 
 	constructor(bridge: Bridge) {

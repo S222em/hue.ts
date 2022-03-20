@@ -1,10 +1,9 @@
-import { Light } from './Light';
-import { ResourceType } from './Resource';
+import { Light, LightExtendedType } from './Light';
 import type { TransitionOptions } from '../types/common';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
 
 export class DimmableLight extends Light {
-	type = ResourceType.DimmableLight;
+	extendedType = LightExtendedType.Dimmable;
 
 	get brightness(): number {
 		return this.data.dimming?.brightness;
