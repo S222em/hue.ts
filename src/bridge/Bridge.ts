@@ -84,7 +84,7 @@ export class Bridge extends EventEmitter {
 		this.actions = new ActionManager(this);
 	}
 
-	public login(applicationKey: string): void {
+	public connect(applicationKey: string): void {
 		this.applicationKey = applicationKey;
 		this.rest = new Rest(this.ip, applicationKey);
 		this.event = new Event(this, this.ip, applicationKey);

@@ -98,7 +98,7 @@ const bridge = new Bridge({
   ip: 'your-ip-goes-here',
 });
 // You can read about creating a key here https://developers.meethue.com/develop/get-started-2/
-bridge.login('your-applicationKey-goes-here');
+bridge.connect('your-applicationKey-goes-here');
 ```
 
 The bridge instance has several events you can listen to.
