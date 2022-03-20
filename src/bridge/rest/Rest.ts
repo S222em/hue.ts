@@ -48,19 +48,19 @@ export class Rest {
 	}
 
 	public async get(url: string, data?: Record<string, any>) {
-		return await this.manager.get(url, data);
+		return await this.request('get', url, data);
 	}
 
 	public async put(url: string, data?: Record<string, any>) {
-		return await this.manager.put(url, data);
+		return await this.request('put', url, data);
 	}
 
 	public async post(url: string, data?: Record<string, any>) {
-		return await this.manager.post(url, data);
+		return await this.request('post', url, data);
 	}
 
 	public async delete(url: string, data?: Record<string, any>) {
-		return await this.manager.delete(url, data);
+		return await this.request('delete', url, data);
 	}
 
 	public handleRequest(request: AxiosRequestConfig) {
@@ -75,5 +75,19 @@ export class Rest {
 		const route = Rest.getRoute(response.config.url);
 		this.handlers.get(route).next();
 		return response;
+	}
+
+	private async request(method: 'get' | 'put' | 'post' | 'delete', url: string, data?: Record<string, any>) {
+		return await this.manager
+			.request({
+				method,
+				url,
+				data,
+			})
+			.catch((error) => {
+				if (error.response?.data?.errors && error.response.data.errors[0]) {
+					throw new Error(error.response.data.errors[0].description);
+				} else throw error;
+			});
 	}
 }

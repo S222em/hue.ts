@@ -31,7 +31,7 @@ export interface ApiConnectedResource<T extends ApiResourceType = ApiResourceTyp
 }
 
 export interface ApiError {
-	message: string;
+	description: string;
 }
 
 export interface ApiReturnGet<T> {
