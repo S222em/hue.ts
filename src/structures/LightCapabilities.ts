@@ -51,17 +51,17 @@ function resolveGamut(gamutType: 'A' | 'B' | 'C') {
 }
 
 export class LightCapabilities {
-	public readonly light: Light;
+	private readonly light: Light;
 
 	constructor(light: Light) {
 		this.light = light;
 	}
 
-	get maxGradientPoints(): number {
+	get maxGradientPoints(): number | undefined {
 		return this.light.isGradient() ? this.light.data.gradient?.points_capable : null;
 	}
 
-	get red(): XyPoint {
+	get red(): XyPoint | undefined {
 		return this.light.isColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.red
@@ -69,7 +69,7 @@ export class LightCapabilities {
 			: null;
 	}
 
-	get green(): XyPoint {
+	get green(): XyPoint | undefined {
 		return this.light.isColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.green
@@ -77,7 +77,7 @@ export class LightCapabilities {
 			: null;
 	}
 
-	get blue(): XyPoint {
+	get blue(): XyPoint | undefined {
 		return this.light.isColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.blue
@@ -85,15 +85,15 @@ export class LightCapabilities {
 			: null;
 	}
 
-	get maxTemperature(): number {
+	get maxTemperature(): number | undefined {
 		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_maximum : null;
 	}
 
-	get minTemperature(): number {
+	get minTemperature(): number | undefined {
 		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_minimum : null;
 	}
 
-	get minBrightnessLevel(): number {
+	get minBrightnessLevel(): number | undefined {
 		return this.light.isDimmable() ? this.light.data.dimming?.min_dim_level : null;
 	}
 }

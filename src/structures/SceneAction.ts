@@ -2,7 +2,7 @@ import { Base } from './Base';
 import type { Light } from './Light';
 import type { GradientLight } from './GradientLight';
 import type { Scene } from './Scene';
-import { SceneActionOptions } from '../transformers/SceneActionTransformer';
+import { SceneActionEditOptions } from '../transformers/SceneActionEditTransformer';
 import { ApiSceneAction } from '../types/api/scene_action';
 
 export class SceneAction extends Base<ApiSceneAction> {
@@ -60,7 +60,7 @@ export class SceneAction extends Base<ApiSceneAction> {
 		return this.data.target?.rid;
 	}
 
-	public async edit(options: Omit<SceneActionOptions, 'light'>) {
+	public async edit(options: Omit<SceneActionEditOptions, 'light'>) {
 		await this.scene.edit({
 			actions: [
 				{

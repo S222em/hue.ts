@@ -1,12 +1,12 @@
 import type { Group } from './Group';
 import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
-import type { Bridge } from '../bridge/Bridge';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
-import { SceneOptions, sceneTransformer } from '../transformers/SceneTransformer';
+import { SceneEditOptions, sceneEditTransformer } from '../transformers/SceneEditTransformer';
 import { ApiScene } from '../types/api/scene';
 import { ApiResourceType } from '../types/api/common';
+import { SceneActionEditOptions } from '../transformers/SceneActionEditTransformer';
 
 export type SceneResolvable = Scene | string;
 
@@ -16,12 +16,7 @@ export interface SceneApplyOptions extends TransitionOptions {
 
 export class Scene extends NamedResource<ApiScene> {
 	type = ApiResourceType.Scene;
-	public readonly actions: SceneActionManager;
-
-	constructor(bridge: Bridge) {
-		super(bridge);
-		this.actions = new SceneActionManager(this);
-	}
+	public readonly actions = new SceneActionManager(this);
 
 	get group(): Group {
 		return this.bridge.rooms.cache.get(this.groupId) || this.bridge.zones.cache.get(this.groupId);
@@ -48,8 +43,16 @@ export class Scene extends NamedResource<ApiScene> {
 		});
 	}
 
-	public async edit(options: SceneOptions) {
-		await this._edit(sceneTransformer(this, options));
+	public async edit(options: SceneEditOptions) {
+		await this._edit(sceneEditTransformer(options, this));
+	}
+
+	public async setName(name: string) {
+		return await this.edit({ name });
+	}
+
+	public async setActions(actions: SceneActionEditOptions[]) {
+		return await this.edit({ actions });
 	}
 
 	public async fetch(): Promise<Scene> {

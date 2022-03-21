@@ -10,9 +10,6 @@ export * from './managers/GroupedLightManager';
 export * from './managers/RoomManager';
 export * from './managers/ZoneManager';
 export * from './managers/SceneManager';
-export * from './managers/GroupLightManager';
-export * from './managers/GroupSceneManager';
-export * from './managers/LightZoneManager';
 
 // Resource
 export * from './structures/Resource';

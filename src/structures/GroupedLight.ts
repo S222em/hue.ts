@@ -29,7 +29,7 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 	}
 
 	public async state(state: GroupedLightStateOptions) {
-		await this._edit(groupedLightStateTransformer(this, state));
+		await this._edit(groupedLightStateTransformer(state));
 	}
 
 	public async on(): Promise<void> {

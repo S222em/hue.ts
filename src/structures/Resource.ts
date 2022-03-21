@@ -9,4 +9,5 @@ export abstract class Resource<R extends object & { id?: string }> extends Base<
 	}
 
 	public abstract fetch(): Promise<Resource<any>>;
+	protected abstract _edit(options: R): Promise<void>;
 }

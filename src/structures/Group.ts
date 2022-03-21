@@ -1,14 +1,13 @@
 import type { GroupedLight } from './GroupedLight';
 import type { SceneApplyOptions, SceneResolvable } from './Scene';
-import { GroupSceneManager } from '../managers/GroupSceneManager';
-import { GroupLightManager } from '../managers/GroupLightManager';
+import { Scene } from './Scene';
 import type { TransitionOptions } from '../types/common';
-import type { Bridge } from '../bridge/Bridge';
 import { NamedResource } from './NamedResource';
 import { ApiRoom } from '../types/api/room';
 import { ApiZone } from '../types/api/zone';
-
-export type GroupResolvable = Group | 'string';
+import Collection from '@discordjs/collection';
+import { Light, LightResolvable } from './Light';
+import { GroupEditOptions, groupEditTransformer } from '../transformers/GroupEditTransformer';
 
 export interface GroupStateOptions {
 	on?: boolean;
@@ -19,14 +18,7 @@ export interface GroupStateOptions {
 }
 
 export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> extends NamedResource<R> {
-	public readonly scenes: GroupSceneManager;
-	public readonly lights: GroupLightManager;
-
-	constructor(bridge: Bridge) {
-		super(bridge);
-		this.scenes = new GroupSceneManager(this);
-		this.lights = new GroupLightManager(this);
-	}
+	abstract lights: Collection<string, Light>;
 
 	get groupedLight(): GroupedLight {
 		return this.bridge.groupedLights.cache.get(this.groupedLightId);
@@ -34,6 +26,10 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 
 	get groupedLightId(): string {
 		return this.data.services.find((service) => service.rtype === 'grouped_light')?.rid;
+	}
+
+	get scenes(): Collection<string, Scene> {
+		return this.bridge.scenes.cache.filter((scene) => scene.data.group?.rid === this.id);
 	}
 
 	public async on(transitionOptions?: TransitionOptions): Promise<void> {
@@ -49,7 +45,7 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 	}
 
 	public async state(state: GroupStateOptions, transitionOptions?: TransitionOptions) {
-		for await (const light of this.lights.cache.values()) {
+		for await (const light of this.lights.values()) {
 			await light.state(state, transitionOptions);
 		}
 	}
@@ -57,6 +53,20 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 	public async applyScene(resolvable: SceneResolvable, options?: SceneApplyOptions) {
 		const scene = this.bridge.scenes.resolve(resolvable);
 		await scene?.apply(options);
+	}
+
+	public async edit(options: GroupEditOptions): Promise<void> {
+		return this._edit(groupEditTransformer(options, this));
+	}
+
+	public async addLight(resolvable: LightResolvable): Promise<void> {
+		const light = this.bridge.lights.resolve(resolvable);
+		return await this.edit({ lights: [...this.lights.values(), light] });
+	}
+
+	public async removeLight(resolvable: LightResolvable): Promise<void> {
+		const light = this.bridge.lights.resolve(resolvable);
+		return await this.edit({ lights: [...this.lights.filter((l) => l.id !== light.id).values()] });
 	}
 
 	public isOn(): boolean {

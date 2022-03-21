@@ -6,4 +6,10 @@ export abstract class NamedResource<
 	get name(): string {
 		return this.data.metadata?.name;
 	}
+
+	public async setName(name: string) {
+		return await this.edit({ name });
+	}
+
+	public abstract edit(options: Record<string, any> & { name?: string }): Promise<void>;
 }

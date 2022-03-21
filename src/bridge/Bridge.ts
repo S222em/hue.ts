@@ -21,6 +21,9 @@ import { ApiGroupedLight } from '../types/api/grouped_light';
 import { ApiZone } from '../types/api/zone';
 import { ApiRoom } from '../types/api/room';
 import { ApiScene } from '../types/api/scene';
+import { DeviceManager } from '../managers/DeviceManager';
+import { ApiDevice } from '../types/api/device';
+import { Device } from '../structures/Device';
 
 export interface BridgeOptions {
 	ip: string;
@@ -28,6 +31,11 @@ export interface BridgeOptions {
 
 export interface BridgeEvents {
 	ready: [bridge: Bridge];
+
+	// Device
+	deviceAdd: [device: Device];
+	deviceUpdate: [oldDevice: Device, newDevice: Device];
+	deviceDelete: [device: Device];
 
 	// Light
 	lightAdd: [light: Light];
@@ -60,12 +68,13 @@ export class Bridge extends EventEmitter {
 	public applicationKey: string;
 	public rest: Rest;
 	public event: Event;
-	public lights: LightManager;
-	public groupedLights: GroupedLightManager;
-	public rooms: RoomManager;
-	public zones: ZoneManager;
-	public scenes: SceneManager;
-	public actions: ActionManager;
+	public devices = new DeviceManager(this);
+	public lights = new LightManager(this);
+	public groupedLights = new GroupedLightManager(this);
+	public rooms = new RoomManager(this);
+	public zones = new ZoneManager(this);
+	public scenes = new SceneManager(this);
+	public actions = new ActionManager(this);
 	public on: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public once: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public emit: <K extends keyof BridgeEvents>(event: K, ...args: BridgeEvents[K]) => boolean;
@@ -75,13 +84,6 @@ export class Bridge extends EventEmitter {
 	constructor(options: BridgeOptions) {
 		super();
 		this.ip = options.ip;
-
-		this.lights = new LightManager(this);
-		this.groupedLights = new GroupedLightManager(this);
-		this.rooms = new RoomManager(this);
-		this.zones = new ZoneManager(this);
-		this.scenes = new SceneManager(this);
-		this.actions = new ActionManager(this);
 	}
 
 	public connect(applicationKey: string): void {
@@ -93,6 +95,10 @@ export class Bridge extends EventEmitter {
 			const response = await this.rest.get(Routes.resource());
 
 			const data = response.data as ApiResourceGet;
+
+			for (const device of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Device)) {
+				this.devices._add(device as ApiDevice);
+			}
 
 			for (const light of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Light)) {
 				this.lights._add(light as ApiLight);

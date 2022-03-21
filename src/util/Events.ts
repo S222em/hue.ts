@@ -1,5 +1,8 @@
 export enum Events {
 	Ready = 'ready',
+	DeviceAdd = 'deviceAdd',
+	DeviceUpdate = 'deviceUpdate',
+	DeviceDelete = 'deviceDelete',
 	LightAdd = 'lightAdd',
 	LightUpdate = 'lightUpdate',
 	LightDelete = 'lightDelete',
