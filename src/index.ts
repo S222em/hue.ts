@@ -10,9 +10,16 @@ export * from './managers/GroupedLightManager';
 export * from './managers/RoomManager';
 export * from './managers/ZoneManager';
 export * from './managers/SceneManager';
+export * from './managers/SceneActionManager';
+export * from './managers/DeviceManager';
 
 // Resource
 export * from './structures/Resource';
+export * from './structures/NamedResource';
+
+// Devices
+export * from './structures/Device';
+export * from './structures/Product';
 
 // Lights
 export * from './structures/Light';
