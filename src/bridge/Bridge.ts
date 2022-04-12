@@ -30,6 +30,11 @@ export interface BridgeOptions {
 	 * Ip of the bridge
 	 */
 	ip: string;
+
+	/**
+	 * Key for authorization
+	 */
+	applicationKey: string;
 }
 
 export interface BridgeEvents {
@@ -127,8 +132,10 @@ export class Bridge extends EventEmitter {
 	 * @param options Options for the bridge
 	 * @example
 	 * const bridge = new Bridge({
-	 *   ip: 'some-ip'
+	 *   ip: 'some-ip',
+	 *   applicationKey: 'some-key'
 	 * });
+	 * @constructor
 	 */
 	public constructor(options: BridgeOptions) {
 		super();
@@ -137,12 +144,10 @@ export class Bridge extends EventEmitter {
 
 	/**
 	 * Initiates a connection with the bridge and fetches all resources
-	 * @param applicationKey Key for authorization
 	 */
-	public connect(applicationKey: string): void {
-		this.applicationKey = applicationKey;
-		this.rest = new Rest(this.ip, applicationKey);
-		this.event = new Event(this, this.ip, applicationKey);
+	public connect(): void {
+		this.rest = new Rest(this.ip, this.applicationKey);
+		this.event = new Event(this, this.ip, this.applicationKey);
 
 		setImmediate(async () => {
 			const response = await this.rest.get(Routes.resource());
