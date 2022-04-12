@@ -63,6 +63,7 @@ const { Bridge } = require('hue.ts');
 
 const bridge = new Bridge({
   ip: 'some-ip',
+  applicationKey: 'some-key',
 });
 
 bridge.on('ready', async () => {
@@ -74,7 +75,7 @@ bridge.on('ready', async () => {
   await room.applyScene(scene, { duration: 3000 });
 });
 
-bridge.connect('some-application-key');
+bridge.connect();
 ```
 
 # Installation
