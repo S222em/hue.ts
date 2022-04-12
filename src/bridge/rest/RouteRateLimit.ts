@@ -5,6 +5,10 @@ export interface RouteHandlerOptions {
 	maxRequests: number;
 }
 
+/**
+ * Rate limit manager for a specific route
+ * @internal
+ */
 export class RouteRateLimit {
 	public options: RouteHandlerOptions;
 	public queue: Array<() => any> = [];

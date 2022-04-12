@@ -26,6 +26,9 @@ import { ApiDevice } from '../types/api/device';
 import { Device } from '../structures/Device';
 
 export interface BridgeOptions {
+	/**
+	 * Ip of the bridge
+	 */
 	ip: string;
 }
 
@@ -63,17 +66,56 @@ export interface BridgeEvents {
 	sceneDelete: [scene: Scene];
 }
 
+/**
+ * Represents a Hue bridge
+ */
 export class Bridge extends EventEmitter {
+	/**
+	 * Ip of the bridge
+	 */
 	public readonly ip: string;
+	/**
+	 * Key for authorization
+	 */
 	public applicationKey: string;
+	/**
+	 * Manager for requests to the bridge
+	 * @internal
+	 */
 	public rest: Rest;
+	/**
+	 * Event source for updates from the bridge
+	 * @internal
+	 */
 	public event: Event;
+	/**
+	 * All devices that belong to this bridge
+	 */
 	public devices = new DeviceManager(this);
+	/**
+	 * All lights that belong to this bridge
+	 */
 	public lights = new LightManager(this);
+	/**
+	 * All grouped lights that belong to this bridge
+	 */
 	public groupedLights = new GroupedLightManager(this);
+	/**
+	 * All rooms that belong to this bridge
+	 */
 	public rooms = new RoomManager(this);
+	/**
+	 * All zones that belong to this bridge
+	 */
 	public zones = new ZoneManager(this);
+	/**
+	 * All scenes that belong to this bridge
+	 */
 	public scenes = new SceneManager(this);
+	/**
+	 * Actions to execute when bridge#events receives an event
+	 * @internal
+	 */
 	public actions = new ActionManager(this);
 	public on: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public once: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
@@ -81,11 +123,22 @@ export class Bridge extends EventEmitter {
 	public off: <K extends keyof BridgeEvents>(event: K, listener: (...args: BridgeEvents[K]) => any) => this;
 	public removeAllListeners: <K extends keyof BridgeEvents>(event?: K) => this;
 
-	constructor(options: BridgeOptions) {
+	/**
+	 * @param options Options for the bridge
+	 * @example
+	 * const bridge = new Bridge({
+	 *   ip: 'some-ip'
+	 * });
+	 */
+	public constructor(options: BridgeOptions) {
 		super();
 		this.ip = options.ip;
 	}
 
+	/**
+	 * Initiates a connection with the bridge and fetches all resources
+	 * @param applicationKey Key for authorization
+	 */
 	public connect(applicationKey: string): void {
 		this.applicationKey = applicationKey;
 		this.rest = new Rest(this.ip, applicationKey);

@@ -20,6 +20,10 @@ const CA =
 	'sFgDAiEA1Fj/C3AN5psFMjo0//mrQebo0eKd3aWRx+pQY08mk48=\n' +
 	'-----END CERTIFICATE-----';
 
+/**
+ * Manager for requests to the bridge
+ * @internal
+ */
 export class Rest {
 	public handlers = new Collection<string, RouteRateLimit>();
 	public manager: AxiosInstance;

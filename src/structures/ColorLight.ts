@@ -5,8 +5,14 @@ import type { Bridge } from '../bridge/Bridge';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
 import { LightExtendedType } from './Light';
 
+/**
+ * Represents a Hue light capable of displaying color
+ */
 export class ColorLight extends TemperatureLight {
 	extendedType = LightExtendedType.Color;
+	/**
+	 * Resolves colors between hex, rgb and xy format
+	 */
 	public colorResolver: ColorResolver;
 
 	constructor(bridge: Bridge) {
@@ -14,6 +20,9 @@ export class ColorLight extends TemperatureLight {
 		this.colorResolver = new ColorResolver(this.capabilities);
 	}
 
+	/**
+	 * Current color
+	 */
 	get color(): string {
 		return this.colorResolver.rgbToHex(
 			this.colorResolver.xyPointToRgb({
@@ -24,6 +33,13 @@ export class ColorLight extends TemperatureLight {
 		);
 	}
 
+	/**
+	 * Edits the state of the light
+	 * @param state New state for the light
+	 * @param transitionOptions
+	 * @example
+	 * light.state({ on: true, color: '#58ff05' });
+	 */
 	public async state(
 		state: Pick<LightStateOptions, 'on' | 'brightness' | 'temperature' | 'color'>,
 		transitionOptions?: TransitionOptions,
@@ -31,6 +47,13 @@ export class ColorLight extends TemperatureLight {
 		await super.state(state, transitionOptions);
 	}
 
+	/**
+	 * Edits the state of the light with a new color
+	 * @param color Hex color
+	 * @param transitionOptions
+	 * @example
+	 * light.setColor('#58ff05');
+	 */
 	public async setColor(color: LightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
 		await this.state({ color }, transitionOptions);
 	}

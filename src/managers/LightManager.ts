@@ -9,7 +9,13 @@ import { Routes } from '../util/Routes';
 import Collection from '@discordjs/collection';
 import { ApiLight, ApiLightGet } from '../types/api/light';
 
+/**
+ * Manager for all Hue lights
+ */
 export class LightManager extends ResourceManager<Light> {
+	/**
+	 * The cache of this manager
+	 */
 	public readonly cache: Collection<string, Light>;
 
 	public constructor(bridge: Bridge) {
@@ -17,6 +23,11 @@ export class LightManager extends ResourceManager<Light> {
 		this.cache = new Collection();
 	}
 
+	/**
+	 * Adds or updates lights in the cache
+	 * @param data
+	 * @internal
+	 */
 	public _add(data: ApiLight): Light {
 		const light = this.cache.ensure(data.id, () => {
 			if ('gradient' in data) return new GradientLight(this.bridge);
@@ -29,6 +40,10 @@ export class LightManager extends ResourceManager<Light> {
 		return light;
 	}
 
+	/**
+	 * Fetches a specific light from the bridge
+	 * @param id
+	 */
 	public async fetch(id?: string): Promise<boolean | void> {
 		const response = await this.bridge.rest.get(Routes.light(id));
 		const data = response.data as ApiLightGet;

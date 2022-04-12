@@ -2,6 +2,10 @@ import EventSource from 'eventsource';
 import type { Bridge } from './Bridge';
 import { Routes } from '../util/Routes';
 
+/**
+ * Event source for updates from the bridge
+ * @internal
+ */
 export class Event extends EventSource {
 	private readonly bridge: Bridge;
 

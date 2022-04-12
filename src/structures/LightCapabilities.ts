@@ -50,50 +50,78 @@ function resolveGamut(gamutType: 'A' | 'B' | 'C') {
 	return gamutType === 'A' ? GamutA : gamutType === 'B' ? GamutB : GamutC;
 }
 
+/**
+ * Represents the capabilities of a light
+ */
 export class LightCapabilities {
+	/**
+	 * The connected light
+	 * @private
+	 */
 	private readonly light: Light;
 
 	constructor(light: Light) {
 		this.light = light;
 	}
 
-	get maxGradientPoints(): number | undefined {
-		return this.light.isGradient() ? this.light.data.gradient?.points_capable : null;
+	/**
+	 * The maximum gradient points of the light
+	 */
+	get maxGradientPoints(): number | null {
+		return this.light.isCapableOfGradient() ? this.light.data.gradient?.points_capable : null;
 	}
 
-	get red(): XyPoint | undefined {
-		return this.light.isColor()
+	/**
+	 * The maximum red color of the light
+	 */
+	get red(): XyPoint | null {
+		return this.light.isCapableOfColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.red
 				: resolveGamut(this.light.data.color?.gamut_type).red
 			: null;
 	}
 
-	get green(): XyPoint | undefined {
-		return this.light.isColor()
+	/**
+	 * The maximum green color of the light
+	 */
+	get green(): XyPoint | null {
+		return this.light.isCapableOfColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.green
 				: resolveGamut(this.light.data.color?.gamut_type).green
 			: null;
 	}
 
-	get blue(): XyPoint | undefined {
-		return this.light.isColor()
+	/**
+	 * The maximum blue color of the light
+	 */
+	get blue(): XyPoint | null {
+		return this.light.isCapableOfColor()
 			? this.light.data.color?.gamut
 				? this.light.data.color.gamut.blue
 				: resolveGamut(this.light.data.color?.gamut_type).blue
 			: null;
 	}
 
+	/**
+	 * The maximum temperature color of the light
+	 */
 	get maxTemperature(): number | undefined {
-		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_maximum : null;
+		return this.light.isCapableOfTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_maximum : null;
 	}
 
+	/**
+	 * The minimum temperature color of the light
+	 */
 	get minTemperature(): number | undefined {
-		return this.light.isTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_minimum : null;
+		return this.light.isCapableOfTemperature() ? this.light.data.color_temperature?.mirek_schema?.mirek_minimum : null;
 	}
 
+	/**
+	 * The minimum brightness of the light
+	 */
 	get minBrightnessLevel(): number | undefined {
-		return this.light.isDimmable() ? this.light.data.dimming?.min_dim_level : null;
+		return this.light.isCapableOfDimming() ? this.light.data.dimming?.min_dim_level : null;
 	}
 }

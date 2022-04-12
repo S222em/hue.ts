@@ -165,13 +165,13 @@ await light.state({ on: true }, { duration: 5000 })
 If you have a light that can do dimming, temperatures, color or gradient: use the type narrowers as follows.
 
 ```js
-if (!light.isDimmable()) return;
+if (!light.isCapableOfDimming()) return;
 
 // Set the brightness of the light to 100%
 await light.state({ brightness: 100 });
 
 // Or for a color light
-if (!light.isColor()) return;
+if (!light.isCapableOfColor()) return;
 
 await light.state({ color: '#37ff00' })
 ```

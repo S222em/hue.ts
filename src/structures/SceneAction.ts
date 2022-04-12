@@ -5,7 +5,13 @@ import type { Scene } from './Scene';
 import { SceneActionEditOptions } from '../transformers/SceneActionEditTransformer';
 import { ApiSceneAction } from '../types/api/scene_action';
 
+/**
+ * Represents a Scene action
+ */
 export class SceneAction extends Base<ApiSceneAction> {
+	/**
+	 * The connected Scene
+	 */
 	public readonly scene: Scene;
 
 	constructor(scene: Scene) {
@@ -13,20 +19,46 @@ export class SceneAction extends Base<ApiSceneAction> {
 		this.scene = scene;
 	}
 
+	/**
+	 * The connected Light
+	 */
+	get light(): Light {
+		return this.bridge.lights.cache.get(this.lightId);
+	}
+
+	/**
+	 * The connected Light ID
+	 */
+	get lightId(): string {
+		return this.data.target?.rid;
+	}
+
+	/**
+	 * Whether the connected light should be on
+	 */
 	get on(): boolean {
 		return this.data.action?.on?.on;
 	}
 
+	/**
+	 * The brightness for the connected light
+	 */
 	get brightness(): number {
-		return this.light.isDimmable() ? this.data.action?.dimming.brightness : null;
+		return this.light.isCapableOfDimming() ? this.data.action?.dimming.brightness : null;
 	}
 
+	/**
+	 * The temperature for the connected light
+	 */
 	get temperature(): number {
-		return this.light.isTemperature() ? this.data.action?.color_temperature?.mirek : null;
+		return this.light.isCapableOfTemperature() ? this.data.action?.color_temperature?.mirek : null;
 	}
 
+	/**
+	 * The color for the connected light
+	 */
 	get color(): string {
-		return this.light.isColor()
+		return this.light.isCapableOfColor()
 			? this.light.colorResolver.rgbToHex(
 					this.light.colorResolver.xyPointToRgb({
 						x: this.data.action?.color?.xy?.x,
@@ -37,8 +69,11 @@ export class SceneAction extends Base<ApiSceneAction> {
 			: null;
 	}
 
+	/**
+	 * The gradient for the connected light
+	 */
 	get gradient(): string[] {
-		return this.light.isGradient()
+		return this.light.isCapableOfGradient()
 			? this.data.action?.gradient?.points?.map((point) => {
 					const light = this.light as GradientLight;
 					return light.colorResolver.rgbToHex(
@@ -52,14 +87,10 @@ export class SceneAction extends Base<ApiSceneAction> {
 			: null;
 	}
 
-	get light(): Light {
-		return this.bridge.lights.cache.get(this.lightId);
-	}
-
-	get lightId(): string {
-		return this.data.target?.rid;
-	}
-
+	/**
+	 * Edits this action e.g. new color
+	 * @param options
+	 */
 	public async edit(options: Omit<SceneActionEditOptions, 'light'>) {
 		await this.scene.edit({
 			actions: [

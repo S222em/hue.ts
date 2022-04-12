@@ -12,14 +12,15 @@ export interface LightStateOptions {
 export function lightStateTransformer(options: LightStateOptions, light: Light): ApiLight {
 	return {
 		on: { on: options.on ?? true },
-		dimming: light.isDimmable() && options.brightness ? { brightness: options.brightness } : undefined,
-		color_temperature: light.isTemperature() && options.temperature ? { mirek: options.temperature } : undefined,
+		dimming: light.isCapableOfDimming() && options.brightness ? { brightness: options.brightness } : undefined,
+		color_temperature:
+			light.isCapableOfTemperature() && options.temperature ? { mirek: options.temperature } : undefined,
 		color:
-			light.isColor() && options.color
+			light.isCapableOfColor() && options.color
 				? { xy: light.colorResolver.rgbToXyPoint(light.colorResolver.hexToRgb(options.color)) }
 				: undefined,
 		gradient:
-			light.isGradient() && options.gradient
+			light.isCapableOfGradient() && options.gradient
 				? {
 						points: options.gradient.map((gradient) => {
 							return {
