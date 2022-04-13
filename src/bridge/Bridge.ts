@@ -140,6 +140,7 @@ export class Bridge extends EventEmitter {
 	public constructor(options: BridgeOptions) {
 		super();
 		this.ip = options.ip;
+		this.applicationKey = options.applicationKey;
 	}
 
 	/**
