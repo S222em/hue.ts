@@ -1,4 +1,5 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
+import { setImmediate } from 'node:timers';
 import { LightManager } from '../managers/LightManager';
 import { Events } from '../util/Events';
 import { ActionManager } from './actions/ActionManager';
