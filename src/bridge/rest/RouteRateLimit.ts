@@ -1,4 +1,5 @@
 import { Routes } from '../../util/Routes';
+import { setTimeout } from 'node:timers';
 
 export interface RouteHandlerOptions {
 	interval: number;
