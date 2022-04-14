@@ -98,9 +98,10 @@ const { Bridge, BridgeResourceType } = require('hue.ts');
 const bridge = new Bridge({
   // You can find the local ip of your bridge in the Hue app -> Settings -> My Hue system -> (Select your bridge)
   ip: 'your-ip-goes-here',
+  // You can read about creating a key here https://developers.meethue.com/develop/get-started-2/
+  applicationKey: 'your-application-key-goes-here',
 });
-// You can read about creating a key here https://developers.meethue.com/develop/get-started-2/
-bridge.connect('your-applicationKey-goes-here');
+bridge.connect()
 ```
 
 The bridge instance has several events you can listen to.
