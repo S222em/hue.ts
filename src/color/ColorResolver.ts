@@ -1,7 +1,12 @@
 import { XyPoint } from './XyPoint';
 import type { LightCapabilities } from '../structures/LightCapabilities';
 
-// Most code is from https://github.com/benknight/hue-python-rgb-converter, rewritten to TS
+/**
+ * MIT License (MIT)
+ * Copyright (c) 2014 Benjamin Knight
+ * https://github.com/benknight/hue-python-rgb-converter
+ * Python code converted to TypeScript and modified for use in this project
+ */
 
 export class ColorResolver {
 	public capabilities: LightCapabilities;
