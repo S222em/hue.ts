@@ -47,6 +47,7 @@ export class Socket {
 
 		if (statusCode === 200) {
 			this.connected = true;
+			this.retries = 0;
 			this.debug('Connected');
 			body.setEncoding('utf8');
 			body.on('data', (raw) => this.onMessage(raw));
