@@ -82,7 +82,7 @@ export interface BridgeEvents {
 	rateLimited: [until: Date, route: Route];
 
 	// Socket
-	raw: [raw: Record<string, any>];
+	raw: [raw: Array<Record<string, any>>];
 	disconnect: [];
 	error: [message: string];
 
