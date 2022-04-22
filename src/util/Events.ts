@@ -1,5 +1,11 @@
 export enum Events {
 	Ready = 'ready',
+	Debug = 'debug',
+	Raw = 'raw',
+	Disconnect = 'disconnect',
+	Error = 'error',
+	ApiRequest = 'apiRequest',
+	ApiResponse = 'apiResponse',
 	DeviceAdd = 'deviceAdd',
 	DeviceUpdate = 'deviceUpdate',
 	DeviceDelete = 'deviceDelete',

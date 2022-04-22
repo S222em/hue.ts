@@ -4,9 +4,10 @@ import { Manager, ManagerOptions } from './Manager';
 import { ApiResource } from '../types/api/resource';
 import { Base } from '../structures/Base';
 import { ApiReturnGet } from '../types/api/common';
+import { Route } from '../routes/Route';
 
 export interface ResourceManagerOptions<R extends Base<any>, D extends ApiResource> extends ManagerOptions<R, D> {
-	getRoute: (id: string) => string;
+	route: Route;
 }
 
 export class ResourceManager<R extends Resource<any>, D extends ApiResource> extends Manager<R, D> {
@@ -15,11 +16,11 @@ export class ResourceManager<R extends Resource<any>, D extends ApiResource> ext
 	 */
 	public readonly bridge: Bridge;
 
-	protected getRoute: (id: string) => string;
+	protected route: Route;
 
 	public constructor(bridge: Bridge, options: ResourceManagerOptions<R, D>) {
 		super(options);
-		this.getRoute = options.getRoute;
+		this.route = options.route;
 		this.bridge = bridge;
 	}
 
@@ -29,8 +30,7 @@ export class ResourceManager<R extends Resource<any>, D extends ApiResource> ext
 	 * @internal
 	 */
 	public async fetch(id?: string): Promise<boolean | void> {
-		const response = await this.bridge.rest.get(this.getRoute(id));
-		const data = response.data as ApiReturnGet<D>;
+		const data = (await this.bridge.rest.get(id ? this.route : this.route.addId(id))) as ApiReturnGet<D>;
 		data.data.forEach((data: D) => {
 			this._add(data);
 		});

@@ -1,7 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { setImmediate } from 'node:timers';
 import { LightManager } from '../managers/LightManager';
-import { Events } from '../util/Events';
 import { ActionManager } from './actions/ActionManager';
 import type { Light } from '../structures/Light';
 import type { Room } from '../structures/Room';
@@ -12,19 +10,40 @@ import { ZoneManager } from '../managers/ZoneManager';
 import type { Zone } from '../structures/Zone';
 import { SceneManager } from '../managers/SceneManager';
 import type { Scene } from '../structures/Scene';
-import { Rest } from './rest/Rest';
-import { Event } from './Event';
-import { Routes } from '../util/Routes';
-import { ApiResourceType } from '../types/api/common';
+import { REST } from './rest/REST';
+import { Socket } from './Socket';
+import { DeviceManager } from '../managers/DeviceManager';
+import { Device } from '../structures/Device';
+import { ResponseData } from 'undici/types/dispatcher';
+import { Dispatcher } from 'undici';
+import { Route } from '../routes/Route';
+import { setImmediate } from 'node:timers';
+import { Routes } from '../routes/Routes';
+import { ApiDevice } from '../types/api/device';
 import { ApiResource, ApiResourceGet } from '../types/api/resource';
+import { ApiResourceType } from '../types/api/common';
 import { ApiLight } from '../types/api/light';
 import { ApiGroupedLight } from '../types/api/grouped_light';
-import { ApiZone } from '../types/api/zone';
 import { ApiRoom } from '../types/api/room';
+import { ApiZone } from '../types/api/zone';
 import { ApiScene } from '../types/api/scene';
-import { DeviceManager } from '../managers/DeviceManager';
-import { ApiDevice } from '../types/api/device';
-import { Device } from '../structures/Device';
+import { Events } from '../util/Events';
+
+export const BridgeCA =
+	'-----BEGIN CERTIFICATE-----\n' +
+	'MIICMjCCAdigAwIBAgIUO7FSLbaxikuXAljzVaurLXWmFw4wCgYIKoZIzj0EAwIw\n' +
+	'OTELMAkGA1UEBhMCTkwxFDASBgNVBAoMC1BoaWxpcHMgSHVlMRQwEgYDVQQDDAty\n' +
+	'b290LWJyaWRnZTAiGA8yMDE3MDEwMTAwMDAwMFoYDzIwMzgwMTE5MDMxNDA3WjA5\n' +
+	'MQswCQYDVQQGEwJOTDEUMBIGA1UECgwLUGhpbGlwcyBIdWUxFDASBgNVBAMMC3Jv\n' +
+	'b3QtYnJpZGdlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjNw2tx2AplOf9x86\n' +
+	'aTdvEcL1FU65QDxziKvBpW9XXSIcibAeQiKxegpq8Exbr9v6LBnYbna2VcaK0G22\n' +
+	'jOKkTqOBuTCBtjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNV\n' +
+	'HQ4EFgQUZ2ONTFrDT6o8ItRnKfqWKnHFGmQwdAYDVR0jBG0wa4AUZ2ONTFrDT6o8\n' +
+	'ItRnKfqWKnHFGmShPaQ7MDkxCzAJBgNVBAYTAk5MMRQwEgYDVQQKDAtQaGlsaXBz\n' +
+	'IEh1ZTEUMBIGA1UEAwwLcm9vdC1icmlkZ2WCFDuxUi22sYpLlwJY81Wrqy11phcO\n' +
+	'MAoGCCqGSM49BAMCA0gAMEUCIEBYYEOsa07TH7E5MJnGw557lVkORgit2Rm1h3B2\n' +
+	'sFgDAiEA1Fj/C3AN5psFMjo0//mrQebo0eKd3aWRx+pQY08mk48=\n' +
+	'-----END CERTIFICATE-----';
 
 export interface BridgeOptions {
 	/**
@@ -36,10 +55,35 @@ export interface BridgeOptions {
 	 * Key for authorization
 	 */
 	applicationKey: string;
+
+	/**
+	 * Whether unauthorized requests should be allowed
+	 * @default true
+	 */
+	rejectUnauthorized?: boolean;
+
+	/**
+	 * Certifacte for SSL validation
+	 */
+	ca?: string;
 }
 
 export interface BridgeEvents {
 	ready: [bridge: Bridge];
+	debug: [debug: string];
+
+	// REST
+	apiRequest: [
+		request: { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> &
+			Partial<Pick<Dispatcher.RequestOptions, 'method'>>,
+		route: Route,
+	];
+	apiResponse: [response: ResponseData, route: Route];
+
+	// Socket
+	raw: [raw: Record<string, any>];
+	disconnect: [];
+	error: [message: string];
 
 	// Device
 	deviceAdd: [device: Device];
@@ -77,23 +121,19 @@ export interface BridgeEvents {
  */
 export class Bridge extends EventEmitter {
 	/**
-	 * Ip of the bridge
+	 * The options this bridge was instantiated with
 	 */
-	public readonly ip: string;
-	/**
-	 * Key for authorization
-	 */
-	public applicationKey: string;
+	public options: BridgeOptions;
 	/**
 	 * Manager for requests to the bridge
 	 * @internal
 	 */
-	public rest: Rest;
+	public rest: REST;
 	/**
 	 * Event source for updates from the bridge
 	 * @internal
 	 */
-	public event: Event;
+	public socket: Socket;
 	/**
 	 * All devices that belong to this bridge
 	 */
@@ -140,21 +180,19 @@ export class Bridge extends EventEmitter {
 	 */
 	public constructor(options: BridgeOptions) {
 		super();
-		this.ip = options.ip;
-		this.applicationKey = options.applicationKey;
+		this.options = options;
+		this.rest = new REST(this);
+		this.socket = new Socket(this);
 	}
 
 	/**
 	 * Initiates a connection with the bridge and fetches all resources
 	 */
-	public connect(): void {
-		this.rest = new Rest(this.ip, this.applicationKey);
-		this.event = new Event(this, this.ip, this.applicationKey);
+	public async connect(): Promise<void> {
+		await this.socket.connect();
 
 		setImmediate(async () => {
-			const response = await this.rest.get(Routes.resource());
-
-			const data = response.data as ApiResourceGet;
+			const data = (await this.rest.get(Routes.Resource)) as ApiResourceGet;
 
 			for (const device of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Device)) {
 				this.devices._add(device as ApiDevice);

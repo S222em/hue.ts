@@ -4,7 +4,7 @@ import type { DimmableLight } from './DimmableLight';
 import type { GradientLight } from './GradientLight';
 import { LightCapabilities } from './LightCapabilities';
 import type { TransitionOptions } from '../types/common';
-import { Routes } from '../util/Routes';
+import { Routes } from '../routes/Routes';
 import type { Room, RoomResolvable } from './Room';
 import { NamedResource } from './NamedResource';
 import { LightStateOptions, lightStateTransformer } from '../transformers/LightStateTransformer';
@@ -232,7 +232,7 @@ export class Light extends NamedResource<ApiLight> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiLight, transitionOptions?: TransitionOptions): Promise<void> {
-		await this.bridge.rest.put(Routes.light(this.id), {
+		await this.bridge.rest.put(Routes.Light.addId(this.id), {
 			...data,
 			dynamics: { duration: transitionOptions?.duration },
 		});

@@ -1,5 +1,5 @@
 import { Group } from './Group';
-import { Routes } from '../util/Routes';
+import { Routes } from '../routes/Routes';
 import { ApiZone } from '../types/api/zone';
 import { ApiResourceType } from '../types/api/common';
 import Collection from '@discordjs/collection';
@@ -26,7 +26,7 @@ export class Zone extends Group<ApiZone> {
 	 * Deletes this zone
 	 */
 	public async delete(): Promise<void> {
-		await this.bridge.rest.delete(Routes.zone(this.id));
+		await this.bridge.rest.delete(Routes.Zone.addId(this.id));
 	}
 
 	/**
@@ -44,6 +44,6 @@ export class Zone extends Group<ApiZone> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiZone): Promise<void> {
-		await this.bridge.rest.put(Routes.zone(this.id), data);
+		await this.bridge.rest.put(Routes.Zone.addId(this.id), data);
 	}
 }

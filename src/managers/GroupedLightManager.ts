@@ -1,7 +1,7 @@
 import type { Bridge } from '../bridge/Bridge';
 import { GroupedLight } from '../structures/GroupedLight';
 import { ResourceManager } from './ResourceManager';
-import { Routes } from '../util/Routes';
+import { Routes } from '../routes/Routes';
 import { ApiGroupedLight } from '../types/api/grouped_light';
 
 /**
@@ -9,6 +9,6 @@ import { ApiGroupedLight } from '../types/api/grouped_light';
  */
 export class GroupedLightManager extends ResourceManager<GroupedLight, ApiGroupedLight> {
 	public constructor(bridge: Bridge) {
-		super(bridge, { createCollection: true, makeCache: () => new GroupedLight(bridge), getRoute: Routes.groupedLight });
+		super(bridge, { createCollection: true, makeCache: () => new GroupedLight(bridge), route: Routes.GroupedLight });
 	}
 }

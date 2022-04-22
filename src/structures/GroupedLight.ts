@@ -1,6 +1,6 @@
 import { Resource } from './Resource';
 import type { Group } from './Group';
-import { Routes } from '../util/Routes';
+import { Routes } from '../routes/Routes';
 import { GroupedLightStateOptions, groupedLightStateTransformer } from '../transformers/GroupedLightStateTransformer';
 import { ApiResourceType } from '../types/api/common';
 import { ApiGroupedLight } from '../types/api/grouped_light';
@@ -93,6 +93,6 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiGroupedLight): Promise<void> {
-		await this.bridge.rest.put(Routes.groupedLight(this.id), data);
+		await this.bridge.rest.put(Routes.GroupedLight.addId(this.id), data);
 	}
 }

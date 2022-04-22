@@ -1,6 +1,8 @@
 // Bridge
 export * from './bridge/Bridge';
-export * from './bridge/rest/Rest';
+export * from './bridge/rest/REST';
+export * from './bridge/rest/RequestManager';
+export * from './bridge/rest/RouteHandler';
 
 // Managers
 export * from './managers/Manager';
@@ -56,7 +58,10 @@ export * from './types/api/scene_action';
 // Types
 export * from './types/common';
 
+// Routes
+export * from './routes/Route';
+export * from './routes/Routes';
+
 // Util
 export * from './util/Colors';
 export * from './util/Events';
-export * from './util/Routes';
