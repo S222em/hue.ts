@@ -5,6 +5,12 @@ import { EventStreamRoute } from '../routes/EventStream';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../util/Events';
 
+export enum SocketStatus {
+	Connected = 'connected',
+	Disconnected = 'disconnected',
+	Connecting = 'connecting',
+}
+
 /**
  * Socket for SSE events from the bridge
  * @internal
@@ -12,7 +18,7 @@ import { Events } from '../util/Events';
 export class Socket {
 	private readonly bridge: Bridge;
 	public dispatcher: Agent;
-	public connected: boolean;
+	public status: SocketStatus = SocketStatus.Disconnected;
 	public retries = 0;
 	public connection: BodyReadable & Dispatcher.BodyMixin;
 
@@ -35,6 +41,7 @@ export class Socket {
 	}
 
 	public async connect() {
+		this.status = SocketStatus.Connecting;
 		const { body, statusCode } = await request(`https://${this.bridge.options.ip}:443${EventStreamRoute.getRoute()}`, {
 			method: 'GET',
 			headers: {
@@ -46,7 +53,7 @@ export class Socket {
 		});
 
 		if (statusCode === 200) {
-			this.connected = true;
+			this.status = SocketStatus.Connected;
 			this.retries = 0;
 			this.debug('Connected');
 			body.setEncoding('utf8');
@@ -66,7 +73,7 @@ export class Socket {
 		if (this.retries === 5) return this.bridge.emit(Events.Disconnect);
 		this.retries += 1;
 
-		this.connected = false;
+		this.status = SocketStatus.Disconnected;
 		this.connection.destroy();
 
 		await this.connect();
