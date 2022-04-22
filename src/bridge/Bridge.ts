@@ -17,7 +17,6 @@ import { Device } from '../structures/Device';
 import { ResponseData } from 'undici/types/dispatcher';
 import { Dispatcher } from 'undici';
 import { Route } from '../routes/Route';
-import { setImmediate } from 'node:timers';
 import { Routes } from '../routes/Routes';
 import { ApiDevice } from '../types/api/device';
 import { ApiResource, ApiResourceGet } from '../types/api/resource';
@@ -192,36 +191,34 @@ export class Bridge extends EventEmitter {
 	public async connect(): Promise<void> {
 		await this.socket.connect();
 
-		setImmediate(async () => {
-			const data = (await this.rest.get(Routes.Resource)) as ApiResourceGet;
+		const data = (await this.rest.get(Routes.Resource)) as ApiResourceGet;
 
-			for (const device of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Device)) {
-				this.devices._add(device as ApiDevice);
-			}
+		for (const device of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Device)) {
+			this.devices._add(device as ApiDevice);
+		}
 
-			for (const light of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Light)) {
-				this.lights._add(light as ApiLight);
-			}
+		for (const light of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Light)) {
+			this.lights._add(light as ApiLight);
+		}
 
-			for (const groupedLight of data.data.filter(
-				(resource: ApiResource) => resource.type === ApiResourceType.GroupedLight,
-			)) {
-				this.groupedLights._add(groupedLight as ApiGroupedLight);
-			}
+		for (const groupedLight of data.data.filter(
+			(resource: ApiResource) => resource.type === ApiResourceType.GroupedLight,
+		)) {
+			this.groupedLights._add(groupedLight as ApiGroupedLight);
+		}
 
-			for (const room of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Room)) {
-				this.rooms._add(room as ApiRoom);
-			}
+		for (const room of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Room)) {
+			this.rooms._add(room as ApiRoom);
+		}
 
-			for (const zone of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Zone)) {
-				this.zones._add(zone as ApiZone);
-			}
+		for (const zone of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Zone)) {
+			this.zones._add(zone as ApiZone);
+		}
 
-			for (const scene of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Scene)) {
-				this.scenes._add(scene as ApiScene);
-			}
+		for (const scene of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Scene)) {
+			this.scenes._add(scene as ApiScene);
+		}
 
-			this.emit(Events.Ready, this);
-		});
+		this.emit(Events.Ready, this);
 	}
 }
