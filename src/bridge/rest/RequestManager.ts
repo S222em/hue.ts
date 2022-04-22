@@ -31,7 +31,6 @@ export class RequestManager {
 	public async queueRequest(method: 'GET' | 'PUT' | 'POST' | 'DELETE', route: Route, data?: Record<string, any>) {
 		const handler = this.handlers.ensure(route.baseRoute, () => new RouteHandler(this, route));
 
-		this.debug(`Queuing request to ${route.baseRoute}`);
 		return await handler.queueRequest(route, {
 			method,
 			body: JSON.stringify(data),

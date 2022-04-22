@@ -79,6 +79,7 @@ export interface BridgeEvents {
 		route: Route,
 	];
 	apiResponse: [response: ResponseData, route: Route];
+	rateLimited: [until: Date, route: Route];
 
 	// Socket
 	raw: [raw: Record<string, any>];

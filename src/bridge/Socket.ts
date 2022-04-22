@@ -6,7 +6,7 @@ import BodyReadable from 'undici/types/readable';
 import { Events } from '../util/Events';
 
 /**
- * Event source for updates from the bridge
+ * Socket for SSE events from the bridge
  * @internal
  */
 export class Socket {
@@ -74,7 +74,7 @@ export class Socket {
 	public async onMessage(raw: string) {
 		if (raw === ': hi\n' + '\n') return this.debug('Hi');
 		const data = this.parseRaw(raw);
-		this.debug(`Received ${data.length} updates`);
+		this.debug(`Received ${data.length} update(s)`);
 		this.bridge.emit(Events.Raw, data);
 		data.forEach((event) => {
 			const deviceType = String(event.data[0].type).replace(/_/g, '');

@@ -25,4 +25,12 @@ export class Util {
 	public static clone<O extends object>(object: O): O {
 		return Object.assign(Object.create(object), object);
 	}
+
+	public static dateToString(date: Date = new Date()): string {
+		return `${Util.pad(date.getHours())}:${Util.pad(date.getMinutes())}:${Util.pad(date.getSeconds())}`;
+	}
+
+	public static pad(number: number) {
+		return (number < 10 ? '0' : '') + String(number);
+	}
 }

@@ -4,6 +4,7 @@ import { Dispatcher, request } from 'undici';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { Route } from '../../routes/Route';
 import { Events } from '../../util/Events';
+import { Util } from '../../util/Util';
 
 export class RouteHandler {
 	public manager: RequestManager;
@@ -26,11 +27,14 @@ export class RouteHandler {
 		await this.asyncQueue.wait();
 
 		if (this.hasRateLimit()) {
+			this.manager.bridge.emit(Events.RateLimited, this.intervalUntil, route);
+			this.manager.debug(`Rate limited for route ${route.baseRoute} until ${Util.dateToString(this.intervalUntil)}`);
 			await sleep(this.rateLimitEndsIn());
 		}
 
 		try {
 			this.manager.bridge.emit(Events.ApiRequest, options, route);
+
 			const response = await request(
 				`https://${this.manager.bridge.options.ip}:443/clip/v2${route.getRoute()}`,
 				options,
@@ -38,20 +42,21 @@ export class RouteHandler {
 			this.manager.bridge.emit(Events.ApiResponse, response, route);
 			const data = await response.body.json();
 
-			this.manager.debug(`Received response (status ${response.statusCode} for request to ${route.getRoute()}`);
+			this.manager.debug(`Received response (status ${response.statusCode}) for request to ${route.getRoute()}`);
 
 			if (response.statusCode === 400) {
 				throw new Error(data.errors[0].description);
 			}
 			if (response.statusCode === 200) return data;
 		} finally {
+			this.left -= 1;
 			this.asyncQueue.shift();
 		}
 	}
 
 	public hasRateLimit(): boolean {
 		if (this.intervalUntil.getTime() <= Date.now()) this.resetRateLimit();
-		return this.left === this.route.maxRequests;
+		return this.left === 0;
 	}
 
 	public rateLimitEndsIn(): number {
