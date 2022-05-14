@@ -1,5 +1,5 @@
 import { Group } from './Group';
-import { Routes } from '../routes/Routes';
+import { Routes } from '../util/Routes';
 import { ApiRoom } from '../types/api/room';
 import { ApiResourceType } from '../types/api/common';
 import Collection from '@discordjs/collection';
@@ -40,7 +40,7 @@ export class Room extends Group<ApiRoom> {
 	 * Deletes this room
 	 */
 	public async delete(): Promise<void> {
-		await this.bridge.rest.delete(Routes.Room.addId(this.id));
+		await this.bridge.rest.delete(Routes.room.id(this.id));
 	}
 
 	/**
@@ -58,6 +58,6 @@ export class Room extends Group<ApiRoom> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiRoom): Promise<void> {
-		await this.bridge.rest.put(Routes.Room.addId(this.id), data);
+		await this.bridge.rest.put(Routes.room.id(this.id), data);
 	}
 }

@@ -1,7 +1,6 @@
 import type { Bridge } from './Bridge';
 import { BridgeCA } from './Bridge';
 import { Agent, Dispatcher, request } from 'undici';
-import { EventStreamRoute } from '../routes/EventStream';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../util/Events';
 
@@ -44,7 +43,7 @@ export class SSE {
 		this.connection = undefined;
 		this.status = SocketStatus.Connecting;
 
-		const { body, statusCode } = await request(`https://${this.bridge.options.ip}:443${EventStreamRoute.getRoute()}`, {
+		const { body, statusCode } = await request(`https://${this.bridge.options.ip}:443/eventstream/clip/v2`, {
 			method: 'GET',
 			headers: {
 				'hue-application-key': this.bridge.options.applicationKey,

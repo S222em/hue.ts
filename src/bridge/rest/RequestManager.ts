@@ -1,7 +1,7 @@
 import { Bridge, BridgeCA } from '../Bridge';
 import Collection from '@discordjs/collection';
 import { RouteHandler } from './RouteHandler';
-import { Route } from '../../routes/Route';
+import { Route } from './Route';
 import { Agent } from 'undici';
 import { Events } from '../../util/Events';
 
@@ -29,7 +29,7 @@ export class RequestManager {
 	}
 
 	public async queueRequest(method: 'GET' | 'PUT' | 'POST' | 'DELETE', route: Route, data?: Record<string, any>) {
-		const handler = this.handlers.ensure(route.baseRoute, () => new RouteHandler(this, route));
+		const handler = this.handlers.ensure(route.base, () => new RouteHandler(this, route));
 
 		return await handler.queueRequest(route, {
 			method,

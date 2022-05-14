@@ -1,6 +1,6 @@
 import { Bridge } from '../Bridge';
 import { RequestManager } from './RequestManager';
-import { Route } from '../../routes/Route';
+import { Route } from './Route';
 import { ApiReturnDelete, ApiReturnGet, ApiReturnPost, ApiReturnPut } from '../../types/api/common';
 
 /**

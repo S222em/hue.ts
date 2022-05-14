@@ -4,7 +4,7 @@ import { Manager, ManagerOptions } from './Manager';
 import { ApiResource } from '../types/api/resource';
 import { Base } from '../structures/Base';
 import { ApiReturnGet } from '../types/api/common';
-import { Route } from '../routes/Route';
+import { Route } from '../bridge/rest/Route';
 
 export interface ResourceManagerOptions<R extends Base<any>, D extends ApiResource> extends ManagerOptions<R, D> {
 	route: Route;
@@ -30,7 +30,7 @@ export class ResourceManager<R extends Resource<any>, D extends ApiResource> ext
 	 * @internal
 	 */
 	public async fetch(id?: string): Promise<boolean | void> {
-		const data = (await this.bridge.rest.get(id ? this.route : this.route.addId(id))) as ApiReturnGet<D>;
+		const data = (await this.bridge.rest.get(id ? this.route : this.route.id(id))) as ApiReturnGet<D>;
 		data.data.forEach((data: D) => {
 			this._add(data);
 		});

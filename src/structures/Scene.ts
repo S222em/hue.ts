@@ -1,6 +1,6 @@
 import type { Group } from './Group';
 import type { TransitionOptions } from '../types/common';
-import { Routes } from '../routes/Routes';
+import { Routes } from '../util/Routes';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
 import { SceneEditOptions, sceneEditTransformer } from '../transformers/SceneEditTransformer';
@@ -84,7 +84,7 @@ export class Scene extends NamedResource<ApiScene> {
 	 * Deletes this scene
 	 */
 	public async delete() {
-		await this.bridge.rest.delete(Routes.Scene.addId(this.id));
+		await this.bridge.rest.delete(Routes.scene.id(this.id));
 	}
 
 	/**
@@ -102,6 +102,6 @@ export class Scene extends NamedResource<ApiScene> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiScene) {
-		await this.bridge.rest.put(Routes.Scene.addId(this.id), data);
+		await this.bridge.rest.put(Routes.scene.id(this.id), data);
 	}
 }

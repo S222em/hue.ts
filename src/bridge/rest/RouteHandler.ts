@@ -2,7 +2,7 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import { RequestManager } from './RequestManager';
 import { Dispatcher, request } from 'undici';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { Route } from '../../routes/Route';
+import { Route } from './Route';
 import { Events } from '../../util/Events';
 import { Util } from '../../util/Util';
 
@@ -28,21 +28,18 @@ export class RouteHandler {
 
 		if (this.hasRateLimit()) {
 			this.manager.bridge.emit(Events.RateLimited, this.intervalUntil, route);
-			this.manager.debug(`Rate limited for route ${route.baseRoute} until ${Util.dateToString(this.intervalUntil)}`);
+			this.manager.debug(`Rate limited for route ${route.base} until ${Util.dateToString(this.intervalUntil)}`);
 			await sleep(this.rateLimitEndsIn());
 		}
 
 		try {
 			this.manager.bridge.emit(Events.ApiRequest, options, route);
 
-			const response = await request(
-				`https://${this.manager.bridge.options.ip}:443/clip/v2${route.getRoute()}`,
-				options,
-			);
+			const response = await request(`https://${this.manager.bridge.options.ip}:443/clip/v2${route.route()}`, options);
 			this.manager.bridge.emit(Events.ApiResponse, response, route);
 			const data = await response.body.json();
 
-			this.manager.debug(`Received response (status ${response.statusCode}) for request to ${route.getRoute()}`);
+			this.manager.debug(`Received response (status ${response.statusCode}) for request to ${route.route()}`);
 
 			if (response.statusCode === 400) {
 				throw new Error(data.errors[0].description);
@@ -64,7 +61,7 @@ export class RouteHandler {
 	}
 
 	public resetRateLimit() {
-		this.left = this.route.maxRequests;
-		this.intervalUntil = new Date(Date.now() + this.route.perInterval * 1000);
+		this.left = this.route.ratelimit.maxRequests;
+		this.intervalUntil = new Date(Date.now() + this.route.ratelimit.perInterval * 1000);
 	}
 }

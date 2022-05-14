@@ -1,7 +1,7 @@
 import type { Bridge } from '../bridge/Bridge';
 import { Light } from '../structures/Light';
 import { ResourceManager } from './ResourceManager';
-import { Routes } from '../routes/Routes';
+import { Routes } from '../util/Routes';
 import { ApiLight } from '../types/api/light';
 import { GradientLight } from '../structures/GradientLight';
 import { ColorLight } from '../structures/ColorLight';
@@ -22,7 +22,7 @@ export class LightManager extends ResourceManager<Light, ApiLight> {
 				else if ('dimming' in data) return new DimmableLight(bridge);
 				else return new Light(this.bridge);
 			},
-			route: Routes.Light,
+			route: Routes.light,
 		});
 	}
 }

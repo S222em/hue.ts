@@ -16,8 +16,8 @@ import { DeviceManager } from '../managers/DeviceManager';
 import { Device } from '../structures/Device';
 import { ResponseData } from 'undici/types/dispatcher';
 import { Dispatcher } from 'undici';
-import { Route } from '../routes/Route';
-import { Routes } from '../routes/Routes';
+import { Route } from './rest/Route';
+import { Routes } from '../util/Routes';
 import { ApiDevice } from '../types/api/device';
 import { ApiResource, ApiResourceGet } from '../types/api/resource';
 import { ApiResourceType } from '../types/api/common';
@@ -191,7 +191,7 @@ export class Bridge extends EventEmitter {
 	public async connect(): Promise<void> {
 		await this.socket.connect();
 
-		const data = (await this.rest.get(Routes.Resource)) as ApiResourceGet;
+		const data = (await this.rest.get(Routes.resource)) as ApiResourceGet;
 
 		for (const device of data.data.filter((resource: ApiResource) => resource.type === ApiResourceType.Device)) {
 			this.devices._add(device as ApiDevice);

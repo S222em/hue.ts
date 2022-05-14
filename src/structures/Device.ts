@@ -3,8 +3,8 @@ import { ApiDevice } from '../types/api/device';
 import { ApiResourceType } from '../types/api/common';
 import { Light } from './Light';
 import { Product } from './Product';
-import { Routes } from '../routes/Routes';
 import { DeviceEditOptions, deviceEditTransformer } from '../transformers/DeviceEditTransformer';
+import { Routes } from '../util/Routes';
 
 /**
  * Represents a Hue device
@@ -67,6 +67,6 @@ export class Device extends NamedResource<ApiDevice> {
 	 * @internal
 	 */
 	protected async _edit(data: ApiDevice): Promise<void> {
-		await this.bridge.rest.put(Routes.Device.addId(this.id), data);
+		await this.bridge.rest.put(Routes.device.id(this.id), data);
 	}
 }
