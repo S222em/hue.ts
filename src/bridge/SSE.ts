@@ -12,10 +12,10 @@ export enum SocketStatus {
 }
 
 /**
- * Socket for SSE events from the bridge
+ * Manager for SSE events from the bridge
  * @internal
  */
-export class Socket {
+export class SSE {
 	private readonly bridge: Bridge;
 	public dispatcher: Agent;
 	public status: SocketStatus = SocketStatus.Disconnected;
@@ -41,7 +41,9 @@ export class Socket {
 	}
 
 	public async connect() {
+		this.connection = undefined;
 		this.status = SocketStatus.Connecting;
+
 		const { body, statusCode } = await request(`https://${this.bridge.options.ip}:443${EventStreamRoute.getRoute()}`, {
 			method: 'GET',
 			headers: {
@@ -55,6 +57,7 @@ export class Socket {
 		if (statusCode === 200) {
 			this.status = SocketStatus.Connected;
 			this.retries = 0;
+			this.connection = body;
 			this.debug('Connected');
 			body.setEncoding('utf8');
 			body.on('data', (raw) => this.onMessage(raw));
@@ -64,7 +67,7 @@ export class Socket {
 	}
 
 	public async onError(error: Error) {
-		this.debug('Encountered error');
+		this.debug(`Encountered error: ${error.message}`);
 		this.bridge.emit(Events.Error, error.message);
 	}
 

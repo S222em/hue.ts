@@ -11,7 +11,7 @@ import type { Zone } from '../structures/Zone';
 import { SceneManager } from '../managers/SceneManager';
 import type { Scene } from '../structures/Scene';
 import { REST } from './rest/REST';
-import { Socket } from './Socket';
+import { SSE } from './SSE';
 import { DeviceManager } from '../managers/DeviceManager';
 import { Device } from '../structures/Device';
 import { ResponseData } from 'undici/types/dispatcher';
@@ -80,7 +80,7 @@ export interface BridgeEvents {
 	apiResponse: [response: ResponseData, route: Route];
 	rateLimited: [until: Date, route: Route];
 
-	// Socket
+	// SSE
 	raw: [raw: Array<Record<string, any>>];
 	disconnect: [];
 	error: [message: string];
@@ -133,7 +133,7 @@ export class Bridge extends EventEmitter {
 	 * Event source for updates from the bridge
 	 * @internal
 	 */
-	public socket: Socket;
+	public socket: SSE;
 	/**
 	 * All devices that belong to this bridge
 	 */
@@ -182,7 +182,7 @@ export class Bridge extends EventEmitter {
 		super();
 		this.options = options;
 		this.rest = new REST(this);
-		this.socket = new Socket(this);
+		this.socket = new SSE(this);
 	}
 
 	/**
