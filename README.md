@@ -82,7 +82,7 @@ npm install hue.ts
 const bridge = new Bridge({
 	ip: 'BRIDGE_IP',
 	applicationKey: 'APPLICATION_KEY',
-	// Uncomment line below if you are having ssl certifacate validation issues
+	// Uncomment line below if you are having ssl certificate validation issues
 	// rejectUnauthorized: false,
 });
 ```
