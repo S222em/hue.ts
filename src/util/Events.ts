@@ -34,7 +34,7 @@ export const Events = {
 	Debug: 'debug' as const,
 	ApiRequest: 'apiRequest' as const,
 	ApiResponse: 'apiResponse' as const,
-	RateLimited: 'rateLimited' as const,
+	Ratelimit: 'ratelimit' as const,
 	Raw: 'raw' as const,
 	Disconnect: 'disconnect' as const,
 	Error: 'error' as const,

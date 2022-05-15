@@ -21,7 +21,7 @@ export interface BridgeEvents {
 		route: Route,
 	];
 	[Events.ApiResponse]: [response: ResponseData, route: Route];
-	[Events.RateLimited]: [until: Date, route: Route];
+	[Events.Ratelimit]: [until: Date, route: Route];
 
 	// SSE
 	[Events.Raw]: [raw: Array<Record<string, any>>];

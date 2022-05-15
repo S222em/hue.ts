@@ -27,7 +27,7 @@ export class RouteHandler {
 		await this.asyncQueue.wait();
 
 		if (this.hasRateLimit()) {
-			this.manager.bridge.emit(Events.RateLimited, this.intervalUntil, route);
+			this.manager.bridge.emit(Events.Ratelimit, this.intervalUntil, route);
 			this.manager.debug(`Rate limited for route ${route.base} until ${Util.dateToString(this.intervalUntil)}`);
 			await sleep(this.rateLimitEndsIn());
 		}
