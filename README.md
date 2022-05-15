@@ -25,6 +25,9 @@
       <a href="#examples">Examples</a>
     </li>
     <li>
+      <a href="#rate-limits">Examples</a>
+    </li>
+    <li>
       <a href="#roadmap">Roadmap</a>
     </li>
   </ol>
@@ -148,7 +151,53 @@ if (light.isCapableOfColor()) {
 }
 ```
 
-The methods above are not available if the `light.isCapableOfColor()` or the `light.isColor()` typegaurd is not called first. The rest of the methods are similiar to above and can all be reviewed in the [wiki][wiki-url]
+The methods above are not available if the `light.isCapableOfColor()` or the `light.isColor()` typegaurd is not called first. The rest of the methods are similiar to above and can all be reviewed in the [wiki][wiki-url].
+
+Lights are connected to another resource: Device. A Device includes properties like the menufacturer and model type. All devices, lights, buttons, etc have a Device connected to it.
+
+```ts
+const device = light.device;
+
+console.log(device.product.manufacturerName);
+```
+
+## Groups
+
+Groups consist of 2 different resources: rooms and zones.
+
+Lets get a room from the cache to get started:
+
+```ts
+const room = bridge.rooms.resolve('ID_OR_NAME');
+// Or a Zone
+const zone = bridge.zones.resolve('ID_OR_NAME');
+```
+
+You can set all the lights in the room to one state, if all lights are capable of what you are trying to set as the state
+
+```ts
+await room.state({ color: 'HEX_COLOR' });
+```
+
+Settings the color for a light, like above, won't do anything for lights that don't support it.
+
+A light can only be in one room, while a light can have many zones.
+
+```ts
+await room.addLight('ID_OR_NAME_OR_LIGHT');
+```
+
+If the above method is called on a room (not on a zone), the light will be moved to that room. With zones, the light will keep the zones it was already in, and is added to the new zone as well.
+
+Groups also have a Collection of all the lights that belong to it.
+
+```ts
+room.lights.forEach((light) => console.log(light.name));
+```
+
+# Rate limits
+
+hue.ts keeps track of the request you make, and makes sure no ratelimit is hit. This might cause a delay when executing requests. All routes expect lights has a 1 per second ratelimit. Requests to /lights has a 10 per second ratelimit.
 
 # Colors
 
