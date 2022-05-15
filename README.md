@@ -19,7 +19,10 @@
       <a href="#installation">Installation</a>
     </li>
     <li>
-      <a href="#final-note">Final note</a>
+      <a href="#docs">Docs</a>
+    </li>
+    <li>
+      <a href="#examples">Examples</a>
     </li>
     <li>
       <a href="#roadmap">Roadmap</a>
@@ -37,7 +40,7 @@ hue.ts is a node module that allows you to easily interact with the hue API (V2)
 
 # Docs
 
-[here][wiki-url]
+Docs can be found on our wiki [here][wiki-url].
 
 # Example usage
 
@@ -63,9 +66,9 @@ bridge.connect();
 
 # Installation
 
-**NodeJS v16.13.0 or newer is required**
+**NodeJS v16.13.0 or newer is required.**
 
-**Hue bridge version 1948086000 or higher is required**
+**Hue bridge version 1948086000 or higher is required.**
 
 ```shell
 npm install hue.ts
