@@ -3,8 +3,11 @@ import { ApiDevice } from '../types/api/device';
 import { ApiResourceType } from '../types/api/common';
 import { Light } from './Light';
 import { Product } from './Product';
-import { DeviceEditOptions, deviceEditTransformer } from '../transformers/DeviceEdit';
 import { Routes } from '../util/Routes';
+
+export interface DeviceOptions {
+	name?: string;
+}
 
 /**
  * Represents a Hue device
@@ -41,8 +44,8 @@ export class Device extends NamedResource<ApiDevice> {
 	 * Edits this device with new data e.g. new name
 	 * @param options
 	 */
-	public async edit(options: DeviceEditOptions): Promise<void> {
-		return await this._edit(deviceEditTransformer(options));
+	public async edit(options: DeviceOptions): Promise<void> {
+		return await this._edit(Device.transform(options));
 	}
 
 	/**
@@ -68,5 +71,11 @@ export class Device extends NamedResource<ApiDevice> {
 	 */
 	protected async _edit(data: ApiDevice): Promise<void> {
 		await this.bridge.rest.put(Routes.device.id(this.id), data);
+	}
+
+	public static transform(options: DeviceOptions): ApiDevice {
+		return {
+			metadata: options.name ? { name: options.name } : undefined,
+		};
 	}
 }

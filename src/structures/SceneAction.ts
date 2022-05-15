@@ -1,9 +1,19 @@
 import { Base } from './Base';
-import type { Light } from './Light';
+import { Light, LightResolvable } from './Light';
 import type { GradientLight } from './GradientLight';
 import type { Scene } from './Scene';
-import { SceneActionEditOptions } from '../transformers/SceneActionEdit';
 import { ApiSceneAction } from '../types/api/scene_action';
+import { Bridge } from '../bridge/Bridge';
+import { ApiResourceType } from '../types/api/common';
+
+export interface SceneActionOptions {
+	light: LightResolvable;
+	on?: boolean;
+	brightness?: number;
+	temperature?: number;
+	color?: string;
+	gradient?: string[];
+}
 
 /**
  * Represents a Scene action
@@ -91,7 +101,7 @@ export class SceneAction extends Base<ApiSceneAction> {
 	 * Edits this action e.g. new color
 	 * @param options
 	 */
-	public async edit(options: Omit<SceneActionEditOptions, 'light'>) {
+	public async edit(options: Omit<SceneActionOptions, 'light'>) {
 		await this.scene.edit({
 			actions: [
 				{
@@ -101,5 +111,16 @@ export class SceneAction extends Base<ApiSceneAction> {
 				...this.scene.actions.cache.filter((action) => action.lightId !== this.lightId).values(),
 			],
 		});
+	}
+
+	public static transform(bridge: Bridge, options: SceneActionOptions): ApiSceneAction {
+		const light = bridge.lights.resolve(options.light);
+		return {
+			target: {
+				rid: light.id,
+				rtype: ApiResourceType.Light,
+			},
+			action: Light.transformState(bridge, light, options),
+		};
 	}
 }

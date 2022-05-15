@@ -5,18 +5,17 @@ import { NamedResource } from './NamedResource';
 import { ApiRoom } from '../types/api/room';
 import { ApiZone } from '../types/api/zone';
 import Collection from '@discordjs/collection';
-import { Light, LightResolvable } from './Light';
-import { GroupEditOptions, groupEditTransformer } from '../transformers/GroupEdit';
-import { Room } from './Room';
+import { Light, LightResolvable, LightStateOptions } from './Light';
+import { Room, RoomResolvable } from './Room';
 import { ApiResourceType } from '../types/api/common';
-import { Zone } from './Zone';
+import { Zone, ZoneResolvable } from './Zone';
+import { Bridge } from '../bridge/Bridge';
 
-export interface GroupStateOptions {
-	on?: boolean;
-	brightness?: number;
-	temperature?: number;
-	color?: string;
-	gradient?: string[];
+export type GroupStateOptions = LightStateOptions;
+
+export interface GroupOptions {
+	name?: string;
+	lights?: LightResolvable[];
 }
 
 /**
@@ -88,8 +87,8 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 	 * Edits this group with new data e.g. new name
 	 * @param options
 	 */
-	public async edit(options: GroupEditOptions): Promise<void> {
-		return this._edit(groupEditTransformer(options, this));
+	public async edit(options: GroupOptions): Promise<void> {
+		return this._edit(Group.transform(this.bridge, this as unknown as Room | Zone, options));
 	}
 
 	/**
@@ -143,4 +142,25 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 	 * @internal
 	 */
 	protected abstract _edit(data: ApiRoom | ApiZone): Promise<void>;
+
+	public static transform(
+		bridge: Bridge,
+		resolvable: RoomResolvable | ZoneResolvable,
+		options: GroupOptions,
+	): ApiZone | ApiRoom {
+		const group =
+			bridge.rooms.resolve(resolvable as RoomResolvable) ?? bridge.zones.resolve(resolvable as ZoneResolvable);
+		return {
+			metadata: options.name ? { name: options.name } : undefined,
+			children: options.lights
+				? options.lights.map((resolvable) => {
+						const light = bridge.lights.resolve(resolvable);
+						return {
+							rid: group.type === ApiResourceType.Room ? light.deviceId : light.id,
+							rtype: group.type === ApiResourceType.Room ? ApiResourceType.Device : ApiResourceType.Light,
+						};
+				  })
+				: undefined,
+		};
+	}
 }

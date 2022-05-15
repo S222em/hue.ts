@@ -7,14 +7,13 @@ import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
 import type { Room, RoomResolvable } from './Room';
 import { NamedResource } from './NamedResource';
-import { LightStateOptions, lightStateTransformer } from '../transformers/LightState';
 import { ApiLight } from '../types/api/light';
 import { ApiResourceType } from '../types/api/common';
 import Collection from '@discordjs/collection';
 import { Zone, ZoneResolvable } from './Zone';
 import { Device } from './Device';
-import { LightEditOptions, lightEditTransformer } from '../transformers/LightEdit';
 import { Group } from './Group';
+import { Bridge } from '../bridge/Bridge';
 
 export type LightResolvable = Light | string;
 
@@ -24,6 +23,18 @@ export enum LightExtendedType {
 	Temperature = 'temperature',
 	Color = 'color',
 	Gradient = 'gradient',
+}
+
+export interface LightOptions {
+	name?: string;
+}
+
+export interface LightStateOptions {
+	on?: boolean;
+	brightness?: number;
+	temperature?: number;
+	color?: string;
+	gradient?: string[];
 }
 
 /**
@@ -87,7 +98,7 @@ export class Light extends NamedResource<ApiLight> {
 	 * light.state({ on: true });
 	 */
 	public async state(state: Pick<LightStateOptions, 'on'>, transitionOptions?: TransitionOptions): Promise<void> {
-		await this._edit(lightStateTransformer(state, this), transitionOptions);
+		await this._edit(Light.transformState(this.bridge, this, state), transitionOptions);
 	}
 
 	/**
@@ -126,8 +137,8 @@ export class Light extends NamedResource<ApiLight> {
 	 * Edits this light with new data e.g. new name
 	 * @param options
 	 */
-	public async edit(options: LightEditOptions): Promise<void> {
-		return await this._edit(lightEditTransformer(options));
+	public async edit(options: LightOptions): Promise<void> {
+		return await this._edit(Light.transform(options));
 	}
 
 	/**
@@ -236,5 +247,37 @@ export class Light extends NamedResource<ApiLight> {
 			...data,
 			dynamics: { duration: transitionOptions?.duration },
 		});
+	}
+
+	public static transform(options: LightOptions): ApiLight {
+		return {
+			metadata: options.name ? { name: options.name } : undefined,
+		};
+	}
+
+	public static transformState(bridge: Bridge, resolvable: LightResolvable, options: LightStateOptions): ApiLight {
+		const light = bridge.lights.resolve(resolvable);
+		return {
+			on: { on: options.on ?? true },
+			dimming: light.isCapableOfDimming() && options.brightness ? { brightness: options.brightness } : undefined,
+			color_temperature:
+				light.isCapableOfTemperature() && options.temperature ? { mirek: options.temperature } : undefined,
+			color:
+				light.isCapableOfColor() && options.color
+					? { xy: light.colorResolver.rgbToXyPoint(light.colorResolver.hexToRgb(options.color)) }
+					: undefined,
+			gradient:
+				light.isCapableOfGradient() && options.gradient
+					? {
+							points: options.gradient.map((gradient) => {
+								return {
+									color: {
+										xy: light.colorResolver.rgbToXyPoint(light.colorResolver.hexToRgb(gradient)),
+									},
+								};
+							}),
+					  }
+					: undefined,
+		};
 	}
 }

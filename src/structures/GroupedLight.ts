@@ -1,11 +1,13 @@
 import { Resource } from './Resource';
 import type { Group } from './Group';
 import { Routes } from '../util/Routes';
-import { GroupedLightStateOptions, groupedLightStateTransformer } from '../transformers/GroupedLightState';
 import { ApiResourceType } from '../types/api/common';
 import { ApiGroupedLight } from '../types/api/grouped_light';
+import { LightStateOptions } from './Light';
 
 export type GroupedLightResolvable = GroupedLight | 'string';
+
+export type GroupedLightStateOptions = Pick<LightStateOptions, 'on'>;
 
 /**
  * Represents a Hue grouped light
@@ -47,7 +49,7 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 	 * groupedLight.state({ on: true });
 	 */
 	public async state(state: GroupedLightStateOptions) {
-		await this._edit(groupedLightStateTransformer(state));
+		await this._edit(GroupedLight.transformState(state));
 	}
 
 	/**
@@ -94,5 +96,11 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 	 */
 	protected async _edit(data: ApiGroupedLight): Promise<void> {
 		await this.bridge.rest.put(Routes.groupedLight.id(this.id), data);
+	}
+
+	public static transformState(options: GroupedLightStateOptions): ApiGroupedLight {
+		return {
+			on: { on: options.on ?? true },
+		};
 	}
 }

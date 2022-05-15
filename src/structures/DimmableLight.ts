@@ -1,6 +1,5 @@
-import { Light, LightExtendedType } from './Light';
+import { Light, LightExtendedType, LightStateOptions } from './Light';
 import type { TransitionOptions } from '../types/common';
-import { LightStateOptions } from '../transformers/LightState';
 
 /**
  * Represents a Hue light capable of dimming

@@ -3,15 +3,20 @@ import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
-import { SceneEditOptions, sceneEditTransformer } from '../transformers/SceneEdit';
 import { ApiScene } from '../types/api/scene';
 import { ApiResourceType } from '../types/api/common';
-import { SceneActionEditOptions } from '../transformers/SceneActionEdit';
+import { Bridge } from '../bridge/Bridge';
+import { SceneAction, SceneActionOptions } from './SceneAction';
 
 export type SceneResolvable = Scene | string;
 
 export interface SceneApplyOptions extends TransitionOptions {
 	brightness?: number;
+}
+
+export interface SceneOptions {
+	name?: string;
+	actions?: SceneActionOptions[];
 }
 
 /**
@@ -68,15 +73,15 @@ export class Scene extends NamedResource<ApiScene> {
 	 * Edits this scene e.g. new name
 	 * @param options
 	 */
-	public async edit(options: SceneEditOptions) {
-		await this._edit(sceneEditTransformer(options, this));
+	public async edit(options: SceneOptions) {
+		await this._edit(Scene.transform(this.bridge, options));
 	}
 
 	/**
 	 * Edits the actions for this scenes activation
 	 * @param actions
 	 */
-	public async setActions(actions: SceneActionEditOptions[]) {
+	public async setActions(actions: SceneActionOptions[]) {
 		return await this.edit({ actions });
 	}
 
@@ -103,5 +108,12 @@ export class Scene extends NamedResource<ApiScene> {
 	 */
 	protected async _edit(data: ApiScene) {
 		await this.bridge.rest.put(Routes.scene.id(this.id), data);
+	}
+
+	public static transform(bridge: Bridge, options: SceneOptions): ApiScene {
+		return {
+			metadata: options.name ? { name: options.name } : undefined,
+			actions: options.actions ? options.actions.map((action) => SceneAction.transform(bridge, action)) : undefined,
+		};
 	}
 }

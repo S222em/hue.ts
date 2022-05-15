@@ -1,7 +1,6 @@
 import { DimmableLight } from './DimmableLight';
 import type { TransitionOptions } from '../types/common';
-import { LightStateOptions } from '../transformers/LightState';
-import { LightExtendedType } from './Light';
+import { LightExtendedType, LightStateOptions } from './Light';
 
 /**
  * Represents a Hue light capable of displaying temperature
