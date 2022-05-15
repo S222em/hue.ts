@@ -25,7 +25,7 @@
       <a href="#examples">Examples</a>
     </li>
     <li>
-      <a href="#rate-limits">Examples</a>
+      <a href="#rate-limits">Ratelimits</a>
     </li>
     <li>
       <a href="#roadmap">Roadmap</a>
@@ -195,7 +195,7 @@ Groups also have a Collection of all the lights that belong to it.
 room.lights.forEach((light) => console.log(light.name));
 ```
 
-# Rate limits
+# Ratelimits
 
 hue.ts keeps track of the request you make, and makes sure no ratelimit is hit. This might cause a delay when executing requests. All routes expect lights has a 1 per second ratelimit. Requests to /lights has a 10 per second ratelimit.
 
