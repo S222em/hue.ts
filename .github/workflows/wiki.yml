@@ -21,4 +21,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_MAIL: ${{ secrets.EMAIL }}
           GH_NAME: ${{ github.repository_owner }}
-          REPO: ${{ github.repository }}.wiki
+          REPO: ${{ github.repository }}
