@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 16
       - run: npm ci
-      - run: npm run build
+      - run: npm run wiki
       - name: Push Wiki Changes
         uses: Andrew-Chen-Wang/github-wiki-action@v3
         env:
