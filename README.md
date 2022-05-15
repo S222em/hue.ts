@@ -25,7 +25,7 @@
       <a href="#examples">Examples</a>
     </li>
     <li>
-      <a href="#rate-limits">Ratelimits</a>
+      <a href="#ratelimits">Ratelimits</a>
     </li>
     <li>
       <a href="#roadmap">Roadmap</a>
