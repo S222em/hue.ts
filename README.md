@@ -199,6 +199,16 @@ room.lights.forEach((light) => console.log(light.name));
 
 hue.ts keeps track of the request you make, and makes sure no ratelimit is hit. This might cause a delay when executing requests. All routes expect lights has a 1 per second ratelimit. Requests to /lights has a 10 per second ratelimit.
 
+When you hit a ratelimit (hue.ts prevents the request) the **ratelimit** event is emitted.
+
+```ts
+bridge.on('ratelimit', (until, route) => {
+	console.log(`Hit a ratelimit for route ${route.base}. Ratelimit will clear in ${until.getTime() - Date.now()}ms`);
+});
+```
+
+**until** is a date when the ratelimit is cleared, and requests will continue. Just to be clear, you DON'T have to worry about ratelimits, so don't try to manage ratelimits yourself.
+
 # Colors
 
 Not all Hue Lights are the same, so there are differences in the ranges of colors one can display. To make sure the color you gave (e.g. `light.setColor('#15ff00')`) is in range of what the light can actually display, there might be a difference from the color you where trying to display. This might happen on conversion from hex to xy (hue color format), or the other way around. Note that this difference might not be noticable at all.
