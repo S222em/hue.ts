@@ -1,3 +1,4 @@
+/*
 export enum Events {
 	Ready = 'ready',
 	Debug = 'debug',
@@ -26,3 +27,33 @@ export enum Events {
 	SceneUpdate = 'sceneUpdate',
 	SceneDelete = 'sceneDelete',
 }
+*/
+
+export const Events = {
+	Ready: 'ready' as const,
+	Debug: 'debug' as const,
+	ApiRequest: 'apiRequest' as const,
+	ApiResponse: 'apiResponse' as const,
+	RateLimited: 'rateLimited' as const,
+	Raw: 'raw' as const,
+	Disconnect: 'disconnect' as const,
+	Error: 'error' as const,
+	DeviceAdd: 'deviceAdd' as const,
+	DeviceUpdate: 'deviceUpdate' as const,
+	DeviceDelete: 'deviceDelete' as const,
+	LightAdd: 'lightAdd' as const,
+	LightUpdate: 'lightUpdate' as const,
+	LightDelete: 'lightDelete' as const,
+	GroupedLightAdd: 'groupedLightAdd' as const,
+	GroupedLightUpdate: 'groupedLightUpdate' as const,
+	GroupedLightDelete: 'groupedLightDelete' as const,
+	RoomAdd: 'roomAdd' as const,
+	RoomUpdate: 'roomUpdate' as const,
+	RoomDelete: 'roomDelete' as const,
+	ZoneAdd: 'zoneAdd' as const,
+	ZoneUpdate: 'zoneUpdate' as const,
+	ZoneDelete: 'zoneDelete' as const,
+	SceneAdd: 'sceneAdd' as const,
+	SceneUpdate: 'sceneUpdate' as const,
+	SceneDelete: 'sceneDelete' as const,
+};

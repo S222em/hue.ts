@@ -58,6 +58,7 @@ export * from './types/api/scene_action';
 
 // Types
 export * from './types/common';
+export * from './types/events';
 
 // Util
 export * from './util/Colors';

@@ -1,7 +1,6 @@
 import { ColorResolver } from '../color/ColorResolver';
 import { TemperatureLight } from './TemperatureLight';
 import type { TransitionOptions } from '../types/common';
-import type { Bridge } from '../bridge/Bridge';
 import { LightStateOptions } from '../transformers/LightStateTransformer';
 import { LightExtendedType } from './Light';
 
@@ -13,12 +12,7 @@ export class ColorLight extends TemperatureLight {
 	/**
 	 * Resolves colors between hex, rgb and xy format
 	 */
-	public colorResolver: ColorResolver;
-
-	constructor(bridge: Bridge) {
-		super(bridge);
-		this.colorResolver = new ColorResolver(this.capabilities);
-	}
+	public colorResolver = new ColorResolver(this.capabilities);
 
 	/**
 	 * Current color

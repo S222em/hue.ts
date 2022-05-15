@@ -1,22 +1,13 @@
 import { EventEmitter } from 'node:events';
 import { LightManager } from '../managers/LightManager';
 import { ActionManager } from './actions/ActionManager';
-import type { Light } from '../structures/Light';
-import type { Room } from '../structures/Room';
 import { RoomManager } from '../managers/RoomManager';
 import { GroupedLightManager } from '../managers/GroupedLightManager';
-import type { GroupedLight } from '../structures/GroupedLight';
 import { ZoneManager } from '../managers/ZoneManager';
-import type { Zone } from '../structures/Zone';
 import { SceneManager } from '../managers/SceneManager';
-import type { Scene } from '../structures/Scene';
 import { REST } from './rest/REST';
 import { SSE } from './SSE';
 import { DeviceManager } from '../managers/DeviceManager';
-import { Device } from '../structures/Device';
-import { ResponseData } from 'undici/types/dispatcher';
-import { Dispatcher } from 'undici';
-import { Route } from './rest/Route';
 import { Routes } from '../util/Routes';
 import { ApiDevice } from '../types/api/device';
 import { ApiResource, ApiResourceGet } from '../types/api/resource';
@@ -27,6 +18,7 @@ import { ApiRoom } from '../types/api/room';
 import { ApiZone } from '../types/api/zone';
 import { ApiScene } from '../types/api/scene';
 import { Events } from '../util/Events';
+import { BridgeEvents } from '../types/events';
 
 export const BridgeCA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -65,55 +57,6 @@ export interface BridgeOptions {
 	 * Certifacte for SSL validation
 	 */
 	ca?: string;
-}
-
-export interface BridgeEvents {
-	ready: [bridge: Bridge];
-	debug: [debug: string];
-
-	// REST
-	apiRequest: [
-		request: { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> &
-			Partial<Pick<Dispatcher.RequestOptions, 'method'>>,
-		route: Route,
-	];
-	apiResponse: [response: ResponseData, route: Route];
-	rateLimited: [until: Date, route: Route];
-
-	// SSE
-	raw: [raw: Array<Record<string, any>>];
-	disconnect: [];
-	error: [message: string];
-
-	// Device
-	deviceAdd: [device: Device];
-	deviceUpdate: [oldDevice: Device, newDevice: Device];
-	deviceDelete: [device: Device];
-
-	// Light
-	lightAdd: [light: Light];
-	lightUpdate: [oldLight: Light, newLight: Light];
-	lightDelete: [light: Light];
-
-	// GroupedLight
-	groupedLightAdd: [groupedLight: GroupedLight];
-	groupedLightUpdate: [oldGroupedLight: GroupedLight, newGroupedLight: GroupedLight];
-	groupedLightDelete: [groupedLight: GroupedLight];
-
-	// Room
-	roomAdd: [room: Room];
-	roomUpdate: [oldRoom: Room, newRoom: Room];
-	roomDelete: [room: Room];
-
-	// Zone
-	zoneAdd: [zone: Zone];
-	zoneUpdate: [oldZone: Zone, newZone: Zone];
-	zoneDelete: [zone: Zone];
-
-	// Scene
-	sceneAdd: [scene: Scene];
-	sceneUpdate: [oldScene: Scene, newScene: Scene];
-	sceneDelete: [scene: Scene];
 }
 
 /**
