@@ -3,7 +3,7 @@ import { ApiDevice } from '../types/api/device';
 import { ApiResourceType } from '../types/api/common';
 import { Light } from './Light';
 import { Product } from './Product';
-import { DeviceEditOptions, deviceEditTransformer } from '../transformers/DeviceEditTransformer';
+import { DeviceEditOptions, deviceEditTransformer } from '../transformers/DeviceEdit';
 import { Routes } from '../util/Routes';
 
 /**

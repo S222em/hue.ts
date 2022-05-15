@@ -1,7 +1,7 @@
 import { Resource } from './Resource';
 import type { Group } from './Group';
 import { Routes } from '../util/Routes';
-import { GroupedLightStateOptions, groupedLightStateTransformer } from '../transformers/GroupedLightStateTransformer';
+import { GroupedLightStateOptions, groupedLightStateTransformer } from '../transformers/GroupedLightState';
 import { ApiResourceType } from '../types/api/common';
 import { ApiGroupedLight } from '../types/api/grouped_light';
 

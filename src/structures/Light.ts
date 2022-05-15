@@ -7,13 +7,13 @@ import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
 import type { Room, RoomResolvable } from './Room';
 import { NamedResource } from './NamedResource';
-import { LightStateOptions, lightStateTransformer } from '../transformers/LightStateTransformer';
+import { LightStateOptions, lightStateTransformer } from '../transformers/LightState';
 import { ApiLight } from '../types/api/light';
 import { ApiResourceType } from '../types/api/common';
 import Collection from '@discordjs/collection';
 import { Zone, ZoneResolvable } from './Zone';
 import { Device } from './Device';
-import { LightEditOptions, lightEditTransformer } from '../transformers/LightEditTransformer';
+import { LightEditOptions, lightEditTransformer } from '../transformers/LightEdit';
 import { Group } from './Group';
 
 export type LightResolvable = Light | string;

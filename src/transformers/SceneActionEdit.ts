@@ -1,7 +1,7 @@
 import { Light, LightResolvable } from '../structures/Light';
 import { ApiSceneAction } from '../types/api/scene_action';
 import { ApiResourceType } from '../types/api/common';
-import { lightStateTransformer } from './LightStateTransformer';
+import { lightStateTransformer } from './LightState';
 
 export interface SceneActionEditOptions {
 	light: LightResolvable;

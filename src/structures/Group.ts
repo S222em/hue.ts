@@ -7,7 +7,7 @@ import { ApiRoom } from '../types/api/room';
 import { ApiZone } from '../types/api/zone';
 import Collection from '@discordjs/collection';
 import { Light, LightResolvable } from './Light';
-import { GroupEditOptions, groupEditTransformer } from '../transformers/GroupEditTransformer';
+import { GroupEditOptions, groupEditTransformer } from '../transformers/GroupEdit';
 import { Room } from './Room';
 import { ApiResourceType } from '../types/api/common';
 import { Zone } from './Zone';

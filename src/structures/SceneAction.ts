@@ -2,7 +2,7 @@ import { Base } from './Base';
 import type { Light } from './Light';
 import type { GradientLight } from './GradientLight';
 import type { Scene } from './Scene';
-import { SceneActionEditOptions } from '../transformers/SceneActionEditTransformer';
+import { SceneActionEditOptions } from '../transformers/SceneActionEdit';
 import { ApiSceneAction } from '../types/api/scene_action';
 
 /**

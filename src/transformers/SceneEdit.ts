@@ -1,4 +1,4 @@
-import { SceneActionEditOptions, sceneActionEditTransformer } from './SceneActionEditTransformer';
+import { SceneActionEditOptions, sceneActionEditTransformer } from './SceneActionEdit';
 import { Scene } from '../structures/Scene';
 import { ApiScene } from '../types/api/scene';
 

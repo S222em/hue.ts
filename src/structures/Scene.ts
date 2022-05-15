@@ -3,10 +3,10 @@ import type { TransitionOptions } from '../types/common';
 import { Routes } from '../util/Routes';
 import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
-import { SceneEditOptions, sceneEditTransformer } from '../transformers/SceneEditTransformer';
+import { SceneEditOptions, sceneEditTransformer } from '../transformers/SceneEdit';
 import { ApiScene } from '../types/api/scene';
 import { ApiResourceType } from '../types/api/common';
-import { SceneActionEditOptions } from '../transformers/SceneActionEditTransformer';
+import { SceneActionEditOptions } from '../transformers/SceneActionEdit';
 
 export type SceneResolvable = Scene | string;
 

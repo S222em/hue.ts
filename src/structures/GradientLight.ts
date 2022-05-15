@@ -1,6 +1,6 @@
 import { ColorLight } from './ColorLight';
 import type { TransitionOptions } from '../types/common';
-import { LightStateOptions } from '../transformers/LightStateTransformer';
+import { LightStateOptions } from '../transformers/LightState';
 import { LightExtendedType } from './Light';
 
 /**

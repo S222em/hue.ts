@@ -1,7 +1,7 @@
 import { ColorResolver } from '../color/ColorResolver';
 import { TemperatureLight } from './TemperatureLight';
 import type { TransitionOptions } from '../types/common';
-import { LightStateOptions } from '../transformers/LightStateTransformer';
+import { LightStateOptions } from '../transformers/LightState';
 import { LightExtendedType } from './Light';
 
 /**
