@@ -5,26 +5,19 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  deploy-wiki:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-        with:
-          repository: ${{github.repository}}.wiki # specify the wiki repo name here.
       - uses: actions/setup-node@v2
         with:
           node-version: 16
       - run: npm ci
-      - run: npm run wiki
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Update wiki"
-      - name: Push changes to wiki repo
-        uses: ad-m/github-push-action@master
-        with:
-          repository: ${{github.repository}}.wiki # specify the wiki repo and push the update.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm run build
+      - name: Push Wiki Changes
+        uses: Andrew-Chen-Wang/github-wiki-action@v3
+        env:
+          WIKI_DIR: wiki/
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_MAIL: ${{ secrets.EMAIL }}
+          GH_NAME: ${{ github.repository_owner }}
