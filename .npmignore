@@ -1,9 +1,9 @@
 node_modules
 src
 test
-.idea
 .eslintignore
 .eslintrc.json
 .prettierrc
 tsconfig.json
-tsconfig.tsbuildinfo
+typedoc.json
+.github
