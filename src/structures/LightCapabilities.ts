@@ -1,50 +1,24 @@
+import { Gamut } from '../color/Gamut';
 import { XyPoint } from '../color/XyPoint';
 import type { Light } from './Light';
 
-const GamutA = {
-	red: new XyPoint({
-		x: 0.704,
-		y: 0.296,
-	}),
-	blue: new XyPoint({
-		x: 0.2151,
-		y: 0.7106,
-	}),
-	green: new XyPoint({
-		x: 0.138,
-		y: 0.08,
-	}),
-};
+const GamutA = new Gamut({
+	red: new XyPoint(0.704, 0.296),
+	blue: new XyPoint(0.2151, 0.7106),
+	green: new XyPoint(0.138, 0.08),
+});
 
-const GamutB = {
-	red: new XyPoint({
-		x: 0.675,
-		y: 0.322,
-	}),
-	blue: new XyPoint({
-		x: 0.4091,
-		y: 0.518,
-	}),
-	green: new XyPoint({
-		x: 0.167,
-		y: 0.04,
-	}),
-};
+const GamutB = new Gamut({
+	red: new XyPoint(0.675, 0.322),
+	blue: new XyPoint(0.4091, 0.518),
+	green: new XyPoint(0.167, 0.04),
+});
 
-const GamutC = {
-	red: new XyPoint({
-		x: 0.692,
-		y: 0.308,
-	}),
-	blue: new XyPoint({
-		x: 0.17,
-		y: 0.7,
-	}),
-	green: new XyPoint({
-		x: 0.153,
-		y: 0.048,
-	}),
-};
+const GamutC = new Gamut({
+	red: new XyPoint(0.692, 0.308),
+	blue: new XyPoint(0.17, 0.7),
+	green: new XyPoint(0.153, 0.048),
+});
 
 function resolveGamut(gamutType: 'A' | 'B' | 'C') {
 	return gamutType === 'A' ? GamutA : gamutType === 'B' ? GamutB : GamutC;

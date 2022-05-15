@@ -4,7 +4,7 @@ import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../util/Events';
 
-export enum SocketStatus {
+export enum SSEStatus {
 	Connected = 'connected',
 	Disconnected = 'disconnected',
 	Connecting = 'connecting',
@@ -17,7 +17,7 @@ export enum SocketStatus {
 export class SSE {
 	private readonly bridge: Bridge;
 	public dispatcher: Agent;
-	public status: SocketStatus = SocketStatus.Disconnected;
+	public status: SSEStatus = SSEStatus.Disconnected;
 	public retries = 0;
 	public connection: BodyReadable & Dispatcher.BodyMixin;
 
@@ -39,9 +39,9 @@ export class SSE {
 		this.bridge.emit(Events.Debug, `[SSE] ${message}`);
 	}
 
-	public async connect() {
+	public async connect(): Promise<boolean> {
 		this.connection = undefined;
-		this.status = SocketStatus.Connecting;
+		this.status = SSEStatus.Connecting;
 
 		const { body, statusCode } = await request(`https://${this.bridge.options.ip}:443/eventstream/clip/v2`, {
 			method: 'GET',
@@ -54,7 +54,7 @@ export class SSE {
 		});
 
 		if (statusCode === 200) {
-			this.status = SocketStatus.Connected;
+			this.status = SSEStatus.Connected;
 			this.retries = 0;
 			this.connection = body;
 			this.debug('Connected');
@@ -62,7 +62,8 @@ export class SSE {
 			body.on('data', (raw) => this.onMessage(raw));
 			body.on('error', (error) => this.onError(error));
 			body.on('close', () => this.onDisconnect());
-		}
+			return true;
+		} else return this.onDisconnect();
 	}
 
 	public async onError(error: Error) {
@@ -75,8 +76,8 @@ export class SSE {
 		if (this.retries === 5) return this.bridge.emit(Events.Disconnect);
 		this.retries += 1;
 
-		this.status = SocketStatus.Disconnected;
-		this.connection.destroy();
+		this.status = SSEStatus.Disconnected;
+		this.connection?.destroy?.();
 
 		await this.connect();
 	}

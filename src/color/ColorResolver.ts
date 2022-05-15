@@ -33,19 +33,16 @@ export class ColorResolver {
 	}
 
 	public checkPointInLampsReach(point: XyPoint): boolean {
-		const v1 = new XyPoint({
-			x: this.capabilities.green.x - this.capabilities.red.x,
-			y: this.capabilities.green.y - this.capabilities.red.y,
-		});
-		const v2 = new XyPoint({
-			x: this.capabilities.blue.x - this.capabilities.red.x,
-			y: this.capabilities.blue.y - this.capabilities.red.y,
-		});
+		const v1 = new XyPoint(
+			this.capabilities.green.x - this.capabilities.red.x,
+			this.capabilities.green.y - this.capabilities.red.y,
+		);
+		const v2 = new XyPoint(
+			this.capabilities.blue.x - this.capabilities.red.x,
+			this.capabilities.blue.y - this.capabilities.red.y,
+		);
 
-		const q = new XyPoint({
-			x: point.x - this.capabilities.red.x,
-			y: point.y - this.capabilities.red.y,
-		});
+		const q = new XyPoint(point.x - this.capabilities.red.x, point.y - this.capabilities.red.y);
 		const s = ColorResolver.crossPoints(q, v2) / ColorResolver.crossPoints(v1, v2);
 		const t = ColorResolver.crossPoints(v1, q) / ColorResolver.crossPoints(v1, v2);
 
@@ -53,14 +50,8 @@ export class ColorResolver {
 	}
 
 	public getClosestPointToLine(a: XyPoint, b: XyPoint, c: XyPoint): XyPoint {
-		const ac = new XyPoint({
-			x: c.x - a.x,
-			y: c.y - a.y,
-		});
-		const ab = new XyPoint({
-			x: b.x - a.x,
-			y: b.y - a.y,
-		});
+		const ac = new XyPoint(c.x - a.x, c.y - a.y);
+		const ab = new XyPoint(b.x - a.x, b.y - a.y);
 
 		const ab2 = ab.x * ab.x + ab.y * ab.y;
 		const acab = ac.x * ab.x + ac.y * ab.y;
@@ -69,10 +60,7 @@ export class ColorResolver {
 		if (t < 0) t = 0;
 		else if (t > 1) t = 1;
 
-		return new XyPoint({
-			x: a.x + ab.x * t,
-			y: a.y + ab.y * t,
-		});
+		return new XyPoint(a.x + ab.x * t, a.y + ab.y * t);
 	}
 
 	public getClosestPoint(point: XyPoint): XyPoint {
@@ -113,10 +101,7 @@ export class ColorResolver {
 		const Y = r * 0.283881 + g * 0.668433 + b * 0.047685;
 		const Z = r * 0.000088 + g * 0.07231 + b * 0.986039;
 
-		let point = new XyPoint({
-			x: X / (X + Y + Z),
-			y: Y / (X + Y + Z),
-		});
+		let point = new XyPoint(X / (X + Y + Z), Y / (X + Y + Z));
 
 		if (!this.checkPointInLampsReach(point)) {
 			point = this.getClosestPoint(point);
@@ -127,7 +112,7 @@ export class ColorResolver {
 
 	public xyPointToRgb(options: { x: number; y: number; bri: number }): { r: number; g: number; b: number } {
 		if (!options) return;
-		let point = new XyPoint({ x: options.x, y: options.y });
+		let point = new XyPoint(options.x, options.y);
 
 		if (!this.checkPointInLampsReach(point)) {
 			point = this.getClosestPoint(point);
