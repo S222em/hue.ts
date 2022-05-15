@@ -55,10 +55,9 @@ const bridge = new Bridge({
 bridge.on('ready', async () => {
 	console.log('Ready!');
 
-	const room = bridge.rooms.cache.get('some-id');
 	const scene = bridge.scenes.cache.get('some-id');
 
-	await room.applyScene(scene, { duration: 3000 });
+	await scene.apply({ duration: 5000 });
 });
 
 bridge.connect();
@@ -153,7 +152,7 @@ The methods above are not available if the `light.isCapableOfColor()` or the `li
 
 # Colors
 
-Not all Hue Lights are the same, so there are also differences in the ranges of colors one can display. To make sure the color you gave (e.g. `light.setColor('#15ff00')`) is in range of what the light can actually display, there might be a difference from the color you where trying to display. This might happen on conversion from hex to xy (hue color format), or the other way around. Note that this difference might not be noticable at all.
+Not all Hue Lights are the same, so there are differences in the ranges of colors one can display. To make sure the color you gave (e.g. `light.setColor('#15ff00')`) is in range of what the light can actually display, there might be a difference from the color you where trying to display. This might happen on conversion from hex to xy (hue color format), or the other way around. Note that this difference might not be noticable at all.
 
 # Roadmap
 

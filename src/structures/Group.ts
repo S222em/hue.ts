@@ -1,5 +1,4 @@
 import type { GroupedLight } from './GroupedLight';
-import type { SceneApplyOptions, SceneResolvable } from './Scene';
 import { Scene } from './Scene';
 import type { TransitionOptions } from '../types/common';
 import { NamedResource } from './NamedResource';
@@ -83,16 +82,6 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 		for await (const light of this.lights.values()) {
 			await light.state(state, transitionOptions);
 		}
-	}
-
-	/**
-	 * Applies a scene to the lights in this group
-	 * @param resolvable
-	 * @param options
-	 */
-	public async applyScene(resolvable: SceneResolvable, options?: SceneApplyOptions) {
-		const scene = this.bridge.scenes.resolve(resolvable);
-		await scene?.apply(options);
 	}
 
 	/**
