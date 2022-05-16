@@ -22,7 +22,7 @@
       <a href="#docs">Docs</a>
     </li>
     <li>
-      <a href="#examples">Examples</a>
+      <a href="#guides">Guides</a>
     </li>
     <li>
       <a href="#ratelimits">Ratelimits</a>
@@ -76,7 +76,7 @@ bridge.connect();
 npm install hue.ts
 ```
 
-# Examples
+# Guides
 
 ## Connecting to a bridge
 
@@ -102,7 +102,7 @@ You can get an **APPLICATION_KEY** by following the steps below:
 5. Press the POST button again
 6. You should now see something like `{ success: { username: 'APPLICATION_KEY' } }`
 
-Next we need to connect to the bridge by calling `bridge.connect()` at the bottom of your file.
+Next connect to the bridge by calling `bridge.connect()` at the bottom of the file.
 
 After the bridge has successfully connected and cached all resources the **ready** event is emitted. You can also listen to other events which can be found [here](https://github.com/S222em/hue.ts/wiki/BridgeEvents).
 
@@ -207,7 +207,7 @@ bridge.on('ratelimit', (until, route) => {
 });
 ```
 
-**until** is a date when the ratelimit is cleared, and requests will continue. Just to be clear, you DON'T have to worry about ratelimits, so don't try to manage ratelimits yourself.
+**until** is the date when the ratelimit is cleared, and requests will continue. Just to be clear, you DON'T have to worry about ratelimits, so don't try to manage ratelimits yourself.
 
 # Colors
 
