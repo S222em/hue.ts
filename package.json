@@ -33,7 +33,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "prettier": "2.6.2",
-    "ts-node": "10.7.0",
+    "ts-node": "10.8.0",
     "tslib": "2.4.0",
     "typedoc": "0.22.15",
     "typedoc-github-wiki-theme": "1.0.1",
