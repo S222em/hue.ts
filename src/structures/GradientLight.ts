@@ -1,12 +1,12 @@
 import { ColorLight } from './ColorLight';
 import type { TransitionOptions } from '../types/common';
-import { LightExtendedType, LightStateOptions } from './Light';
+import { Light } from './Light';
 
 /**
  * Represents a Hue light capable of gradients
  */
 export class GradientLight extends ColorLight {
-	extendedType = LightExtendedType.Gradient;
+	extendedType = Light.ExtendedType.Gradient;
 
 	/**
 	 * Current gradient
@@ -30,7 +30,7 @@ export class GradientLight extends ColorLight {
 	 * @example
 	 * light.state({ on: true, gradient: ['#58ff05','#1411bf'] });
 	 */
-	public async state(state: LightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
+	public async state(state: GradientLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
@@ -42,9 +42,23 @@ export class GradientLight extends ColorLight {
 	 * light.setGradient(['#58ff05','#1411bf']);
 	 */
 	public async setGradient(
-		gradient: LightStateOptions['gradient'],
+		gradient: GradientLightStateOptions['gradient'],
 		transitionOptions?: TransitionOptions,
 	): Promise<void> {
 		await this.state({ gradient }, transitionOptions);
 	}
+}
+
+export type GradientLightResolvable = GradientLight | string;
+
+export interface GradientLightStateOptions extends ColorLight.StateOptions {
+	gradient?: string[];
+}
+
+export namespace GradientLight {
+	export type Resolvable = GradientLightResolvable;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	export import ExtendedType = Light.ExtendedType;
+	export type Options = Light.Options;
+	export type StateOptions = GradientLightStateOptions;
 }

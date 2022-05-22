@@ -3,11 +3,7 @@ import type { Group } from './Group';
 import { Routes } from '../util/Routes';
 import { ApiResourceType } from '../types/api/common';
 import { ApiGroupedLight } from '../types/api/grouped_light';
-import { LightStateOptions } from './Light';
-
-export type GroupedLightResolvable = GroupedLight | 'string';
-
-export type GroupedLightStateOptions = Pick<LightStateOptions, 'on'>;
+import { Light } from './Light';
 
 /**
  * Represents a Hue grouped light
@@ -103,4 +99,13 @@ export class GroupedLight extends Resource<ApiGroupedLight> {
 			on: { on: options.on ?? true },
 		};
 	}
+}
+
+export type GroupedLightResolvable = GroupedLight | 'string';
+
+export type GroupedLightStateOptions = Light.StateOptions;
+
+export namespace GroupedLight {
+	export type Resolvable = GroupedLightResolvable;
+	export type StateOptions = GroupedLightStateOptions;
 }

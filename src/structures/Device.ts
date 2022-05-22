@@ -5,10 +5,6 @@ import { Light } from './Light';
 import { Product } from './Product';
 import { Routes } from '../util/Routes';
 
-export interface DeviceOptions {
-	name?: string;
-}
-
 /**
  * Represents a Hue device
  */
@@ -78,4 +74,15 @@ export class Device extends NamedResource<ApiDevice> {
 			metadata: options.name ? { name: options.name } : undefined,
 		};
 	}
+}
+
+export type DeviceResolvable = Device | string;
+
+export interface DeviceOptions {
+	name?: string;
+}
+
+export namespace Device {
+	export type Resolvable = DeviceResolvable;
+	export type Options = DeviceOptions;
 }

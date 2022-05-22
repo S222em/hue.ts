@@ -6,18 +6,7 @@ import { NamedResource } from './NamedResource';
 import { ApiScene } from '../types/api/scene';
 import { ApiResourceType } from '../types/api/common';
 import { Bridge } from '../bridge/Bridge';
-import { SceneAction, SceneActionOptions } from './SceneAction';
-
-export type SceneResolvable = Scene | string;
-
-export interface SceneApplyOptions extends TransitionOptions {
-	brightness?: number;
-}
-
-export interface SceneOptions {
-	name?: string;
-	actions?: SceneActionOptions[];
-}
+import { SceneAction } from './SceneAction';
 
 /**
  * Represents a Hue scene
@@ -81,7 +70,7 @@ export class Scene extends NamedResource<ApiScene> {
 	 * Edits the actions for this scenes activation
 	 * @param actions
 	 */
-	public async setActions(actions: SceneActionOptions[]) {
+	public async setActions(actions: SceneAction.Options[]) {
 		return await this.edit({ actions });
 	}
 
@@ -116,4 +105,21 @@ export class Scene extends NamedResource<ApiScene> {
 			actions: options.actions ? options.actions.map((action) => SceneAction.transform(bridge, action)) : undefined,
 		};
 	}
+}
+
+export type SceneResolvable = Scene | string;
+
+export interface SceneApplyOptions extends TransitionOptions {
+	brightness?: number;
+}
+
+export interface SceneOptions {
+	name?: string;
+	actions?: SceneAction.Options[];
+}
+
+export namespace Scene {
+	export type Resolvable = SceneResolvable;
+	export type Options = SceneOptions;
+	export type ApplyOptions = SceneApplyOptions;
 }

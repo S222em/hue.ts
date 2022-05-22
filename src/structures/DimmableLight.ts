@@ -1,11 +1,11 @@
-import { Light, LightExtendedType, LightStateOptions } from './Light';
+import { Light } from './Light';
 import type { TransitionOptions } from '../types/common';
 
 /**
  * Represents a Hue light capable of dimming
  */
 export class DimmableLight extends Light {
-	extendedType = LightExtendedType.Dimmable;
+	extendedType = Light.ExtendedType.Dimmable;
 
 	/**
 	 * Current brightness
@@ -21,10 +21,7 @@ export class DimmableLight extends Light {
 	 * @example
 	 * light.state({ on: true, brightness: 100 });
 	 */
-	public async state(
-		state: Pick<LightStateOptions, 'on' | 'brightness'>,
-		transitionOptions?: TransitionOptions,
-	): Promise<void> {
+	public async state(state: DimmableLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
@@ -36,9 +33,23 @@ export class DimmableLight extends Light {
 	 * light.setBrightness(100);
 	 */
 	public async setBrightness(
-		brightness: LightStateOptions['brightness'],
+		brightness: DimmableLightStateOptions['brightness'],
 		transitionOptions?: TransitionOptions,
 	): Promise<void> {
 		await this.state({ brightness }, transitionOptions);
 	}
+}
+
+export type DimmableLightResolvable = DimmableLight | string;
+
+export interface DimmableLightStateOptions extends Light.StateOptions {
+	brightness?: number;
+}
+
+export namespace DimmableLight {
+	export type Resolvable = DimmableLightResolvable;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	export import ExtendedType = Light.ExtendedType;
+	export type Options = Light.Options;
+	export type StateOptions = DimmableLightStateOptions;
 }

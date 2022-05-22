@@ -6,8 +6,6 @@ import Collection from '@discordjs/collection';
 import { Light } from './Light';
 import { Device } from './Device';
 
-export type RoomResolvable = Room | string;
-
 /**
  * Represents a Hue room
  */
@@ -60,4 +58,16 @@ export class Room extends Group<ApiRoom> {
 	protected async _edit(data: ApiRoom): Promise<void> {
 		await this.bridge.rest.put(Routes.room.id(this.id), data);
 	}
+}
+
+export type RoomResolvable = Room | string;
+
+export type RoomOptions = Group.Options;
+
+export type RoomStateOptions = Group.StateOptions;
+
+export namespace Room {
+	export type Options = RoomOptions;
+	export type Resolvable = RoomResolvable;
+	export type StateOptions = RoomStateOptions;
 }

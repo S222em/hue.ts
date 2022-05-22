@@ -5,8 +5,6 @@ import { ApiResourceType } from '../types/api/common';
 import Collection from '@discordjs/collection';
 import { Light } from './Light';
 
-export type ZoneResolvable = Zone | string;
-
 /**
  * Represents a Hue zone
  */
@@ -46,4 +44,16 @@ export class Zone extends Group<ApiZone> {
 	protected async _edit(data: ApiZone): Promise<void> {
 		await this.bridge.rest.put(Routes.zone.id(this.id), data);
 	}
+}
+
+export type ZoneResolvable = Zone | string;
+
+export type ZoneOptions = Group.Options;
+
+export type ZoneStateOptions = Group.StateOptions;
+
+export namespace Zone {
+	export type Options = ZoneOptions;
+	export type Resolvable = ZoneResolvable;
+	export type StateOptions = ZoneStateOptions;
 }

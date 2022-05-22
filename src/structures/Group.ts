@@ -5,18 +5,11 @@ import { NamedResource } from './NamedResource';
 import { ApiRoom } from '../types/api/room';
 import { ApiZone } from '../types/api/zone';
 import Collection from '@discordjs/collection';
-import { Light, LightResolvable, LightStateOptions } from './Light';
+import { Light, LightResolvable } from './Light';
 import { Room, RoomResolvable } from './Room';
 import { ApiResourceType } from '../types/api/common';
 import { Zone, ZoneResolvable } from './Zone';
 import { Bridge } from '../bridge/Bridge';
-
-export type GroupStateOptions = LightStateOptions;
-
-export interface GroupOptions {
-	name?: string;
-	lights?: LightResolvable[];
-}
 
 /**
  * Base for a Hue room or zone
@@ -163,4 +156,16 @@ export abstract class Group<R extends ApiRoom | ApiZone = ApiRoom | ApiZone> ext
 				: undefined,
 		};
 	}
+}
+
+export interface GroupOptions {
+	name?: string;
+	lights?: Light.Resolvable[];
+}
+
+export type GroupStateOptions = Light.StateOptions;
+
+export namespace Group {
+	export type Options = GroupOptions;
+	export type StateOptions = GroupStateOptions;
 }

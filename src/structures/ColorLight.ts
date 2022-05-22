@@ -1,13 +1,13 @@
 import { ColorResolver } from '../color/ColorResolver';
 import { TemperatureLight } from './TemperatureLight';
 import type { TransitionOptions } from '../types/common';
-import { LightExtendedType, LightStateOptions } from './Light';
+import { Light } from './Light';
 
 /**
  * Represents a Hue light capable of displaying color
  */
 export class ColorLight extends TemperatureLight {
-	extendedType = LightExtendedType.Color;
+	extendedType = Light.ExtendedType.Color;
 	/**
 	 * Resolves colors between hex, rgb and xy format
 	 */
@@ -33,10 +33,7 @@ export class ColorLight extends TemperatureLight {
 	 * @example
 	 * light.state({ on: true, color: '#58ff05' });
 	 */
-	public async state(
-		state: Pick<LightStateOptions, 'on' | 'brightness' | 'temperature' | 'color'>,
-		transitionOptions?: TransitionOptions,
-	): Promise<void> {
+	public async state(state: ColorLightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await super.state(state, transitionOptions);
 	}
 
@@ -47,7 +44,21 @@ export class ColorLight extends TemperatureLight {
 	 * @example
 	 * light.setColor('#58ff05');
 	 */
-	public async setColor(color: LightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
+	public async setColor(color: ColorLightStateOptions['color'], transitionOptions?: TransitionOptions): Promise<void> {
 		await this.state({ color }, transitionOptions);
 	}
+}
+
+export type ColorLightResolvable = ColorLight | string;
+
+export interface ColorLightStateOptions extends TemperatureLight.StateOptions {
+	color?: string;
+}
+
+export namespace ColorLight {
+	export type Resolvable = ColorLightResolvable;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	export import ExtendedType = Light.ExtendedType;
+	export type Options = Light.Options;
+	export type StateOptions = ColorLightStateOptions;
 }

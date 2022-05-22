@@ -6,15 +6,6 @@ import { ApiSceneAction } from '../types/api/scene_action';
 import { Bridge } from '../bridge/Bridge';
 import { ApiResourceType } from '../types/api/common';
 
-export interface SceneActionOptions {
-	light: LightResolvable;
-	on?: boolean;
-	brightness?: number;
-	temperature?: number;
-	color?: string;
-	gradient?: string[];
-}
-
 /**
  * Represents a Scene action
  */
@@ -123,4 +114,20 @@ export class SceneAction extends Base<ApiSceneAction> {
 			action: Light.transformState(bridge, light, options),
 		};
 	}
+}
+
+export type SceneActionResolvable = SceneAction | string;
+
+export interface SceneActionOptions {
+	light: LightResolvable;
+	on?: boolean;
+	brightness?: number;
+	temperature?: number;
+	color?: string;
+	gradient?: string[];
+}
+
+export namespace SceneAction {
+	export type Resolvable = SceneActionResolvable;
+	export type Options = SceneActionOptions;
 }

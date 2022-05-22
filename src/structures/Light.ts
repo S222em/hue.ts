@@ -15,28 +15,6 @@ import { Device } from './Device';
 import { Group } from './Group';
 import { Bridge } from '../bridge/Bridge';
 
-export type LightResolvable = Light | string;
-
-export enum LightExtendedType {
-	Normal = 'normal',
-	Dimmable = 'dimmable',
-	Temperature = 'temperature',
-	Color = 'color',
-	Gradient = 'gradient',
-}
-
-export interface LightOptions {
-	name?: string;
-}
-
-export interface LightStateOptions {
-	on?: boolean;
-	brightness?: number;
-	temperature?: number;
-	color?: string;
-	gradient?: string[];
-}
-
 /**
  * Represents a Hue light
  */
@@ -97,7 +75,7 @@ export class Light extends NamedResource<ApiLight> {
 	 * @example
 	 * light.state({ on: true });
 	 */
-	public async state(state: Pick<LightStateOptions, 'on'>, transitionOptions?: TransitionOptions): Promise<void> {
+	public async state(state: LightStateOptions, transitionOptions?: TransitionOptions): Promise<void> {
 		await this._edit(Light.transformState(this.bridge, this, state), transitionOptions);
 	}
 
@@ -255,7 +233,11 @@ export class Light extends NamedResource<ApiLight> {
 		};
 	}
 
-	public static transformState(bridge: Bridge, resolvable: LightResolvable, options: LightStateOptions): ApiLight {
+	public static transformState(
+		bridge: Bridge,
+		resolvable: LightResolvable,
+		options: GradientLight.StateOptions,
+	): ApiLight {
 		const light = bridge.lights.resolve(resolvable);
 		return {
 			on: { on: options.on ?? true },
@@ -280,4 +262,30 @@ export class Light extends NamedResource<ApiLight> {
 					: undefined,
 		};
 	}
+}
+
+export type LightResolvable = Light | string;
+
+export enum LightExtendedType {
+	Normal = 'normal',
+	Dimmable = 'dimmable',
+	Temperature = 'temperature',
+	Color = 'color',
+	Gradient = 'gradient',
+}
+
+export interface LightOptions {
+	name?: string;
+}
+
+export interface LightStateOptions {
+	on?: boolean;
+}
+
+export namespace Light {
+	export type Resolvable = LightResolvable;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	export import ExtendedType = LightExtendedType;
+	export type Options = LightOptions;
+	export type StateOptions = LightStateOptions;
 }
