@@ -21,7 +21,7 @@ export class ColorLight extends TemperatureLight {
 			this.colorResolver.xyPointToRgb({
 				x: this.data.color?.xy?.x,
 				y: this.data.color?.xy?.y,
-				bri: this.data.dimming?.brightness,
+				brightnessInPercentage: this.data.dimming?.brightness,
 			}),
 		);
 	}

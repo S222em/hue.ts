@@ -64,7 +64,7 @@ export class SceneAction extends Base<ApiSceneAction> {
 					this.light.colorResolver.xyPointToRgb({
 						x: this.data.action?.color?.xy?.x,
 						y: this.data.action?.color?.xy?.y,
-						bri: this.data.action?.dimming?.brightness,
+						brightnessInPercentage: this.data.action?.dimming?.brightness,
 					}),
 			  )
 			: null;
@@ -81,7 +81,7 @@ export class SceneAction extends Base<ApiSceneAction> {
 						light.colorResolver.xyPointToRgb({
 							x: point.color?.xy?.x,
 							y: point.color?.xy?.y,
-							bri: this.data.action?.dimming?.brightness,
+							brightnessInPercentage: this.data.action?.dimming?.brightness,
 						}),
 					);
 			  })

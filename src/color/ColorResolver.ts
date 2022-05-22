@@ -8,6 +8,8 @@ import type { LightCapabilities } from '../structures/LightCapabilities';
  * Python code converted to TypeScript and modified for use in this project
  */
 
+const BRIGHTNESS_PERCENTAGE_TO_BRIGHTNESS = 2.54;
+
 export class ColorResolver {
 	public capabilities: LightCapabilities;
 
@@ -110,15 +112,21 @@ export class ColorResolver {
 		return point;
 	}
 
-	public xyPointToRgb(options: { x: number; y: number; bri: number }): { r: number; g: number; b: number } {
+	public xyPointToRgb(options: { x: number; y: number; brightnessInPercentage: number }): {
+		r: number;
+		g: number;
+		b: number;
+	} {
 		if (!options) return;
 		let point = new XyPoint(options.x, options.y);
+
+		const brightness = options.brightnessInPercentage * BRIGHTNESS_PERCENTAGE_TO_BRIGHTNESS;
 
 		if (!this.checkPointInLampsReach(point)) {
 			point = this.getClosestPoint(point);
 		}
 
-		const Y = options.bri || 1;
+		const Y = brightness || 1;
 		const X = (Y / point.y) * point.x;
 		const Z = (Y / point.y) * (1 - point.x - point.y);
 

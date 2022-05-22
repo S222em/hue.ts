@@ -17,7 +17,7 @@ export class GradientLight extends ColorLight {
 				this.colorResolver.xyPointToRgb({
 					x: point.color?.xy?.x,
 					y: point.color?.xy?.y,
-					bri: this.data.dimming?.brightness,
+					brightnessInPercentage: this.data.dimming?.brightness,
 				}),
 			);
 		});
