@@ -36,7 +36,6 @@ export const Events = {
 	ApiResponse: 'apiResponse' as const,
 	Ratelimit: 'ratelimit' as const,
 	Raw: 'raw' as const,
-	Disconnect: 'disconnect' as const,
 	Error: 'error' as const,
 	DeviceAdd: 'deviceAdd' as const,
 	DeviceUpdate: 'deviceUpdate' as const,

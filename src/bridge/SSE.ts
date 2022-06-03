@@ -18,7 +18,6 @@ export class SSE {
 	private readonly bridge: Bridge;
 	public dispatcher: Agent;
 	public status: SSEStatus = SSEStatus.Disconnected;
-	public retries = 0;
 	public connection: BodyReadable & Dispatcher.BodyMixin;
 
 	constructor(bridge: Bridge) {
@@ -61,25 +60,13 @@ export class SSE {
 			body.setEncoding('utf8');
 			body.on('data', (raw) => this.onMessage(raw));
 			body.on('error', (error) => this.onError(error));
-			body.on('close', () => this.onDisconnect());
 			return true;
-		} else return this.onDisconnect();
+		}
 	}
 
 	public async onError(error: Error) {
 		this.debug(`Encountered error: ${error.message}`);
 		this.bridge.emit(Events.Error, error.message);
-	}
-
-	public async onDisconnect() {
-		this.debug('Disconnected');
-		if (this.retries === 5) return this.bridge.emit(Events.Disconnect);
-		this.retries += 1;
-
-		this.status = SSEStatus.Disconnected;
-		this.connection?.destroy?.();
-
-		await this.connect();
 	}
 
 	public async onMessage(raw: string) {

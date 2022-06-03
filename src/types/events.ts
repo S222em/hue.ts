@@ -25,7 +25,6 @@ export interface BridgeEvents {
 
 	// SSE
 	[Events.Raw]: [raw: Array<Record<string, any>>];
-	[Events.Disconnect]: [];
 	[Events.Error]: [message: string];
 
 	// Device
