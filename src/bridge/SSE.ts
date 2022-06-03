@@ -54,7 +54,6 @@ export class SSE {
 
 		if (statusCode === 200) {
 			this.status = SSEStatus.Connected;
-			this.retries = 0;
 			this.connection = body;
 			this.debug('Connected');
 			body.setEncoding('utf8');
