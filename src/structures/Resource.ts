@@ -41,15 +41,15 @@ export type NarrowResource<T extends ApiResourceType> = T extends ApiResourceTyp
 
 export abstract class Resource<T extends ApiResourceType> {
 	public readonly bridge: Bridge;
-	public abstract readonly type: T;
+	public abstract readonly type: ApiResourceType;
 	public data: ApiResourceTypeGet<T>;
 
 	get id(): string {
 		return this.data.id;
 	}
 
-	get identifier(): ResourceIdentifier<T> {
-		return createResourceIdentifier<T>(this.id, this.type);
+	get identifier(): ResourceIdentifier {
+		return createResourceIdentifier(this.id, this.type);
 	}
 
 	constructor(bridge: Bridge, data: ApiResourceTypeGet<T>) {
