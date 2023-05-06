@@ -1,0 +1,59 @@
+import { Group } from './Group';
+import { Routes } from '../util/Routes';
+import { ApiZone } from '../types/api/zone';
+import { ApiResourceType } from '../types/api/common';
+import Collection from '@discordjs/collection';
+import { Light } from './Light';
+
+/**
+ * Represents a Hue zone
+ */
+export class Zone extends Group<ApiZone> {
+	public type = ApiResourceType.Zone;
+
+	/**
+	 * The connected lights
+	 */
+	get lights(): Collection<string, Light> {
+		return this.bridge.lights.cache.filter((light) =>
+			this.data.children.some((child) => child.rid === light.id && child.rtype === ApiResourceType.Light),
+		);
+	}
+
+	/**
+	 * Deletes this zone
+	 */
+	public async delete(): Promise<void> {
+		await this.bridge.rest.delete(Routes.zone.id(this.id));
+	}
+
+	/**
+	 * Fetches this Zone from the Bridge
+	 */
+	public async fetch(): Promise<Zone> {
+		await this.bridge.zones.fetch(this.id);
+		return this;
+	}
+
+	/**
+	 * Edits this zone with raw API data structure
+	 * @param data
+	 * @protected
+	 * @internal
+	 */
+	protected async _edit(data: ApiZone): Promise<void> {
+		await this.bridge.rest.put(Routes.zone.id(this.id), data);
+	}
+}
+
+export type ZoneResolvable = Zone | string;
+
+export type ZoneOptions = Group.Options;
+
+export type ZoneStateOptions = Group.StateOptions;
+
+export namespace Zone {
+	export type Options = ZoneOptions;
+	export type Resolvable = ZoneResolvable;
+	export type StateOptions = ZoneStateOptions;
+}

@@ -1,125 +1,163 @@
-import type { Group } from './Group';
-import type { TransitionOptions } from '../types/common';
-import { Routes } from '../util/Routes';
-import { SceneActionManager } from '../managers/SceneActionManager';
 import { NamedResource } from './NamedResource';
-import { ApiScene } from '../types/api/scene';
-import { ApiResourceType } from '../types/api/common';
-import { Bridge } from '../bridge/Bridge';
-import { SceneAction } from './SceneAction';
+import { ApiResourceType, ApiResourceTypePut } from '../api/ApiResourceType';
+import { Resource } from './Resource';
+import { XyPoint } from '../util/color/xy';
+import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { Resolvable } from '../managers/ResourceManager';
+import { LightCapabilities } from './Light';
 
-/**
- * Represents a Hue scene
- */
-export class Scene extends NamedResource<ApiScene> {
+export interface SceneAction {
+	target: ResourceIdentifier;
+	on?: boolean;
+	brightness?: number;
+	mirek?: number;
+	xy?: XyPoint;
+	xys?: XyPoint[];
+	effects?: 'fire' | 'candle' | 'no_effect';
+	dynamics?: { duration?: number };
+}
+
+export interface ScenePalette {
+	color: Array<{
+		xy: XyPoint;
+		brightness: number;
+	}>;
+	brightness: number;
+	temperature: {
+		mirek: number;
+		brightness: number;
+	};
+}
+
+export interface SceneEditOptions {
+	name?: string;
+	actions?: Array<SceneAction>;
+	palette?: ScenePalette;
+	speed?: number;
+}
+
+export interface SceneRecallOptions {
+	action: 'active' | 'dynamic_palette';
+	duration?: number;
+	brightness?: number;
+}
+
+export class Scene extends NamedResource<ApiResourceType.Scene> {
 	type = ApiResourceType.Scene;
-	/**
-	 * The actions to perform when the scene is activated
-	 */
-	public readonly actions = new SceneActionManager(this);
 
-	/**
-	 * The connected group
-	 */
-	get group(): Group {
-		return this.bridge.rooms.cache.get(this.groupId) || this.bridge.zones.cache.get(this.groupId);
+	public group(force: true): Resource<any>;
+	public group(): Resource<any | undefined>;
+	public group(force?: any): Resource<any> | undefined {
+		return this.bridge.resources.resolve(this.data.group.rid, { type: this.data.group.rtype, force });
 	}
 
-	/**
-	 * The connected group ID
-	 */
-	get groupId(): string {
-		return this.data.group?.rid;
+	get actions(): SceneAction[] {
+		return this.data.actions.map(({ target, action }) => {
+			return {
+				target: target,
+				on: action.on?.on,
+				brightness: action.dimming?.brightness,
+				mirek: action.color_temperature?.mirek,
+				xy: action.color?.xy,
+				xys: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
+				effects: action.effects,
+				dynamics: action.dynamics,
+			};
+		});
 	}
 
-	/**
-	 * Patches this Scene with new data received from the API
-	 * @param data Data to patch
-	 * @internal
-	 */
-	public _patch(data: ApiScene) {
-		super._patch(data);
-		for (const action of data.actions || []) {
-			this.actions._add(action);
-		}
+	public actionFor(resolvable: Resolvable): SceneAction | undefined {
+		const light = this.bridge.resources.resolve(resolvable, {
+			type: ApiResourceType.Light,
+		});
+
+		if (!light) return;
+
+		return this.actions.find((action) => action.target === light.identifier);
 	}
 
-	/**
-	 * Applies this scene to the connected group
-	 * @param options
-	 */
-	public async apply(options?: SceneApplyOptions) {
-		await this._edit({
+	get palette(): ScenePalette | undefined {
+		const pal = this.data.palette;
+
+		if (!pal) return;
+
+		return {
+			color: pal.color.map((c) => {
+				return {
+					xy: c.color.xy,
+					brightness: c.dimming.brightness,
+				};
+			}),
+			brightness: pal.dimming.brightness,
+			temperature: {
+				mirek: pal.color_temperature.color_temperature.mirek,
+				brightness: pal.color_temperature.dimming.brightness,
+			},
+		};
+	}
+
+	get speed(): number {
+		return this.data.speed;
+	}
+
+	public async recall(options?: SceneRecallOptions): Promise<void> {
+		return await this._put({
 			recall: {
-				action: 'active',
+				action: options?.action ?? 'active',
 				duration: options?.duration,
 				dimming: { brightness: options?.brightness },
 			},
 		});
 	}
 
-	/**
-	 * Edits this scene e.g. new name
-	 * @param options
-	 */
-	public async edit(options: SceneOptions) {
-		await this._edit(Scene.transform(this.bridge, options));
-	}
+	public async edit(options: SceneEditOptions): Promise<void> {
+		const actions: ApiResourceTypePut<ApiResourceType.Scene>['actions'] = options.actions
+			? options.actions.map((action) => {
+					if (action.xy || action.xys) {
+						const light = this.bridge.resources.resolve(action.target.rid, {
+							type: ApiResourceType.Light,
+							light: { capableOf: LightCapabilities.Xy },
+							force: true,
+						});
 
-	/**
-	 * Edits the actions for this scenes activation
-	 * @param actions
-	 */
-	public async setActions(actions: SceneAction.Options[]) {
-		return await this.edit({ actions });
-	}
+						if (action.xy && !light.xyInRange(action.xy)) {
+							action.xy = light.xyToRange(action.xy);
+						}
 
-	/**
-	 * Deletes this scene
-	 */
-	public async delete() {
-		await this.bridge.rest.delete(Routes.scene.id(this.id));
-	}
+						if (action.xys && light.isCapableOfXys()) {
+							action.xys = action.xys.map((xy) => {
+								if (!light.xyInRange(xy)) return light.xyToRange(xy);
+								return xy;
+							});
+						}
+					}
 
-	/**
-	 * Fetches this Scene from the Bridge
-	 */
-	public async fetch(): Promise<Scene> {
-		await this.bridge.scenes.fetch(this.id);
-		return this;
-	}
+					return {
+						target: action.target,
+						action: {
+							on: { on: action.on },
+							dimming: { brightness: action.brightness },
+							color_temperature: { mirek: action.mirek },
+							color: action.xy ? { xy: action.xy } : undefined,
+							gradient: action.xys
+								? {
+										points: action.xys.map((xy) => {
+											return {
+												color: { xy: { x: xy.x, y: xy.y } },
+											};
+										}),
+								  }
+								: undefined,
+							effects: action.effects,
+							dynamics: action.dynamics?.duration ? { duration: action.dynamics.duration } : undefined,
+						},
+					};
+			  })
+			: undefined;
 
-	/**
-	 * Edits this scene with raw API data structure
-	 * @param data
-	 * @protected
-	 * @internal
-	 */
-	protected async _edit(data: ApiScene) {
-		await this.bridge.rest.put(Routes.scene.id(this.id), data);
-	}
-
-	public static transform(bridge: Bridge, options: SceneOptions): ApiScene {
-		return {
+		return await this._put({
 			metadata: options.name ? { name: options.name } : undefined,
-			actions: options.actions ? options.actions.map((action) => SceneAction.transform(bridge, action)) : undefined,
-		};
+			actions: actions,
+		});
 	}
-}
-
-export type SceneResolvable = Scene | string;
-
-export interface SceneApplyOptions extends TransitionOptions {
-	brightness?: number;
-}
-
-export interface SceneOptions {
-	name?: string;
-	actions?: SceneAction.Options[];
-}
-
-export namespace Scene {
-	export type Resolvable = SceneResolvable;
-	export type Options = SceneOptions;
-	export type ApplyOptions = SceneApplyOptions;
 }
