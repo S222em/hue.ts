@@ -35,7 +35,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.6.2",
     "ts-node": "10.9.1",
-    "tslib": "2.4.0",
+    "tslib": "2.5.0",
     "typedoc": "0.24.4",
     "typedoc-github-wiki-theme": "1.0.1",
     "typedoc-plugin-markdown": "3.12.1",
