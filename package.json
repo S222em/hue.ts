@@ -14,7 +14,7 @@
     "prettier": "prettier --check src/**",
     "typecheck": "tsc --noEmit",
     "build": "tsc --build",
-    "wiki": "typedoc"
+    "wiki": "typedoc --plugin typedoc-github-wiki-theme"
   },
   "keywords": [
     "Hue"
