@@ -1,7 +1,15 @@
 import { Resource } from './Resource';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ApiResourceType, ApiResourceTypeGet } from '../api/ApiResourceType';
+import { Bridge } from '../bridge/Bridge';
 
 export abstract class NamedResource<T extends ApiResourceType> extends Resource<T> {
+	public data: ApiResourceTypeGet<T> & { metadata: { name: string } };
+
+	constructor(bridge: Bridge, data: ApiResourceTypeGet<T> & { metadata: { name: string } }) {
+		super(bridge, data);
+		this.data = data;
+	}
+
 	get name(): string {
 		return this.data.metadata.name;
 	}

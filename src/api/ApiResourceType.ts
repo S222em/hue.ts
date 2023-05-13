@@ -9,6 +9,10 @@ import { ApiRoomPut } from './room/put';
 import { ApiZonePut } from './zone/put';
 import { ApiRoomGet } from './room/get';
 import { ApiZoneGet } from './zone/get';
+import { ApiDeviceGet } from './device/get';
+import { ApiDevicePut } from './device/put';
+import { ApiGroupedLightGet } from './grouped_light/get';
+import { ApiGroupedLightPut } from './grouped_light/put';
 
 export enum ApiResourceType {
 	Device = 'device',
@@ -38,7 +42,7 @@ export enum ApiResourceType {
 }
 
 export interface ApiResourceTypesGet {
-	[ApiResourceType.Device]: never;
+	[ApiResourceType.Device]: ApiDeviceGet;
 	[ApiResourceType.BridgeHome]: never;
 	[ApiResourceType.Room]: ApiRoomGet;
 	[ApiResourceType.Zone]: ApiZoneGet;
@@ -48,7 +52,7 @@ export interface ApiResourceTypesGet {
 	[ApiResourceType.LightLevel]: never;
 	[ApiResourceType.Motion]: never;
 	[ApiResourceType.Entertainment]: never;
-	[ApiResourceType.GroupedLight]: never;
+	[ApiResourceType.GroupedLight]: ApiGroupedLightGet;
 	[ApiResourceType.DevicePower]: never;
 	[ApiResourceType.ZigbeeBridgeConnectivity]: never;
 	[ApiResourceType.ZgpConnectivity]: never;
@@ -67,7 +71,7 @@ export interface ApiResourceTypesGet {
 export type ApiResourceTypeGet<T extends ApiResourceType> = ApiResourceTypesGet[T];
 
 export interface ApiResourceTypesPut {
-	[ApiResourceType.Device]: never;
+	[ApiResourceType.Device]: ApiDevicePut;
 	[ApiResourceType.BridgeHome]: never;
 	[ApiResourceType.Room]: ApiRoomPut;
 	[ApiResourceType.Zone]: ApiZonePut;
@@ -77,7 +81,7 @@ export interface ApiResourceTypesPut {
 	[ApiResourceType.LightLevel]: never;
 	[ApiResourceType.Motion]: never;
 	[ApiResourceType.Entertainment]: never;
-	[ApiResourceType.GroupedLight]: never;
+	[ApiResourceType.GroupedLight]: ApiGroupedLightPut;
 	[ApiResourceType.DevicePower]: never;
 	[ApiResourceType.ZigbeeBridgeConnectivity]: never;
 	[ApiResourceType.ZgpConnectivity]: never;

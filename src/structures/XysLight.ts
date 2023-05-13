@@ -1,9 +1,9 @@
-import { XyLight, XyLightStateOptions } from './XyLight';
+import { XyLight, XyLightEditOptions } from './XyLight';
 import { LightCapabilities } from './Light';
 import { XyPoint } from '../util/color/xy';
 import { ApiResourceType, ApiResourceTypePut } from '../api/ApiResourceType';
 
-export interface XysLightStateOptions extends XyLightStateOptions {
+export interface XysLightEditOptions extends XyLightEditOptions {
 	xys?: XyPoint[];
 }
 
@@ -15,20 +15,17 @@ export class XysLight extends XyLight {
 	}
 
 	public async setXys(xys: XyPoint[], duration: number): Promise<void> {
-		return await this.state({ xys, dynamics: { duration } });
+		await this.edit({ xys, dynamics: { duration } });
 	}
 
-	public async state(
-		options: XysLightStateOptions,
-		_inject?: ApiResourceTypePut<ApiResourceType.Light>,
-	): Promise<void> {
+	public async edit(options: XysLightEditOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
 		if (options.xys)
 			options.xys = options.xys.map((xy) => {
 				if (!this.xyInRange(xy)) return this.xyToRange(xy);
 				return xy;
 			});
 
-		return await super.state(options, {
+		await super.edit(options, {
 			gradient: options.xys
 				? {
 						points: options.xys.map((xy) => {

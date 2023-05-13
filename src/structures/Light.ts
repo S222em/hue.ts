@@ -25,6 +25,16 @@ export type NarrowLight<T extends LightCapabilities> = Lights[T];
 
 export interface LightEditOptions {
 	name?: string;
+	on?: boolean;
+	dynamics?: {
+		duration?: number;
+		speed?: number;
+	};
+	effect?: 'fire' | 'candle' | 'no_effect';
+	timedEffects?: {
+		effect?: 'sunrise' | 'no_effect';
+		duration?: number;
+	};
 }
 
 export interface LightStateOptions {
@@ -43,6 +53,7 @@ export interface LightStateOptions {
 export class Light extends NamedResource<ApiResourceType.Light> {
 	public capabilities: LightCapabilities = LightCapabilities.None;
 	type = ApiResourceType.Light;
+
 	public isOn(): boolean {
 		return this.data.on.on;
 	}
@@ -77,27 +88,28 @@ export class Light extends NamedResource<ApiResourceType.Light> {
 	}
 
 	public async on(duration?: number): Promise<void> {
-		await this.state({ on: true, dynamics: { duration } });
+		await this.edit({ on: true, dynamics: { duration } });
 	}
 
 	public async off(duration?: number): Promise<void> {
-		await this.state({ on: false, dynamics: { duration } });
+		await this.edit({ on: false, dynamics: { duration } });
 	}
 
 	public async toggle(duration?: number): Promise<void> {
-		await this.state({ on: !this.isOn(), dynamics: { duration } });
+		await this.edit({ on: !this.isOn(), dynamics: { duration } });
 	}
 
 	public async effect(effect: LightStateOptions['effect']): Promise<void> {
-		await this.state({ effect });
+		await this.edit({ effect });
 	}
 
 	public async timedEffect(timedEffects: LightStateOptions['timedEffects']): Promise<void> {
-		await this.state({ timedEffects });
+		await this.edit({ timedEffects });
 	}
 
-	public async state(options: LightStateOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
+	public async edit(options: LightEditOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
 		await this._put({
+			metadata: options.name ? { name: options.name } : undefined,
 			on: { on: options.on ?? true },
 			dynamics: { duration: options.dynamics?.duration, speed: options.dynamics?.speed },
 			effects: { effect: options.effect },
@@ -107,9 +119,5 @@ export class Light extends NamedResource<ApiResourceType.Light> {
 			},
 			..._inject,
 		});
-	}
-
-	public async edit(options: LightEditOptions): Promise<void> {
-		await this._put({ metadata: { name: options.name } });
 	}
 }

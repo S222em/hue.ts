@@ -1,7 +1,7 @@
-import { Light, LightCapabilities, LightStateOptions } from './Light';
+import { Light, LightCapabilities, LightEditOptions } from './Light';
 import { ApiResourceType, ApiResourceTypePut } from '../api/ApiResourceType';
 
-export interface DimmableLightStateOptions extends LightStateOptions {
+export interface DimmableLightEditOptions extends LightEditOptions {
 	brightness?: number;
 }
 
@@ -16,15 +16,15 @@ export class DimmableLight extends Light {
 		return this.data.dimming!.min_dim_level;
 	}
 
-	public async setBrightness(brightness: DimmableLightStateOptions['brightness'], duration?: number): Promise<void> {
-		return await this.state({ brightness, dynamics: { duration } });
+	public async setBrightness(brightness: DimmableLightEditOptions['brightness'], duration?: number): Promise<void> {
+		await this.edit({ brightness, dynamics: { duration } });
 	}
 
-	public async state(
-		options: DimmableLightStateOptions,
+	public async edit(
+		options: DimmableLightEditOptions,
 		_inject?: ApiResourceTypePut<ApiResourceType.Light>,
 	): Promise<void> {
-		return await super.state(options, {
+		await super.edit(options, {
 			dimming: { brightness: options.brightness },
 			..._inject,
 		});

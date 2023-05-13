@@ -1,10 +1,10 @@
-import { MirekLight, MirekLightStateOptions } from './MirekLight';
+import { MirekLight, MirekLightEditOptions } from './MirekLight';
 import { LightCapabilities } from './Light';
 import { ApiResourceType, ApiResourceTypePut } from '../api/ApiResourceType';
 import { createGamut, Gamut, resolveGamutByType } from '../util/color/gamut';
 import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../util/color/xy';
 
-export interface XyLightStateOptions extends MirekLightStateOptions {
+export interface XyLightEditOptions extends MirekLightEditOptions {
 	xy?: XyPoint;
 }
 
@@ -39,16 +39,16 @@ export class XyLight extends MirekLight {
 		return getClosestXy(xy, this.gamut);
 	}
 
-	public async setXy(xy: XyLightStateOptions['xy'], duration?: number): Promise<void> {
-		return await this.state({ xy, dynamics: { duration } });
+	public async setXy(xy: XyLightEditOptions['xy'], duration?: number): Promise<void> {
+		await this.edit({ xy, dynamics: { duration } });
 	}
 
-	public async state(options: XyLightStateOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
+	public async edit(options: XyLightEditOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
 		if (options.xy && !this.xyInRange(options.xy)) {
 			options.xy = this.xyToRange(options.xy);
 		}
 
-		return await super.state(
+		await super.edit(
 			{ brightness: options.xy?.z, ...options },
 			{
 				color: { xy: options.xy ? { x: options.xy.x, y: options.xy.y } : undefined },

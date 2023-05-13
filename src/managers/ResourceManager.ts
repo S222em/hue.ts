@@ -1,6 +1,6 @@
 import { Bridge } from '../bridge/Bridge';
 import Collection from '@discordjs/collection';
-import { NarrowResource, Resource } from '../structures/Resource';
+import { NarrowResource } from '../structures/Resource';
 import { ApiResourceType, ApiResourceTypeGet } from '../api/ApiResourceType';
 import { Light, LightCapabilities, NarrowLight } from '../structures/Light';
 import { XyLight } from '../structures/XyLight';
@@ -9,6 +9,10 @@ import { DimmableLight } from '../structures/DimmableLight';
 import { Scene } from '../structures/Scene';
 import { XysLight } from '../structures/XysLight';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { Room } from '../structures/Room';
+import { Zone } from '../structures/Zone';
+import { Device } from '../structures/Device';
+import { GroupedLight } from '../structures/GroupedLight';
 
 export const RESOURCES = {
 	[ApiResourceType.Light]: {
@@ -18,16 +22,16 @@ export const RESOURCES = {
 		[LightCapabilities.Xy]: XyLight,
 		[LightCapabilities.Xys]: XysLight,
 	},
-	[ApiResourceType.Device]: undefined,
+	[ApiResourceType.Device]: Device,
 	[ApiResourceType.BridgeHome]: undefined,
-	[ApiResourceType.Room]: undefined,
-	[ApiResourceType.Zone]: undefined,
+	[ApiResourceType.Room]: Room,
+	[ApiResourceType.Zone]: Zone,
 	[ApiResourceType.Button]: undefined,
 	[ApiResourceType.Temperature]: undefined,
 	[ApiResourceType.LightLevel]: undefined,
 	[ApiResourceType.Motion]: undefined,
 	[ApiResourceType.Entertainment]: undefined,
-	[ApiResourceType.GroupedLight]: undefined,
+	[ApiResourceType.GroupedLight]: GroupedLight,
 	[ApiResourceType.DevicePower]: undefined,
 	[ApiResourceType.ZigbeeBridgeConnectivity]: undefined,
 	[ApiResourceType.ZgpConnectivity]: undefined,
@@ -65,51 +69,75 @@ export type Resolved<T extends ApiResourceType, L extends LightCapabilities> = T
 
 export class ResourceManager {
 	public readonly bridge: Bridge;
-	public readonly cache = new Collection<string, NarrowResource<any>>();
+	public readonly cache = new Collection<string, NarrowResource>();
 
 	constructor(bridge: Bridge) {
 		this.bridge = bridge;
 	}
 
-	public resolve<T extends ApiResourceType, L extends LightCapabilities>(
-		resolvable: Resolvable,
-		options?: ResolveOptions<T, L> & { force: true },
-	): Resolved<T, L>;
-	public resolve<T extends ApiResourceType, L extends LightCapabilities>(
-		resolvable: Resolvable,
-		options?: ResolveOptions<T, L>,
-	): Resolved<T, L> | undefined;
-	public resolve(resolvable: any, options: any): any {
-		let resource: Resource<any>;
+	public getById<T extends ApiResourceType>(id?: string, options?: { force: true; type?: T }): NarrowResource<T>;
+	public getById<T extends ApiResourceType>(
+		id?: string,
+		options?: { force?: boolean; type?: T },
+	): NarrowResource<T> | undefined;
+	public getById<T extends ApiResourceType>(id?: string, options: { force?: boolean; type?: T } = {}) {
+		const resource = this.cache.get(id ?? '');
 
-		if (resolvable instanceof Resource) resource = this.cache.get(resolvable.id);
-		else if (this.cache.has(resolvable)) resource = this.cache.get(resolvable);
-		else resource = this.cache.find((resource) => 'name' in resource && resource.name === resolvable);
-
-		if (!resource && options?.force) throw new Error('Could not find resource');
-		else if (!resource) return;
-
-		if (options?.type && !resource.isType(options?.type)) {
-			if (options?.force) throw new Error('Resource does not meet type constraint');
-			else return;
-		}
-
-		if (
-			options?.light?.capableOf &&
-			resource.isType(ApiResourceType.Light) &&
-			!resource.isCapableOf(options.light.capableOf)
-		) {
-			if (options?.force) throw new Error('Resource does not meet light capability constraint');
-			else return;
-		}
+		if (!resource && options.force) throw new Error(`Nonexistent ${options.type ?? 'unknown type'}: ${id}`);
+		if (resource && resource.type !== options.type)
+			throw new Error(`${resource.type}: ${id} rtype mismatch (requested: ${options.type}, actual: ${options.type})`);
 
 		return resource;
 	}
 
-	public resolveId(resolvable: Resolvable, options?: ResolveOptions & { force: true }): string;
-	public resolveId(resolvable: Resolvable, options?: ResolveOptions): string | undefined;
-	public resolveId(resolvable: any, options?: any): any {
-		return this.resolve(resolvable, options)?.id;
+	public getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
+		identifier?: ResourceIdentifier<T>,
+		options?: { force: true; type?: U },
+	): NarrowResource<U extends ApiResourceType ? U : T>;
+	public getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
+		identifier?: ResourceIdentifier<T>,
+		options?: { force?: boolean; type?: U },
+	): NarrowResource<U extends ApiResourceType ? U : T> | undefined;
+	public getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
+		identifier?: ResourceIdentifier<T>,
+		options: { force?: boolean; type?: U } = {},
+	) {
+		return this.getById(identifier?.rid, { type: options.type ?? identifier?.rtype, force: options.force });
+	}
+
+	public getByIdentifiers(identifiers: ResourceIdentifier[]): NarrowResource[] {
+		return identifiers
+			.map((identifier) => this.getByIdentifier(identifier))
+			.filter((resource) => resource !== null && resource !== undefined);
+	}
+
+	public getByName<T extends ApiResourceType>(name?: string, options?: { force: true; type?: T }): NarrowResource<T>;
+	public getByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force?: boolean; type?: T },
+	): NarrowResource<T> | undefined;
+	public getByName<T extends ApiResourceType>(name?: string, options: { force?: boolean; type?: T } = {}) {
+		const resource = this.cache.find(
+			(resource) => 'name' in resource && resource.name === name && resource.type === options.type,
+		);
+
+		if (!resource && options.force) throw new Error(`Nonexistent ${name}`);
+
+		return resource;
+	}
+
+	public getIdentifierByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force: true; type?: T },
+	): ResourceIdentifier<T>;
+	public getIdentifierByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force?: boolean; type?: T },
+	): ResourceIdentifier<T> | undefined;
+	public getIdentifierByName<T extends ApiResourceType>(name?: string, options: { force?: boolean; type?: T } = {}) {
+		const resource = this.getByName(name, options);
+
+		return resource?.identifier;
 	}
 
 	public _create(data: ApiResourceTypeGet<any>): NarrowResource<any> | undefined {

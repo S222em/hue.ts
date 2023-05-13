@@ -5,23 +5,23 @@ import { Events } from '../bridge/BridgeEvents';
 import { ApiResourceType } from '../api/ApiResourceType';
 
 export const RESOURCES_EVENTS = {
-	[ApiResourceType.Device]: undefined,
+	[ApiResourceType.Device]: [Events.DeviceAdd, Events.DeviceUpdate, Events.DeviceDelete],
 	[ApiResourceType.BridgeHome]: undefined,
-	[ApiResourceType.Room]: undefined,
-	[ApiResourceType.Zone]: undefined,
+	[ApiResourceType.Room]: [Events.RoomAdd, Events.RoomUpdate, Events.RoomDelete],
+	[ApiResourceType.Zone]: [Events.ZoneAdd, Events.ZoneUpdate, Events.ZoneDelete],
 	[ApiResourceType.Light]: [Events.LightAdd, Events.LightUpdate, Events.LightDelete],
 	[ApiResourceType.Button]: undefined,
 	[ApiResourceType.Temperature]: undefined,
 	[ApiResourceType.LightLevel]: undefined,
 	[ApiResourceType.Motion]: undefined,
 	[ApiResourceType.Entertainment]: undefined,
-	[ApiResourceType.GroupedLight]: undefined,
+	[ApiResourceType.GroupedLight]: [Events.GroupedLightAdd, Events.GroupedLightUpdate, Events.GroupedLightDelete],
 	[ApiResourceType.DevicePower]: undefined,
 	[ApiResourceType.ZigbeeBridgeConnectivity]: undefined,
 	[ApiResourceType.ZgpConnectivity]: undefined,
 	[ApiResourceType.Bridge]: undefined,
 	[ApiResourceType.Homekit]: undefined,
-	[ApiResourceType.Scene]: undefined,
+	[ApiResourceType.Scene]: [Events.SceneAdd, Events.SceneUpdate, Events.SceneDelete],
 	[ApiResourceType.EntertainmentConfiguration]: undefined,
 	[ApiResourceType.PublicImage]: undefined,
 	[ApiResourceType.BehaviourScript]: undefined,
@@ -81,7 +81,7 @@ export class Sse {
 
 	public async event(raw: string) {
 		if (raw === ': hi\n' + '\n') return this.debug('Hi');
-		const events = this.parseRaw(raw);
+		const events = this.parse(raw);
 
 		for (const event of events) {
 			this.debug(`Received ${event.data.length} ${event.type} event(s)`);
@@ -141,7 +141,7 @@ export class Sse {
 		if (event) this.bridge.emit(event[2], clone as any);
 	}
 
-	public parseRaw(raw: string): Array<Record<string, any>> {
+	public parse(raw: string): Array<Record<string, any>> {
 		const regex = /id: \d+:\d+\ndata: /;
 
 		const replaced = raw.replace(regex, '');

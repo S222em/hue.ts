@@ -1,7 +1,7 @@
 import { ApiResourceType } from '../ApiResourceType';
 
-export interface ApiLightPut {
-	type?: ApiResourceType.Light;
+export interface ApiGroupedLightPut {
+	type?: ApiResourceType.GroupedLight;
 	metadata?: {
 		archetype?: string;
 		name?: string;
@@ -29,28 +29,11 @@ export interface ApiLightPut {
 			y: number;
 		};
 	};
-	dynamics?: {
-		duration?: number;
-		speed?: number;
-	};
 	alert?: {
 		action: 'breathe';
 	};
-	gradient?: {
-		points: Array<{
-			color: {
-				xy: {
-					x: number;
-					y: number;
-				};
-			};
-		}>;
-	};
-	effects?: {
-		effect?: 'fire' | 'candle' | 'no_effect';
-	};
-	timed_effects?: {
-		effect?: 'sunrise' | 'no_effect';
+	dynamics?: {
 		duration?: number;
+		speed?: number;
 	};
 }
