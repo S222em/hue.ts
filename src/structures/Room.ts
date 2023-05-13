@@ -1,73 +1,39 @@
-import { Group } from './Group';
-import { Routes } from '../util/Routes';
-import { ApiRoom } from '../types/api/room';
-import { ApiResourceType } from '../types/api/common';
-import Collection from '@discordjs/collection';
-import { Light } from './Light';
-import { Device } from './Device';
+import { NamedResource } from './NamedResource';
+import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { NarrowResource } from './Resource';
 
-/**
- * Represents a Hue room
- */
-export class Room extends Group<ApiRoom> {
-	type = ApiResourceType.Room;
-
-	/**
-	 * The connected devices
-	 */
-	get devices(): Collection<string, Device> {
-		return this.bridge.devices.cache.filter((device) =>
-			this.data.children.some((child) => child.rid === device.id && child.rtype === ApiResourceType.Device),
-		);
-	}
-
-	/**
-	 * The connected lights
-	 */
-	get lights(): Collection<string, Light> {
-		const collection = new Collection<string, Light>();
-
-		this.devices.forEach((device) => {
-			if (device.isLight()) collection.set(device.lightId, device.light);
-		});
-
-		return collection;
-	}
-
-	/**
-	 * Deletes this room
-	 */
-	public async delete(): Promise<void> {
-		await this.bridge.rest.delete(Routes.room.id(this.id));
-	}
-
-	/**
-	 * Fetch this room from the bridge
-	 */
-	public async fetch(): Promise<Room> {
-		await this.bridge.rooms.fetch(this.id);
-		return this;
-	}
-
-	/**
-	 * Edits this room with raw API data structure
-	 * @param data
-	 * @protected
-	 * @internal
-	 */
-	protected async _edit(data: ApiRoom): Promise<void> {
-		await this.bridge.rest.put(Routes.room.id(this.id), data);
-	}
+export interface RoomEditOptions {
+	name?: string;
+	children?: ResourceIdentifier[];
 }
 
-export type RoomResolvable = Room | string;
+export class Room extends NamedResource<ApiResourceType.Room> {
+	type = ApiResourceType.Room;
 
-export type RoomOptions = Group.Options;
+	get children(): NarrowResource[] {
+		return this.bridge.resources.getByIdentifiers(this.childIdentifiers);
+	}
 
-export type RoomStateOptions = Group.StateOptions;
+	get childIdentifiers(): ResourceIdentifier[] {
+		return this.data.children;
+	}
 
-export namespace Room {
-	export type Options = RoomOptions;
-	export type Resolvable = RoomResolvable;
-	export type StateOptions = RoomStateOptions;
+	get services(): NarrowResource[] {
+		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
+	}
+
+	get serviceIdentifiers(): ResourceIdentifier[] {
+		return this.data.services;
+	}
+
+	public async addChildren(...children: ResourceIdentifier[]) {
+		const newChildren = [...this.childIdentifiers, ...children];
+
+		await this.edit({ children: newChildren });
+	}
+
+	public async edit(options: RoomEditOptions): Promise<void> {
+		await this._put({ metadata: options.name ? { name: options.name } : undefined, children: options.children });
+	}
 }

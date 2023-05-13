@@ -1,24 +1,22 @@
 import { Resource } from './Resource';
+import { ApiResourceType, ApiResourceTypeGet } from '../api/ApiResourceType';
+import { Bridge } from '../bridge/Bridge';
 
-/**
- * Base for all named resources
- */
-export abstract class NamedResource<
-	R extends object & { id?: string; metadata?: { name?: string } },
-> extends Resource<R> {
-	/**
-	 * The name of this resource
-	 */
+export abstract class NamedResource<T extends ApiResourceType> extends Resource<T> {
+	public data: ApiResourceTypeGet<T> & { metadata: { name: string } };
+
+	constructor(bridge: Bridge, data: ApiResourceTypeGet<T> & { metadata: { name: string } }) {
+		super(bridge, data);
+		this.data = data;
+	}
+
 	get name(): string {
-		return this.data.metadata?.name;
+		return this.data.metadata.name;
 	}
 
-	/**
-	 * Edits the name of this resource
-	 */
-	public async setName(name: string) {
-		return await this.edit({ name });
+	public async setName(name: string): Promise<void> {
+		await this.edit({ name });
 	}
 
-	public abstract edit(options: Record<string, any> & { name?: string }): Promise<void>;
+	public abstract edit(options: { name?: string }): Promise<void>;
 }

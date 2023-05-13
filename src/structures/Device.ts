@@ -1,88 +1,52 @@
 import { NamedResource } from './NamedResource';
-import { ApiDevice } from '../types/api/device';
-import { ApiResourceType } from '../types/api/common';
-import { Light } from './Light';
-import { Product } from './Product';
-import { Routes } from '../util/Routes';
+import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { NarrowResource } from './Resource';
 
-/**
- * Represents a Hue device
- */
-export class Device extends NamedResource<ApiDevice> {
+export interface DeviceEditOptions {
+	name: string;
+}
+
+export class Device extends NamedResource<ApiResourceType.Device> {
 	type = ApiResourceType.Device;
-	/**
-	 * Device specifications e.g. manufacturer
-	 */
-	public readonly product = new Product(this);
 
-	/**
-	 * Connected light if any
-	 */
-	get light(): Light | undefined {
-		return this.bridge.lights.cache.get(this.lightId);
+	get modelId(): string {
+		return this.data.product_data.model_id;
 	}
 
-	/**
-	 * Connected light ID if any
-	 */
-	get lightId(): string | undefined {
-		return this.data.services.find((service) => service.rtype === ApiResourceType.Light)?.rid;
+	get manufacturerName(): string {
+		return this.data.product_data.manufacturer_name;
 	}
 
-	/**
-	 * Date the device was added to the hue bridge
-	 */
-	get addedAt(): Date {
-		return new Date(this.data.creation_time);
+	get productName(): string {
+		return this.data.product_data.product_name;
 	}
 
-	/**
-	 * Edits this device with new data e.g. new name
-	 * @param options
-	 */
-	public async edit(options: DeviceOptions): Promise<void> {
-		return await this._edit(Device.transform(options));
+	get certified(): boolean {
+		return this.data.product_data.certified;
 	}
 
-	/**
-	 * Fetch this device from the bridge
-	 */
-	public async fetch(): Promise<Device> {
-		await this.bridge.devices.fetch(this.id);
-		return this;
+	get softwareVersion(): string {
+		return this.data.product_data.software_version;
 	}
 
-	/**
-	 * Whether this device is connected to a light
-	 */
-	public isLight(): this is Device & { light: Light; lightId: string } {
-		return Boolean(this.data.services.find((service) => service.rtype === ApiResourceType.Light));
+	get hardwarePlatformType(): string | undefined {
+		return this.data.product_data.hardware_platform_type;
 	}
 
-	/**
-	 * Edits this device with raw API data structure
-	 * @param data
-	 * @protected
-	 * @internal
-	 */
-	protected async _edit(data: ApiDevice): Promise<void> {
-		await this.bridge.rest.put(Routes.device.id(this.id), data);
+	get services(): NarrowResource[] {
+		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
 	}
 
-	public static transform(options: DeviceOptions): ApiDevice {
-		return {
-			metadata: options.name ? { name: options.name } : undefined,
-		};
+	get serviceIdentifiers(): ResourceIdentifier[] {
+		return this.data.services;
 	}
-}
 
-export type DeviceResolvable = Device | string;
+	public async identify(): Promise<void> {
+		await this._put({ identify: { action: 'identify' } });
+	}
 
-export interface DeviceOptions {
-	name?: string;
-}
-
-export namespace Device {
-	export type Resolvable = DeviceResolvable;
-	export type Options = DeviceOptions;
+	public async edit(options: DeviceEditOptions): Promise<void> {
+		await this._put({ metadata: options.name ? { name: options.name } : undefined });
+	}
 }

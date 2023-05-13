@@ -1,66 +1,60 @@
 // Bridge
 export * from './bridge/Bridge';
-export * from './bridge/rest/REST';
-export * from './bridge/rest/RequestManager';
-export * from './bridge/rest/RouteHandler';
-export * from './bridge/rest/Route';
+export * from './bridge/BridgeEvents';
+
+// Connections
+export * from './connections/Rest';
+export * from './connections/Limit';
+export * from './connections/Sse';
 
 // Managers
-export * from './managers/Manager';
 export * from './managers/ResourceManager';
-export * from './managers/LightManager';
-export * from './managers/GroupedLightManager';
-export * from './managers/RoomManager';
-export * from './managers/ZoneManager';
-export * from './managers/SceneManager';
-export * from './managers/SceneActionManager';
-export * from './managers/DeviceManager';
 
-// Resource
-export * from './structures/Resource';
-export * from './structures/NamedResource';
-
-// Devices
+// Resources
 export * from './structures/Device';
-export * from './structures/Product';
-
-// Lights
-export * from './structures/Light';
 export * from './structures/DimmableLight';
-export * from './structures/TemperatureLight';
-export * from './structures/ColorLight';
-export * from './structures/GradientLight';
-export * from './structures/LightCapabilities';
-
-// Groups
-export * from './structures/Group';
 export * from './structures/GroupedLight';
+export * from './structures/Light';
+export * from './structures/MirekLight';
+export * from './structures/NamedResource';
+export * from './structures/Resource';
 export * from './structures/Room';
+export * from './structures/Scene';
+export * from './structures/XyLight';
+export * from './structures/XysLight';
 export * from './structures/Zone';
 
-// Scene
-export * from './structures/Scene';
-export * from './structures/SceneAction';
+// API
+export * from './api/ApiResourceType';
+export * from './api/ResourceIdentifier';
 
-// Color
-export * from './color/ColorResolver';
-export * from './color/XyPoint';
-export * from './color/Gamut';
-
-// Api Types
-export * from './types/api/common';
-export * from './types/api/light';
-export * from './types/api/grouped_light';
-export * from './types/api/room';
-export * from './types/api/zone';
-export * from './types/api/scene';
-export * from './types/api/scene_action';
-
-// Types
-export * from './types/common';
-export * from './types/events';
+export * from './api/device/get';
+export * from './api/device/put';
+export * from './api/grouped_light/get';
+export * from './api/grouped_light/put';
+export * from './api/light/get';
+export * from './api/light/put';
+export * from './api/room/get';
+export * from './api/room/post';
+export * from './api/room/put';
+export * from './api/scene/get';
+export * from './api/scene/post';
+export * from './api/scene/put';
+export * from './api/zone/get';
+export * from './api/zone/post';
+export * from './api/zone/put';
 
 // Util
-export * from './util/Colors';
-export * from './util/Events';
-export * from './util/Routes';
+export * from './util/util';
+export * from './util/clone';
+export * from './util/merge';
+export * from './util/resourceIdentifier';
+
+export * from './util/color/xy';
+export * from './util/color/gamut';
+export * from './util/color/rgb';
+export * from './util/color/hex';
+
+// TODO dimming_delta & color_temperature_delta
+// TODO archetypes
+// TODO delete resources

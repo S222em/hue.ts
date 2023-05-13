@@ -1,59 +1,45 @@
-import { Group } from './Group';
-import { Routes } from '../util/Routes';
-import { ApiZone } from '../types/api/zone';
-import { ApiResourceType } from '../types/api/common';
-import Collection from '@discordjs/collection';
-import { Light } from './Light';
+import { NamedResource } from './NamedResource';
+import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { NarrowResource } from './Resource';
 
-/**
- * Represents a Hue zone
- */
-export class Zone extends Group<ApiZone> {
-	type = ApiResourceType.Zone;
-
-	/**
-	 * The connected lights
-	 */
-	get lights(): Collection<string, Light> {
-		return this.bridge.lights.cache.filter((light) =>
-			this.data.children.some((child) => child.rid === light.id && child.rtype === ApiResourceType.Light),
-		);
-	}
-
-	/**
-	 * Deletes this zone
-	 */
-	public async delete(): Promise<void> {
-		await this.bridge.rest.delete(Routes.zone.id(this.id));
-	}
-
-	/**
-	 * Fetches this Zone from the Bridge
-	 */
-	public async fetch(): Promise<Zone> {
-		await this.bridge.zones.fetch(this.id);
-		return this;
-	}
-
-	/**
-	 * Edits this zone with raw API data structure
-	 * @param data
-	 * @protected
-	 * @internal
-	 */
-	protected async _edit(data: ApiZone): Promise<void> {
-		await this.bridge.rest.put(Routes.zone.id(this.id), data);
-	}
+export interface ZoneEditOptions {
+	name?: string;
+	children?: ResourceIdentifier[];
 }
 
-export type ZoneResolvable = Zone | string;
+export class Zone extends NamedResource<ApiResourceType.Zone> {
+	type = ApiResourceType.Zone;
 
-export type ZoneOptions = Group.Options;
+	get children(): NarrowResource[] {
+		return this.bridge.resources.getByIdentifiers(this.childIdentifiers);
+	}
 
-export type ZoneStateOptions = Group.StateOptions;
+	get childIdentifiers(): ResourceIdentifier[] {
+		return this.data.children;
+	}
 
-export namespace Zone {
-	export type Options = ZoneOptions;
-	export type Resolvable = ZoneResolvable;
-	export type StateOptions = ZoneStateOptions;
+	get services(): NarrowResource[] {
+		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
+	}
+
+	get serviceIdentifiers(): ResourceIdentifier[] {
+		return this.data.services;
+	}
+
+	public async removeChildren(...children: ResourceIdentifier[]): Promise<void> {
+		const newChildren = this.childIdentifiers.filter((identifier) => !children.includes(identifier));
+
+		await this.edit({ children: newChildren });
+	}
+
+	public async addChildren(...children: ResourceIdentifier[]): Promise<void> {
+		const newChildren = [...this.childIdentifiers, ...children];
+
+		await this.edit({ children: newChildren });
+	}
+
+	public async edit(options: ZoneEditOptions): Promise<void> {
+		await this._put({ metadata: options.name ? { name: options.name } : undefined, children: options.children });
+	}
 }

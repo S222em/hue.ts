@@ -25,9 +25,6 @@
       <a href="#guides">Guides</a>
     </li>
     <li>
-      <a href="#ratelimits">Ratelimits</a>
-    </li>
-    <li>
       <a href="#roadmap">Roadmap</a>
     </li>
   </ol>
@@ -39,7 +36,7 @@ hue.ts is a node module that allows you to easily interact with the hue API (V2)
 
 - Object-oriented
 - Written in TypeScript
-- 100%-coverage of the hue API (still work in progress)
+- Future 100%-coverage of the hue API
 
 # Docs
 
@@ -48,19 +45,24 @@ Docs can be found on our wiki [here][wiki-url].
 # Example usage
 
 ```js
-const { Bridge } = require('hue.ts');
+const { Bridge, ApiResourceType } = require('hue.ts');
 
 const bridge = new Bridge({
-	ip: 'some-ip',
-	applicationKey: 'some-key',
+   connection: {
+      ip: 'some-ip',
+      applicationKey: 'some-key',  
+   },
 });
 
 bridge.on('ready', async () => {
-	console.log('Ready!');
+   console.log('Ready!');
 
-	const scene = bridge.scenes.cache.get('some-id');
+   const scene = bridge.resources.getByName('Best Scene Ever', {
+      type: ApiResourceType.Scene,
+      force: true,
+   });
 
-	await scene.apply({ duration: 5000 });
+   await scene.recall({ duration: 5000 });
 });
 
 bridge.connect();
@@ -68,9 +70,8 @@ bridge.connect();
 
 # Installation
 
-**NodeJS v16.13.0 or newer is required.**
-
-**Hue bridge version 1948086000 or higher is required.**
+> ⚠️ **Hue bridge version 1948086000 or newer is required**: You can find your bridge's version in
+the hue app, Settings -> My Hue system -> Select your bridge -> Software
 
 ```shell
 npm install hue.ts
@@ -81,137 +82,212 @@ npm install hue.ts
 ## Connecting to a bridge
 
 ```ts
+import { Bridge } from 'hue.ts';
+
 const bridge = new Bridge({
-	ip: 'BRIDGE_IP',
-	applicationKey: 'APPLICATION_KEY',
-	// Uncomment line below if you are having ssl certificate validation issues
-	// rejectUnauthorized: false,
+   connection: {
+      ip: 'some-ip',
+      applicationKey: 'some-key',  
+   },
 });
 ```
 
-The **BRIDGE_IP** can be found in the Hue app at Settings -> My hue system -> (Your bridge) -> IP
+The **some-ip** can be found in the Hue app at Settings -> My hue system -> Select your bridge -> IP
 
-You can get an **APPLICATION_KEY** by following the steps below:
+You can get **some-key** by following the steps below:
 
 1. Open your browser and go to `https://<bridge ip address>/debug/clip.html`
 2. Next fill in the options below:
    URL: /api
-   BODY: {"devicetype":"hue_ts#YOUR_USER"}
+   BODY: {"devicetype":"some-random-name"}
 3. Press the POST button
 4. Go click the button on your Hue bridge
 5. Press the POST button again
-6. You should now see something like `{ success: { username: 'APPLICATION_KEY' } }`
+6. You should now see something like `{ success: { username: 'some-key' } }`
 
-Next connect to the bridge by calling `bridge.connect()` at the bottom of the file.
+For more information on retrieving this key visit: https://developers.meethue.com/develop/hue-api-v2/getting-started/
+
+Finally, connect to your bridge by calling `bridge.connect()`.
 
 After the bridge has successfully connected and cached all resources the **ready** event is emitted. You can also listen to other events which can be found [here](https://github.com/S222em/hue.ts/wiki/BridgeEvents).
 
 ```ts
-bridge.on('ready', () => {
+import { Bridge, Events } from 'hue.ts';
+
+const bridge = new Bridge({
+   connection: {
+      ip: 'some-ip',
+      applicationKey: 'some-key',
+   },
+});
+
+bridge.on(Events.Ready, () => {
 	// Do stuff
+});
+
+bridge.connect();
+```
+
+### Connecting via Cloud2Cloud
+
+> ⚠️ **It is not advised to use Cloud2Cloud at this time**
+
+```ts
+const bridge = new Bridge({
+   connection: {
+      accessToken: 'some-token',
+      applicationKey: 'some-key',  
+   },
+});
+```
+
+To find the **accessToken** and **applicationKey** visit https://developers.meethue.com/develop/hue-api-v2/cloud2cloud-getting-started/
+
+## Resources
+
+All the resources belonging to the connect bridge are cached after calling `bridge.connect()`.
+You can access resources in the cache with the following methods.
+
+Can be used to find a resource by its unique ID.
+```ts
+const resource = bridge.resources.getById('some-id');
+```
+
+Can be used to find a resource by its identifier, similar to an ID, but an identifier also includes the type of the resource.
+```ts
+const resource = bridge.resources.getByIdentifier({
+   rid: 'some-id',
+   rtype: 'some-type',
+});
+```
+
+Find multiple resources by identifier.
+```ts
+const resource = bridge.resources.getByIdentifiers([
+   {
+       rid: 'some-id', rtype: 'some-type',
+   },
+   {
+       rid: 'some-id', rtype: 'some-type',
+   }
+]);
+```
+
+> ⚠️ **.getByName will return the first occurrence**
+
+Find a resource by its name.
+```ts
+const resource = bridge.resources.getByName('some-name');
+```
+
+These methods include additional options as second parameter:
+- **force**, if true, error is thrown if resource does not exist.
+- **type**, the type of the resource, will not return resources of other types.
+
+Here is an example:
+```ts
+const resource = bridge.resources.getById('some-id', {
+    type: ApiResourceType.Light,
+    force: true,
 });
 ```
 
 ## Lights
 
-First get a light from the cache, you can also get a light from an event like **lightUpdate**.
+### On/Off
 
 ```ts
-const light = bridge.lights.resolve('ID_OR_NAME');
-```
+light.isOn();
 
-To make sure that a light is capable of what you are trying to accomplish, several type gaurds are in place. All of these type gaurds return a **boolean**.
-
-```ts
-// The light can do dimming
-light.isCapableOfDimming();
-// The light can do dimming and temperature
-light.isCapableOfTemperature();
-// The light can do dimming, temperature and color
-light.isCapableOfColor();
-// The light can do dimming, temperature, color and gradient
-light.isCapableOfGradient();
-// The light is a dimmable light
-light.isDimmable();
-// The light is a temperature light
-light.isTemperature();
-// The light is a color light
-light.isColor();
-// The light is a gradient light
-light.isGradient();
-```
-
-After calling one of these typegaurds additional methods show up that can be used to change the state of the light
-
-```ts
-if (light.isCapableOfColor()) {
-	await light.setColor('HEX_COLOR');
-	// Or
-	await light.state({ color: 'HEX_COLOR' });
-}
-```
-
-The methods above are not available if the `light.isCapableOfColor()` or the `light.isColor()` typegaurd is not called first. The rest of the methods are similiar to above and can all be reviewed in the [wiki][wiki-url].
-
-Lights are connected to another resource: Device. A Device includes properties like the menufacturer and model type. All devices, lights, buttons, etc have a Device connected to it.
-
-```ts
-const device = light.device;
-
-console.log(device.product.manufacturerName);
-```
-
-## Groups
-
-Groups consist of 2 different resources: rooms and zones.
-
-Lets get a room from the cache to get started:
-
-```ts
-const room = bridge.rooms.resolve('ID_OR_NAME');
-// Or a Zone
-const zone = bridge.zones.resolve('ID_OR_NAME');
-```
-
-You can set all the lights in the room to one state, if all lights are capable of what you are trying to set as the state
-
-```ts
-await room.state({ color: 'HEX_COLOR' });
-```
-
-Settings the color for a light, like above, won't do anything for lights that don't support it.
-
-A light can only be in one room, while a light can have many zones.
-
-```ts
-await room.addLight('ID_OR_NAME_OR_LIGHT');
-```
-
-If the above method is called on a room (not on a zone), the light will be moved to that room. With zones, the light will keep the zones it was already in, and is added to the new zone as well.
-
-Groups also have a Collection of all the lights that belong to it.
-
-```ts
-room.lights.forEach((light) => console.log(light.name));
-```
-
-# Ratelimits
-
-hue.ts keeps track of the request you make, and makes sure no ratelimit is hit. This might cause a delay when executing requests. All routes expect lights has a 1 per second ratelimit. Requests to /lights has a 10 per second ratelimit.
-
-When you hit a ratelimit (hue.ts prevents the request) the **ratelimit** event is emitted.
-
-```ts
-bridge.on('ratelimit', (until, route) => {
-	console.log(`Hit a ratelimit for route ${route.base}. Ratelimit will clear in ${until.getTime() - Date.now()}ms`);
+await light.off();
+await light.on();
+await light.toggle();
+await light.edit({
+   on: true,
 });
 ```
 
-**until** is the date when the ratelimit is cleared, and requests will continue. Just to be clear, you DON'T have to worry about ratelimits, so don't try to manage ratelimits yourself.
+### Brightness
 
-# Colors
+```ts
+// Number between 1%-100%
+light.brightness
 
-Not all Hue Lights are the same, so there are differences in the ranges of colors one can display. To make sure the color you gave (e.g. `light.setColor('#15ff00')`) is in range of what the light can actually display, there might be a difference from the color you where trying to display. This might happen on conversion from hex to xy (hue color format), or the other way around. Note that this difference might not be noticable at all.
+await light.setBrightness(50);
+await light.edit({
+   brightness: 50,
+});
+```
+
+### Color temperature
+
+```ts
+// Number between 153-500
+light.mirek
+
+await light.setMirek(300);
+await light.edit({
+   mirek: 300,
+});
+```
+
+### Color
+
+> ⚠️ **Given color is always transpiled to the closest point in the lights display range**
+
+```ts
+// Number between 153-500
+light.xy
+
+await light.setXy({
+   x: 0.3,
+   y: 0.5,
+})
+await light.edit({
+   xy: {
+      x: 0.3,
+      y: 0.5,
+   },
+});
+```
+
+To convert hex or rgb to a xy value the following utility functions can be used:
+```ts
+const xy = fromHex('#e62d20');
+const hex = toHex(xy);
+
+await light.setXy(fromHex('#e62d20'));
+```
+```ts
+const xy = fromRGB({
+   red: 230,
+   green: 45,
+   blue: 32,
+});
+const rgb = toRGB(xy);
+
+await light.setXy(fromRGB({
+   red: 230,
+   green: 45,
+   blue: 32,
+}));
+```
+
+### Type Guards
+
+Not all lights support color or color temperature. To make sure a light supports these, type guards are available
+
+```ts
+light.isCapableOfDimming()
+light.isCapableOfMirek()
+light.isCapableOfXy()
+light.isCapableOfXys()
+```
+
+## Other resources
+
+Not all resources are currently supported. Although most important ones are. Guides on these resources will be added later. For now reference to [documentation](https://github.com/S222em/hue.ts/wiki).
+For further assistance, feel free to open up an issue on our GitHub.
 
 # Roadmap
 
