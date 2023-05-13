@@ -1,6 +1,6 @@
 import { Bridge, CA } from '../bridge/Bridge';
 import { Agent, request } from 'undici';
-import Collection from '@discordjs/collection';
+import { Collection } from '@discordjs/collection';
 import { Limit } from './Limit';
 import { Events } from '../bridge/BridgeEvents';
 
@@ -34,8 +34,6 @@ export class Rest {
 				ca: CA,
 				requestCert: true,
 				rejectUnauthorized: false,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore this will be resolved with https://github.com/nodejs/undici/pull/1362
 				checkServerIdentity: () => undefined,
 			},
 		});

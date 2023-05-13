@@ -1,5 +1,5 @@
 import { Bridge } from '../bridge/Bridge';
-import Collection from '@discordjs/collection';
+import { Collection } from '@discordjs/collection';
 import { NarrowResource } from '../structures/Resource';
 import { ApiResourceType, ApiResourceTypeGet } from '../api/ApiResourceType';
 import { Light, LightCapabilities, NarrowLight } from '../structures/Light';
