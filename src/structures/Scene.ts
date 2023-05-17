@@ -2,7 +2,6 @@ import { NamedResource } from './NamedResource';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { XyPoint } from '../util/color/xy';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
 
 export interface SceneAction {
 	target: ResourceIdentifier;
@@ -43,11 +42,7 @@ export interface SceneEditOptions {
 export class Scene extends NamedResource<ApiResourceType.Scene> {
 	type = ApiResourceType.Scene;
 
-	get group(): NarrowResource {
-		return this.bridge.resources.getByIdentifier(this.groupIdentifier);
-	}
-
-	get groupIdentifier(): ResourceIdentifier {
+	get group(): ResourceIdentifier {
 		return this.data.group;
 	}
 

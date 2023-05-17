@@ -1,7 +1,6 @@
 import { NamedResource } from './NamedResource';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
 
 export interface RoomEditOptions {
 	name?: string;
@@ -11,24 +10,16 @@ export interface RoomEditOptions {
 export class Room extends NamedResource<ApiResourceType.Room> {
 	type = ApiResourceType.Room;
 
-	get children(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.childIdentifiers);
-	}
-
-	get childIdentifiers(): ResourceIdentifier[] {
+	get children(): ResourceIdentifier[] {
 		return this.data.children;
 	}
 
-	get services(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
-	}
-
-	get serviceIdentifiers(): ResourceIdentifier[] {
+	get services(): ResourceIdentifier[] {
 		return this.data.services;
 	}
 
 	public async addChildren(...children: ResourceIdentifier[]) {
-		const newChildren = [...this.childIdentifiers, ...children];
+		const newChildren = [...this.children, ...children];
 
 		await this.edit({ children: newChildren });
 	}

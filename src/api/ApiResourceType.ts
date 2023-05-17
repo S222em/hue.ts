@@ -13,6 +13,7 @@ import { ApiDeviceGet } from './device/get';
 import { ApiDevicePut } from './device/put';
 import { ApiGroupedLightGet } from './grouped_light/get';
 import { ApiGroupedLightPut } from './grouped_light/put';
+import { ApiBridgeHomeGet } from './bridge_home/get';
 
 export enum ApiResourceType {
 	Device = 'device',
@@ -43,7 +44,7 @@ export enum ApiResourceType {
 
 export interface ApiResourceTypesGet {
 	[ApiResourceType.Device]: ApiDeviceGet;
-	[ApiResourceType.BridgeHome]: never;
+	[ApiResourceType.BridgeHome]: ApiBridgeHomeGet;
 	[ApiResourceType.Room]: ApiRoomGet;
 	[ApiResourceType.Zone]: ApiZoneGet;
 	[ApiResourceType.Light]: ApiLightGet;

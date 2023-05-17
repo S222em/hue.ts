@@ -1,7 +1,6 @@
 import { NamedResource } from './NamedResource';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
 
 export interface ZoneEditOptions {
 	name?: string;
@@ -11,30 +10,22 @@ export interface ZoneEditOptions {
 export class Zone extends NamedResource<ApiResourceType.Zone> {
 	type = ApiResourceType.Zone;
 
-	get children(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.childIdentifiers);
-	}
-
-	get childIdentifiers(): ResourceIdentifier[] {
+	get children(): ResourceIdentifier[] {
 		return this.data.children;
 	}
 
-	get services(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
-	}
-
-	get serviceIdentifiers(): ResourceIdentifier[] {
+	get services(): ResourceIdentifier[] {
 		return this.data.services;
 	}
 
 	public async removeChildren(...children: ResourceIdentifier[]): Promise<void> {
-		const newChildren = this.childIdentifiers.filter((identifier) => !children.includes(identifier));
+		const newChildren = this.children.filter((child) => !children.includes(child));
 
 		await this.edit({ children: newChildren });
 	}
 
 	public async addChildren(...children: ResourceIdentifier[]): Promise<void> {
-		const newChildren = [...this.childIdentifiers, ...children];
+		const newChildren = [...this.children, ...children];
 
 		await this.edit({ children: newChildren });
 	}

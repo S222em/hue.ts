@@ -1,4 +1,4 @@
-import { NarrowResource, Resource } from './Resource';
+import { Resource } from './Resource';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
 import { XyPoint } from '../util/color/xy';
@@ -13,11 +13,7 @@ export interface GroupedLightEditOptions {
 export class GroupedLight extends Resource<ApiResourceType.GroupedLight> {
 	type = ApiResourceType.GroupedLight;
 
-	get owner(): NarrowResource {
-		return this.bridge.resources.getByIdentifier(this.ownerIdentifier);
-	}
-
-	get ownerIdentifier(): ResourceIdentifier {
+	get owner(): ResourceIdentifier {
 		return this.data.owner;
 	}
 

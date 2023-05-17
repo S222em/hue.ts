@@ -83,6 +83,4 @@ export abstract class Resource<T extends ApiResourceType> {
 	protected async _put(data: ApiResourceTypePut<T>): Promise<void> {
 		await this.bridge.rest.put(`/resource/${this.type}/${this.id}`, data);
 	}
-
-	public abstract edit(options: Record<string, any>): Promise<void>;
 }
