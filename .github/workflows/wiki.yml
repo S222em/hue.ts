@@ -15,7 +15,7 @@ jobs:
       - run: npm ci
       - run: npm run wiki
       - name: Push Wiki Changes
-        uses: Andrew-Chen-Wang/github-wiki-action@v3
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
         env:
           WIKI_DIR: wiki/
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
