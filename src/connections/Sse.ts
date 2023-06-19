@@ -16,7 +16,7 @@ export const RESOURCES_EVENTS = {
 	[ApiResourceType.Motion]: undefined,
 	[ApiResourceType.Entertainment]: undefined,
 	[ApiResourceType.GroupedLight]: [Events.GroupedLightAdd, Events.GroupedLightUpdate, Events.GroupedLightDelete],
-	[ApiResourceType.DevicePower]: undefined,
+	[ApiResourceType.DevicePower]: [Events.DevicePowerAdd, Events.DevicePowerUpdate, Events.DevicePowerDelete],
 	[ApiResourceType.ZigbeeBridgeConnectivity]: undefined,
 	[ApiResourceType.ZgpConnectivity]: undefined,
 	[ApiResourceType.Bridge]: undefined,

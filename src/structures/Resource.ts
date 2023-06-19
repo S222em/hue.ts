@@ -10,6 +10,7 @@ import { Room } from './Room';
 import { Zone } from './Zone';
 import { Device } from './Device';
 import { GroupedLight } from './GroupedLight';
+import { DevicePower } from './DevicePower';
 
 export interface Resources {
 	[ApiResourceType.Device]: Device;
@@ -23,7 +24,7 @@ export interface Resources {
 	[ApiResourceType.Motion]: Resource<any>;
 	[ApiResourceType.Entertainment]: Resource<any>;
 	[ApiResourceType.GroupedLight]: GroupedLight;
-	[ApiResourceType.DevicePower]: Resource<any>;
+	[ApiResourceType.DevicePower]: DevicePower;
 	[ApiResourceType.ZigbeeBridgeConnectivity]: Resource<any>;
 	[ApiResourceType.ZgpConnectivity]: Resource<any>;
 	[ApiResourceType.Bridge]: Resource<any>;
@@ -37,11 +38,7 @@ export interface Resources {
 	[ApiResourceType.GeofenceClient]: Resource<any>;
 	[ApiResourceType.Geolocation]: Resource<any>;
 }
-/**
-export type NarrowResource<T extends ApiResourceType = ApiResourceType> = T extends ApiResourceType
-	? Resources[T]
-	: Resource<any> | NamedResource<any>;
- */
+
 export type NarrowResource<T extends ApiResourceType = ApiResourceType> = Resources[T];
 
 export abstract class Resource<T extends ApiResourceType> {

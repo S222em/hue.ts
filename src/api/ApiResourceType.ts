@@ -14,6 +14,7 @@ import { ApiDevicePut } from './device/put';
 import { ApiGroupedLightGet } from './grouped_light/get';
 import { ApiGroupedLightPut } from './grouped_light/put';
 import { ApiBridgeHomeGet } from './bridge_home/get';
+import { ApiDevicePowerGet } from './device_power/get';
 
 export enum ApiResourceType {
 	Device = 'device',
@@ -54,7 +55,7 @@ export interface ApiResourceTypesGet {
 	[ApiResourceType.Motion]: never;
 	[ApiResourceType.Entertainment]: never;
 	[ApiResourceType.GroupedLight]: ApiGroupedLightGet;
-	[ApiResourceType.DevicePower]: never;
+	[ApiResourceType.DevicePower]: ApiDevicePowerGet;
 	[ApiResourceType.ZigbeeBridgeConnectivity]: never;
 	[ApiResourceType.ZgpConnectivity]: never;
 	[ApiResourceType.Bridge]: never;

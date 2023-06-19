@@ -14,6 +14,7 @@ import { Zone } from '../structures/Zone';
 import { Device } from '../structures/Device';
 import { GroupedLight } from '../structures/GroupedLight';
 import { BridgeHome } from '../structures/BridgeHome';
+import { DevicePower } from '../structures/DevicePower';
 
 export const RESOURCES = {
 	[ApiResourceType.Light]: {
@@ -33,7 +34,7 @@ export const RESOURCES = {
 	[ApiResourceType.Motion]: undefined,
 	[ApiResourceType.Entertainment]: undefined,
 	[ApiResourceType.GroupedLight]: GroupedLight,
-	[ApiResourceType.DevicePower]: undefined,
+	[ApiResourceType.DevicePower]: DevicePower,
 	[ApiResourceType.ZigbeeBridgeConnectivity]: undefined,
 	[ApiResourceType.ZgpConnectivity]: undefined,
 	[ApiResourceType.Bridge]: undefined,
@@ -53,51 +54,11 @@ export type Resolvable<T extends ApiResourceType = ApiResourceType> =
 	| string
 	| ResourceIdentifier<T>;
 
-export interface ResolveOptions<
-	T extends ApiResourceType = ApiResourceType,
-	L extends LightCapabilities | undefined = undefined,
-> {
-	type?: T;
-	light?: {
-		capableOf?: L;
-	};
-	force?: boolean;
-}
-
 export type Resolved<T extends ApiResourceType, L extends LightCapabilities> = T extends ApiResourceType.Light
 	? NarrowLight<L>
 	: NarrowResource<T>;
 
-export interface ResourceManager {
-	getById<T extends ApiResourceType>(id?: string, options?: { force: true; type?: T }): NarrowResource<T>;
-	getById<T extends ApiResourceType>(
-		id?: string,
-		options?: { force?: boolean; type?: T },
-	): NarrowResource<T> | undefined;
-	getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
-		identifier?: ResourceIdentifier<T>,
-		options?: { force: true; type?: U },
-	): NarrowResource<U extends ApiResourceType ? U : T>;
-	getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
-		identifier?: ResourceIdentifier<T>,
-		options?: { force?: boolean; type?: U },
-	): NarrowResource<U extends ApiResourceType ? U : T> | undefined;
-	getByName<T extends ApiResourceType>(name?: string, options?: { force: true; type?: T }): NarrowResource<T>;
-	getByName<T extends ApiResourceType>(
-		name?: string,
-		options?: { force?: boolean; type?: T },
-	): NarrowResource<T> | undefined;
-	getIdentifierByName<T extends ApiResourceType>(
-		name?: string,
-		options?: { force: true; type?: T },
-	): ResourceIdentifier<T>;
-	getIdentifierByName<T extends ApiResourceType>(
-		name?: string,
-		options?: { force?: boolean; type?: T },
-	): ResourceIdentifier<T> | undefined;
-}
-
-export class ResourceManager implements ResourceManager {
+export class ResourceManager {
 	public readonly bridge: Bridge;
 	public readonly cache = new Collection<string, NarrowResource>();
 
@@ -105,6 +66,11 @@ export class ResourceManager implements ResourceManager {
 		this.bridge = bridge;
 	}
 
+	getById<T extends ApiResourceType>(id?: string, options?: { force: true; type?: T }): NarrowResource<T>;
+	getById<T extends ApiResourceType>(
+		id?: string,
+		options?: { force?: boolean; type?: T },
+	): NarrowResource<T> | undefined;
 	public getById<T extends ApiResourceType>(id?: string, options: { force?: boolean; type?: T } = {}) {
 		const resource = this.cache.get(id ?? '');
 
@@ -115,6 +81,14 @@ export class ResourceManager implements ResourceManager {
 		return resource;
 	}
 
+	getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
+		identifier?: ResourceIdentifier<T>,
+		options?: { force: true; type?: U },
+	): NarrowResource<U extends ApiResourceType ? U : T>;
+	getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
+		identifier?: ResourceIdentifier<T>,
+		options?: { force?: boolean; type?: U },
+	): NarrowResource<U extends ApiResourceType ? U : T> | undefined;
 	public getByIdentifier<T extends ApiResourceType, U extends ApiResourceType>(
 		identifier?: ResourceIdentifier<T>,
 		options: { force?: boolean; type?: U } = {},
@@ -128,6 +102,11 @@ export class ResourceManager implements ResourceManager {
 			.filter((resource) => resource !== null && resource !== undefined) as NarrowResource[];
 	}
 
+	getByName<T extends ApiResourceType>(name?: string, options?: { force: true; type?: T }): NarrowResource<T>;
+	getByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force?: boolean; type?: T },
+	): NarrowResource<T> | undefined;
 	public getByName<T extends ApiResourceType>(name?: string, options: { force?: boolean; type?: T } = {}) {
 		const resource = this.cache.find(
 			(resource) => 'name' in resource && resource.name === name && resource.type === options.type,
@@ -138,10 +117,18 @@ export class ResourceManager implements ResourceManager {
 		return resource;
 	}
 
+	getIdentifierByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force: true; type?: T },
+	): ResourceIdentifier<T>;
+	getIdentifierByName<T extends ApiResourceType>(
+		name?: string,
+		options?: { force?: boolean; type?: T },
+	): ResourceIdentifier<T> | undefined;
 	public getIdentifierByName<T extends ApiResourceType>(name?: string, options: { force?: boolean; type?: T } = {}) {
 		const resource = this.getByName(name, options);
 
-		return resource?.identifier;
+		return resource?.identifier as ResourceIdentifier;
 	}
 
 	public _create(data: ApiResourceTypeGet<any>): NarrowResource<any> | undefined {
