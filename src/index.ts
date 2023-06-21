@@ -7,11 +7,9 @@ export * from './connections/Rest';
 export * from './connections/Limit';
 export * from './connections/Sse';
 
-// Managers
-export * from './managers/ResourceManager';
-
 // Resources
 export * from './structures/Device';
+export * from './structures/DevicePower';
 export * from './structures/DimmableLight';
 export * from './structures/GroupedLight';
 export * from './structures/Light';
@@ -30,6 +28,7 @@ export * from './api/ResourceIdentifier';
 
 export * from './api/device/get';
 export * from './api/device/put';
+export * from './api/device_power/get';
 export * from './api/grouped_light/get';
 export * from './api/grouped_light/put';
 export * from './api/light/get';

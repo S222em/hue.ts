@@ -37,19 +37,6 @@ export interface LightEditOptions {
 	};
 }
 
-export interface LightStateOptions {
-	on?: boolean;
-	dynamics?: {
-		duration?: number;
-		speed?: number;
-	};
-	effect?: 'fire' | 'candle' | 'no_effect';
-	timedEffects?: {
-		effect?: 'sunrise' | 'no_effect';
-		duration?: number;
-	};
-}
-
 export class Light extends NamedResource<ApiResourceType.Light> {
 	public capabilities: LightCapabilities = LightCapabilities.None;
 	type = ApiResourceType.Light;
@@ -99,11 +86,11 @@ export class Light extends NamedResource<ApiResourceType.Light> {
 		await this.edit({ on: !this.isOn(), dynamics: { duration } });
 	}
 
-	public async effect(effect: LightStateOptions['effect']): Promise<void> {
+	public async effect(effect: LightEditOptions['effect']): Promise<void> {
 		await this.edit({ effect });
 	}
 
-	public async timedEffect(timedEffects: LightStateOptions['timedEffects']): Promise<void> {
+	public async timedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<void> {
 		await this.edit({ timedEffects });
 	}
 

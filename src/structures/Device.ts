@@ -1,7 +1,6 @@
 import { NamedResource } from './NamedResource';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
 
 export interface DeviceEditOptions {
 	name: string;
@@ -34,11 +33,7 @@ export class Device extends NamedResource<ApiResourceType.Device> {
 		return this.data.product_data.hardware_platform_type;
 	}
 
-	get services(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
-	}
-
-	get serviceIdentifiers(): ResourceIdentifier[] {
+	get services(): ResourceIdentifier[] {
 		return this.data.services;
 	}
 

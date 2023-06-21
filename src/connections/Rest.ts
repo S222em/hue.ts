@@ -105,6 +105,7 @@ export class Rest {
 	}
 
 	private _sanitizeRoute(route: string) {
+		// Remove possible resource ID from the route
 		route.replace(/\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/, '');
 
 		return route;

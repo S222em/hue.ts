@@ -106,7 +106,7 @@ export class Sse {
 	}
 
 	public add(data: Record<string, any>): void {
-		const resource = this.bridge.resources._create(data);
+		const resource = this.bridge._create(data);
 		if (!resource) return;
 
 		this.bridge.emit(Events.Add, resource);
@@ -116,7 +116,7 @@ export class Sse {
 	}
 
 	public update(data: Record<string, any>): void {
-		const resource = this.bridge.resources.cache.get(data.id);
+		const resource = this.bridge.cache.get(data.id);
 		if (!resource) return;
 
 		const clone = resource._update(data);
@@ -128,12 +128,12 @@ export class Sse {
 	}
 
 	public delete(data: Record<string, any>) {
-		const resource = this.bridge.resources.cache.get(data.id);
+		const resource = this.bridge.cache.get(data.id);
 		if (!resource) return;
 
 		const clone = resource._clone();
 
-		this.bridge.resources.cache.delete(data.id);
+		this.bridge.cache.delete(data.id);
 
 		this.bridge.emit(Events.Delete, clone);
 
