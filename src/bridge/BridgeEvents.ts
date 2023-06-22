@@ -8,6 +8,7 @@ import { Zone } from '../structures/Zone';
 import { Scene } from '../structures/Scene';
 import { GroupedLight } from '../structures/GroupedLight';
 import { DevicePower } from '../structures/DevicePower';
+import { Motion } from '../structures/Motion';
 
 export const Events = {
 	Ready: 'ready',
@@ -40,6 +41,9 @@ export const Events = {
 	DevicePowerAdd: 'devicePowerAdd',
 	DevicePowerUpdate: 'devicePowerUpdate',
 	DevicePowerDelete: 'devicePowerDelete',
+	MotionAdd: 'motionAdd',
+	MotionUpdate: 'motionUpdate',
+	MotionDelete: 'motionDelete',
 } as const;
 
 export interface BridgeEvents {
@@ -68,9 +72,12 @@ export interface BridgeEvents {
 	[Events.SceneUpdate]: [newScene: Scene, oldScene: Scene];
 	[Events.SceneDelete]: [scene: Scene];
 	[Events.ZoneAdd]: [zone: Zone];
-	[Events.ZoneUpdate]: [newZone: Room, oldZone: Zone];
+	[Events.ZoneUpdate]: [newZone: Zone, oldZone: Zone];
 	[Events.ZoneDelete]: [zone: Zone];
 	[Events.DevicePowerAdd]: [devicePower: DevicePower];
 	[Events.DevicePowerUpdate]: [newDevicePower: DevicePower, oldDevicePower: DevicePower];
 	[Events.DevicePowerDelete]: [devicePower: DevicePower];
+	[Events.MotionAdd]: [motion: Motion];
+	[Events.MotionUpdate]: [newMotion: Motion, oldMotion: Motion];
+	[Events.MotionDelete]: [motion: Motion];
 }

@@ -11,6 +11,7 @@ import { Zone } from './Zone';
 import { Device } from './Device';
 import { GroupedLight } from './GroupedLight';
 import { DevicePower } from './DevicePower';
+import { Motion } from './Motion';
 
 export interface Resources {
 	[ApiResourceType.Device]: Device;
@@ -21,7 +22,7 @@ export interface Resources {
 	[ApiResourceType.Button]: Resource<any>;
 	[ApiResourceType.Temperature]: Resource<any>;
 	[ApiResourceType.LightLevel]: Resource<any>;
-	[ApiResourceType.Motion]: Resource<any>;
+	[ApiResourceType.Motion]: Motion;
 	[ApiResourceType.Entertainment]: Resource<any>;
 	[ApiResourceType.GroupedLight]: GroupedLight;
 	[ApiResourceType.DevicePower]: DevicePower;

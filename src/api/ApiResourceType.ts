@@ -15,6 +15,8 @@ import { ApiGroupedLightGet } from './grouped_light/get';
 import { ApiGroupedLightPut } from './grouped_light/put';
 import { ApiBridgeHomeGet } from './bridge_home/get';
 import { ApiDevicePowerGet } from './device_power/get';
+import { ApiMotionGet } from './motion/get';
+import { ApiMotionPut } from './motion/put';
 
 export enum ApiResourceType {
 	Device = 'device',
@@ -52,7 +54,7 @@ export interface ApiResourceTypesGet {
 	[ApiResourceType.Button]: never;
 	[ApiResourceType.Temperature]: never;
 	[ApiResourceType.LightLevel]: never;
-	[ApiResourceType.Motion]: never;
+	[ApiResourceType.Motion]: ApiMotionGet;
 	[ApiResourceType.Entertainment]: never;
 	[ApiResourceType.GroupedLight]: ApiGroupedLightGet;
 	[ApiResourceType.DevicePower]: ApiDevicePowerGet;
@@ -81,7 +83,7 @@ export interface ApiResourceTypesPut {
 	[ApiResourceType.Button]: never;
 	[ApiResourceType.Temperature]: never;
 	[ApiResourceType.LightLevel]: never;
-	[ApiResourceType.Motion]: never;
+	[ApiResourceType.Motion]: ApiMotionPut;
 	[ApiResourceType.Entertainment]: never;
 	[ApiResourceType.GroupedLight]: ApiGroupedLightPut;
 	[ApiResourceType.DevicePower]: never;

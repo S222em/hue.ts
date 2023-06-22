@@ -7,6 +7,17 @@ export * from './connections/Rest';
 export * from './connections/Limit';
 export * from './connections/Sse';
 
+// Managers
+export * from './managers/Manager';
+export * from './managers/LightManager';
+export * from './managers/DeviceManager';
+export * from './managers/RoomManager';
+export * from './managers/ZoneManager';
+export * from './managers/GroupedLightManager';
+export * from './managers/DevicePowerManager';
+export * from './managers/MotionManager';
+export * from './managers/SceneManager';
+
 // Resources
 export * from './structures/Device';
 export * from './structures/DevicePower';
@@ -21,6 +32,7 @@ export * from './structures/Scene';
 export * from './structures/XyLight';
 export * from './structures/XysLight';
 export * from './structures/Zone';
+export * from './structures/Motion';
 
 // API
 export * from './api/ApiResourceType';
@@ -42,6 +54,8 @@ export * from './api/scene/put';
 export * from './api/zone/get';
 export * from './api/zone/post';
 export * from './api/zone/put';
+export * from './api/motion/get';
+export * from './api/motion/put';
 
 // Util
 export * from './util/util';
@@ -57,3 +71,4 @@ export * from './util/color/hex';
 // TODO dimming_delta & color_temperature_delta
 // TODO archetypes
 // TODO delete resources
+// TODO create cache managers for every resource

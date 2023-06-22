@@ -4,19 +4,14 @@ import { Rest } from '../connections/Rest';
 import { Sse } from '../connections/Sse';
 import { ApiResourceType } from '../api/ApiResourceType';
 import { NarrowResource } from '../structures/Resource';
-import { Collection } from '@discordjs/collection';
-import { Light } from '../structures/Light';
-import { XysLight } from '../structures/XysLight';
-import { XyLight } from '../structures/XyLight';
-import { MirekLight } from '../structures/MirekLight';
-import { DimmableLight } from '../structures/DimmableLight';
-import { Device } from '../structures/Device';
-import { Room } from '../structures/Room';
-import { Zone } from '../structures/Zone';
-import { GroupedLight } from '../structures/GroupedLight';
-import { DevicePower } from '../structures/DevicePower';
-import { Scene } from '../structures/Scene';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { LightManager } from '../managers/LightManager';
+import { DeviceManager } from '../managers/DeviceManager';
+import { RoomManager } from '../managers/RoomManager';
+import { ZoneManager } from '../managers/ZoneManager';
+import { DevicePowerManager } from '../managers/DevicePowerManager';
+import { GroupedLightManager } from '../managers/GroupedLightManager';
+import { SceneManager } from '../managers/SceneManager';
+import { MotionManager } from '../managers/MotionManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -58,19 +53,18 @@ export interface Bridge {
 	removeAllListeners: <T extends keyof BridgeEvents>(event?: T) => this;
 }
 
-const ID_REGEX = /\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
-
-export type Force<B extends boolean, T extends ApiResourceType> = B extends true
-	? NarrowResource<T>
-	: NarrowResource<T> | undefined;
-
-export type By = string | ResourceIdentifier | ResourceIdentifier[];
-
 export class Bridge extends EventEmitter {
 	public readonly options: BridgeOptions;
 	public readonly rest = new Rest(this);
 	public readonly sse = new Sse(this);
-	public readonly cache = new Collection<string, NarrowResource>();
+	public readonly lights = new LightManager(this);
+	public readonly devices = new DeviceManager(this);
+	public readonly rooms = new RoomManager(this);
+	public readonly zones = new ZoneManager(this);
+	public readonly groupedLights = new GroupedLightManager(this);
+	public readonly devicePowers = new DevicePowerManager(this);
+	public readonly scenes = new SceneManager(this);
+	public readonly motions = new MotionManager(this);
 
 	public constructor(options: BridgeOptions) {
 		super();
@@ -80,45 +74,6 @@ export class Bridge extends EventEmitter {
 	get _url(): string {
 		if ('ip' in this.options.connection) return `https://${this.options.connection.ip}:443`;
 		else return `https://api.meethue.com/route`;
-	}
-
-	public getByIdOrName<B extends boolean>(by: string, force?: B): Force<B, ApiResourceType> {
-		return this._get(by, undefined, force);
-	}
-
-	public getByIdentifier<B extends boolean, T extends ApiResourceType>(
-		by: ResourceIdentifier<T>,
-		force?: B,
-	): Force<B, T> {
-		return this._get(by, by.rtype, force);
-	}
-
-	public getLight<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.Light> {
-		return this._get(by, ApiResourceType.Light, force);
-	}
-
-	public getDevice<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.Device> {
-		return this._get(by, ApiResourceType.Device, force);
-	}
-
-	public getRoom<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.Room> {
-		return this._get(by, ApiResourceType.Room, force);
-	}
-
-	public getZone<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.Zone> {
-		return this._get(by, ApiResourceType.Zone, force);
-	}
-
-	public getGroupedLight<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.GroupedLight> {
-		return this._get(by, ApiResourceType.GroupedLight, force);
-	}
-
-	public getDevicePower<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.DevicePower> {
-		return this._get(by, ApiResourceType.DevicePower, force);
-	}
-
-	public getScene<B extends boolean>(by: By, force?: B): Force<B, ApiResourceType.Scene> {
-		return this._get(by, ApiResourceType.Scene, force);
 	}
 
 	public async connect(): Promise<void> {
@@ -133,42 +88,14 @@ export class Bridge extends EventEmitter {
 		this.emit(Events.Ready, this);
 	}
 
-	public _create(data: any) {
-		let resource;
-
-		if (data.type === ApiResourceType.Light) {
-			if (data.gradient) resource = new XysLight(this, data);
-			else if (data.color) resource = new XyLight(this, data);
-			else if (data.color_temperature) resource = new MirekLight(this, data);
-			else if (data.dimming) resource = new DimmableLight(this, data);
-			else resource = new Light(this, data);
-		} else if (data.type === ApiResourceType.Device) resource = new Device(this, data);
-		else if (data.type === ApiResourceType.Room) resource = new Room(this, data);
-		else if (data.type === ApiResourceType.Zone) resource = new Zone(this, data);
-		else if (data.type === ApiResourceType.GroupedLight) resource = new GroupedLight(this, data);
-		else if (data.type === ApiResourceType.DevicePower) resource = new DevicePower(this, data);
-		else if (data.type === ApiResourceType.Scene) resource = new Scene(this, data);
-
-		if (!resource) return;
-
-		this.cache.set(resource.id, resource);
-
-		return resource;
-	}
-
-	public _get<B extends boolean, T extends ApiResourceType>(by: By, type?: T, force?: B): Force<B, T> {
-		let resource;
-		if (Array.isArray(by)) resource = this.cache.get(by.find((identifier) => identifier.rtype == type)?.rid || '');
-		else if (typeof by == 'string' && ID_REGEX.test(by)) resource = this.cache.get(by);
-		else if (typeof by == 'object') resource = this.cache.find((resource) => resource && resource.id == by.rid);
-		else
-			resource = this.cache.find(
-				(resource) => 'name' in resource && resource.name == by && (type ? resource.isType(type) : true),
-			);
-
-		if ((!resource || (type && !resource.isType(type))) && force) throw new Error(`Nonexistent resource: ${by}`);
-		else if (type && !resource?.isType?.(type)) return undefined as Force<B, T>;
-
-		return resource as Force<B, T>;
+	public _create(data: any): NarrowResource | undefined {
+		if (data.type === ApiResourceType.Light) return this.lights._create(data);
+		else if (data.type === ApiResourceType.Device) return this.devices._create(data);
+		else if (data.type === ApiResourceType.Room) return this.rooms._create(data);
+		else if (data.type === ApiResourceType.Zone) return this.zones._create(data);
+		else if (data.type === ApiResourceType.GroupedLight) return this.groupedLights._create(data);
+		else if (data.type === ApiResourceType.DevicePower) return this.devicePowers._create(data);
+		else if (data.type === ApiResourceType.Scene) return this.scenes._create(data);
+		else if (data.type === ApiResourceType.Motion) return this.motions._create(data);
 	}
 }
