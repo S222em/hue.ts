@@ -2,34 +2,34 @@ import { Bridge } from '../bridge/Bridge';
 import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../bridge/BridgeEvents';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
 
 export const RESOURCES_EVENTS = {
-	[ApiResourceType.Device]: [Events.DeviceAdd, Events.DeviceUpdate, Events.DeviceDelete],
-	[ApiResourceType.BridgeHome]: undefined,
-	[ApiResourceType.Room]: [Events.RoomAdd, Events.RoomUpdate, Events.RoomDelete],
-	[ApiResourceType.Zone]: [Events.ZoneAdd, Events.ZoneUpdate, Events.ZoneDelete],
-	[ApiResourceType.Light]: [Events.LightAdd, Events.LightUpdate, Events.LightDelete],
-	[ApiResourceType.Button]: undefined,
-	[ApiResourceType.Temperature]: undefined,
-	[ApiResourceType.LightLevel]: undefined,
-	[ApiResourceType.Motion]: undefined,
-	[ApiResourceType.Entertainment]: undefined,
-	[ApiResourceType.GroupedLight]: [Events.GroupedLightAdd, Events.GroupedLightUpdate, Events.GroupedLightDelete],
-	[ApiResourceType.DevicePower]: [Events.DevicePowerAdd, Events.DevicePowerUpdate, Events.DevicePowerDelete],
-	[ApiResourceType.ZigbeeBridgeConnectivity]: undefined,
-	[ApiResourceType.ZgpConnectivity]: undefined,
-	[ApiResourceType.Bridge]: undefined,
-	[ApiResourceType.Homekit]: undefined,
-	[ApiResourceType.Scene]: [Events.SceneAdd, Events.SceneUpdate, Events.SceneDelete],
-	[ApiResourceType.EntertainmentConfiguration]: undefined,
-	[ApiResourceType.PublicImage]: undefined,
-	[ApiResourceType.BehaviourScript]: undefined,
-	[ApiResourceType.BehaviourInstance]: undefined,
-	[ApiResourceType.Geofence]: undefined,
-	[ApiResourceType.GeofenceClient]: undefined,
-	[ApiResourceType.Geolocation]: undefined,
+	[ResourceType.Device]: [Events.DeviceAdd, Events.DeviceUpdate, Events.DeviceDelete],
+	[ResourceType.BridgeHome]: undefined,
+	[ResourceType.Room]: [Events.RoomAdd, Events.RoomUpdate, Events.RoomDelete],
+	[ResourceType.Zone]: [Events.ZoneAdd, Events.ZoneUpdate, Events.ZoneDelete],
+	[ResourceType.Light]: [Events.LightAdd, Events.LightUpdate, Events.LightDelete],
+	[ResourceType.Button]: undefined,
+	[ResourceType.Temperature]: undefined,
+	[ResourceType.LightLevel]: undefined,
+	[ResourceType.Motion]: undefined,
+	[ResourceType.Entertainment]: undefined,
+	[ResourceType.GroupedLight]: [Events.GroupedLightAdd, Events.GroupedLightUpdate, Events.GroupedLightDelete],
+	[ResourceType.DevicePower]: [Events.DevicePowerAdd, Events.DevicePowerUpdate, Events.DevicePowerDelete],
+	[ResourceType.ZigbeeBridgeConnectivity]: undefined,
+	[ResourceType.ZgpConnectivity]: undefined,
+	[ResourceType.Bridge]: undefined,
+	[ResourceType.Homekit]: undefined,
+	[ResourceType.Scene]: [Events.SceneAdd, Events.SceneUpdate, Events.SceneDelete],
+	[ResourceType.EntertainmentConfiguration]: undefined,
+	[ResourceType.PublicImage]: undefined,
+	[ResourceType.BehaviourScript]: undefined,
+	[ResourceType.BehaviourInstance]: undefined,
+	[ResourceType.Geofence]: undefined,
+	[ResourceType.GeofenceClient]: undefined,
+	[ResourceType.Geolocation]: undefined,
 };
 
 export class Sse {
@@ -84,19 +84,26 @@ export class Sse {
 		if (raw === ': hi\n' + '\n') return this.debug('Hi');
 		const events = this._parse(raw);
 
+		const queue: Array<(() => boolean) | undefined> = [];
+
 		for (const event of events) {
 			this.debug(`Received ${event.data.length} ${event.type} event(s)`);
 
 			for (const data of event.data) {
-				let handler: ((data: any, bridge: Bridge) => void) | undefined;
+				let handler: ((data: any, bridge: Bridge) => (() => boolean) | undefined) | undefined;
 
 				if (event.type == 'add') handler = RESOURCE_ADD[data.type];
 				else if (event.type == 'delete') handler = RESOURCE_DELETE[data.type];
 				else if (event.type == 'update') handler = RESOURCE_UPDATE[data.type];
 
-				if (handler) handler(data, this.bridge);
+				if (handler) queue.push(handler(data, this.bridge));
 			}
 		}
+
+		for (const emitter of queue) {
+			if (typeof emitter === 'function') emitter();
+		}
+
 		this.bridge.emit(Events.Raw, events);
 	}
 

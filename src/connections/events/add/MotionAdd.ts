@@ -2,8 +2,8 @@ import { Bridge } from '../../../bridge/Bridge';
 import { Events } from '../../../bridge/BridgeEvents';
 
 export default function motionAdd(data: any, bridge: Bridge) {
-	const motion = bridge.motions._create(data);
+	const motion = bridge.motions._add(data);
 	if (!motion) return;
 
-	bridge.emit(Events.MotionAdd, motion);
+	return () => bridge.emit(Events.MotionAdd, motion);
 }

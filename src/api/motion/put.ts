@@ -1,6 +1,6 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 
-export interface ApiMotionPut {
-	type?: ApiResourceType.Motion;
+export interface MotionPut {
+	type?: ResourceType.Motion;
 	enabled?: boolean;
 }

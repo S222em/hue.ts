@@ -2,8 +2,8 @@ import { Bridge } from '../../../bridge/Bridge';
 import { Events } from '../../../bridge/BridgeEvents';
 
 export default function roomAdd(data: any, bridge: Bridge) {
-	const room = bridge.rooms._create(data);
+	const room = bridge.rooms._add(data);
 	if (!room) return;
 
-	bridge.emit(Events.RoomAdd, room);
+	return () => bridge.emit(Events.RoomAdd, room);
 }

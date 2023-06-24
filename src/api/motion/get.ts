@@ -1,8 +1,8 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
 
-export interface ApiMotionGet {
-	type?: ApiResourceType.Motion;
+export interface MotionGet {
+	type?: ResourceType.Motion;
 	id: string;
 	owner: ResourceIdentifier;
 	enabled: boolean;

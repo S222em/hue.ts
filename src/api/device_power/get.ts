@@ -1,8 +1,8 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
 
-export interface ApiDevicePowerGet {
-	type?: ApiResourceType.DevicePower;
+export interface DevicePowerGet {
+	type?: ResourceType.DevicePower;
 	id: string;
 	owner: ResourceIdentifier;
 	power_state: {

@@ -1,8 +1,8 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
 
-export interface ApiGroupedLightGet {
-	type?: ApiResourceType.GroupedLight;
+export interface GroupedLightGet {
+	type?: ResourceType.GroupedLight;
 	id: string;
 	owner: ResourceIdentifier;
 	on?: { on: boolean };

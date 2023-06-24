@@ -1,7 +1,9 @@
 import { Resource } from './Resource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { XyPoint } from '../util/color/xy';
+import { ResourceType } from '../api/ResourceType';
+import { XyPoint } from '../color/xy';
+import { GroupedLightPut } from '../api/grouped_light/put';
+import { GroupedLightManager } from '../managers/GroupedLightManager';
+import { ifNotNull } from '../util/ifNotNull';
 
 export interface GroupedLightEditOptions {
 	on?: boolean;
@@ -10,11 +12,15 @@ export interface GroupedLightEditOptions {
 	xy?: XyPoint;
 }
 
-export class GroupedLight extends Resource<ApiResourceType.GroupedLight> {
-	type = ApiResourceType.GroupedLight;
+export class GroupedLight extends Resource<ResourceType.GroupedLight> {
+	type = ResourceType.GroupedLight;
 
-	get owner(): ResourceIdentifier {
-		return this.data.owner;
+	get manager(): GroupedLightManager {
+		return this.bridge.groupedLights;
+	}
+
+	get ownerId(): string {
+		return this.data.owner.rid;
 	}
 
 	public isOn(): boolean | undefined {
@@ -50,13 +56,17 @@ export class GroupedLight extends Resource<ApiResourceType.GroupedLight> {
 	}
 
 	public async edit(options: GroupedLightEditOptions): Promise<void> {
-		await this._put({
-			on: { on: options.on ?? true },
-			dimming: options.brightness ? { brightness: options.brightness } : undefined,
+		await this.manager._put(this.id, GroupedLight._toAPIPut(options));
+	}
+
+	public static _toAPIPut(options: GroupedLightEditOptions): GroupedLightPut {
+		return {
+			on: { on: options.on },
+			dimming: ifNotNull(options.brightness, () => Object({ brightness: options.brightness })),
 			color_temperature: {
 				mirek: options.mirek,
 			},
-			color: { xy: options.xy ? { x: options.xy.x, y: options.xy.y } : undefined },
-		});
+			color: { xy: ifNotNull(options.xy, () => Object({ x: options.xy!.x, y: options.xy!.y })) },
+		};
 	}
 }

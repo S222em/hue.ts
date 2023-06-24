@@ -1,13 +1,14 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiZoneGet {
-	type?: ApiResourceType.Zone;
+export interface ZoneGet {
+	type?: ResourceType.Zone;
 	id: string;
 	children: Array<ResourceIdentifier>;
 	services: Array<ResourceIdentifier>;
 	metadata: {
 		name: string;
-		archetype: string;
+		archetype: ArcheType;
 	};
 }

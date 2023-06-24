@@ -1,9 +1,10 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiDevicePut {
-	type?: ApiResourceType.Device;
+export interface DevicePut {
+	type?: ResourceType.Device;
 	metadata?: {
-		archetype?: string;
+		archetype?: ArcheType;
 		name?: string;
 	};
 	identify?: {

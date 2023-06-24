@@ -2,8 +2,8 @@ import { Bridge } from '../../../bridge/Bridge';
 import { Events } from '../../../bridge/BridgeEvents';
 
 export default function devicePowerAdd(data: any, bridge: Bridge) {
-	const devicePower = bridge.devicePowers._create(data);
+	const devicePower = bridge.devicePowers._add(data);
 	if (!devicePower) return;
 
-	bridge.emit(Events.DevicePowerAdd, devicePower);
+	return () => bridge.emit(Events.DevicePowerAdd, devicePower);
 }

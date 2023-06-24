@@ -1,13 +1,15 @@
-import { NamedResource } from './NamedResource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { ResourceType } from '../api/ResourceType';
+import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
+import { DeviceManager } from '../managers/DeviceManager';
 
-export interface DeviceEditOptions {
-	name: string;
-}
+export type DeviceEditOptions = ArcheTypeResourceEditOptions;
 
-export class Device extends NamedResource<ApiResourceType.Device> {
-	type = ApiResourceType.Device;
+export class Device extends ArcheTypeResource<ResourceType.Device> {
+	type = ResourceType.Device;
+
+	get manager(): DeviceManager {
+		return this.bridge.devices;
+	}
 
 	get modelId(): string {
 		return this.data.product_data.model_id;
@@ -33,15 +35,24 @@ export class Device extends NamedResource<ApiResourceType.Device> {
 		return this.data.product_data.hardware_platform_type;
 	}
 
-	get services(): ResourceIdentifier[] {
-		return this.data.services;
+	get serviceIds(): string[] {
+		return this.data.services.map((service) => service.rid);
 	}
 
 	public async identify(): Promise<void> {
-		await this._put({ identify: { action: 'identify' } });
+		await this.manager._put(this.id, { identify: { action: 'identify' } });
 	}
 
 	public async edit(options: DeviceEditOptions): Promise<void> {
-		await this._put({ metadata: options.name ? { name: options.name } : undefined });
+		await this.manager._put(this.id, {
+			metadata: {
+				name: options.name,
+				archetype: options.archeType,
+			},
+		});
+	}
+
+	public async delete(): Promise<void> {
+		await this.manager._delete(this.id);
 	}
 }

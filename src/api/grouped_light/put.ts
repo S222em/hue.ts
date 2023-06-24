@@ -1,9 +1,10 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiGroupedLightPut {
-	type?: ApiResourceType.GroupedLight;
+export interface GroupedLightPut {
+	type?: ResourceType.GroupedLight;
 	metadata?: {
-		archetype?: string;
+		archetype?: ArcheType;
 		name?: string;
 	};
 	on?: {

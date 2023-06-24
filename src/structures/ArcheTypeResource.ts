@@ -1,15 +1,15 @@
+import { NamedResource, NamedResourceEditOptions } from './NamedResource';
 import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
-import { Bridge } from '../bridge/Bridge';
 import { ArcheType } from '../api/ArcheType';
-import { Resource } from './Resource';
+import { Bridge } from '../bridge/Bridge';
 
-export interface NamedResourceEditOptions {
-	name?: string;
+export interface ArcheTypeResourceEditOptions extends NamedResourceEditOptions {
+	archeType?: ArcheType;
 }
 
-export type NamedResourceCreateOptions = Required<NamedResourceEditOptions>;
+export type ArcheTypeResourceCreateOptions = Required<ArcheTypeResourceEditOptions>;
 
-export abstract class NamedResource<T extends ResourceType> extends Resource<T> {
+export abstract class ArcheTypeResource<T extends ResourceType> extends NamedResource<T> {
 	public data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } };
 
 	constructor(bridge: Bridge, data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } }) {
@@ -17,16 +17,8 @@ export abstract class NamedResource<T extends ResourceType> extends Resource<T> 
 		this.data = data;
 	}
 
-	get name(): string {
-		return this.data.metadata.name;
-	}
-
 	get archeType(): ArcheType {
 		return this.data.metadata.archetype;
-	}
-
-	public async setName(name: string): Promise<void> {
-		await this.edit({ name });
 	}
 
 	public async setArcheType(archeType: ArcheType): Promise<void> {

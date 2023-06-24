@@ -1,12 +1,13 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiLightGet {
-	type?: ApiResourceType.Light;
+export interface LightGet {
+	type?: ResourceType.Light;
 	id: string;
 	owner: ResourceIdentifier;
 	metadata: {
-		archetype: string;
+		archetype: ArcheType;
 		name: string;
 	};
 	on: {

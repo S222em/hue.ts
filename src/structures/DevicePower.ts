@@ -1,12 +1,15 @@
 import { Resource } from './Resource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { ResourceType } from '../api/ResourceType';
+import { DevicePowerManager } from '../managers/DevicePowerManager';
 
-export class DevicePower extends Resource<ApiResourceType.DevicePower> {
-	type = ApiResourceType.DevicePower;
+export class DevicePower extends Resource<ResourceType.DevicePower> {
+	type = ResourceType.DevicePower;
 
-	get owner(): ResourceIdentifier {
-		return this.data.owner;
+	get manager(): DevicePowerManager {
+		return this.bridge.devicePowers;
+	}
+	get ownerId(): string {
+		return this.data.owner.rid;
 	}
 
 	get batteryState(): 'normal' | 'low' | 'critical' {

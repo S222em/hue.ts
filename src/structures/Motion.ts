@@ -1,11 +1,16 @@
 import { Resource } from './Resource';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
+import { MotionManager } from '../managers/MotionManager';
 
 export interface MotionEditOptions {
 	enabled?: boolean;
 }
-export class Motion extends Resource<ApiResourceType.Motion> {
-	type = ApiResourceType.Motion;
+export class Motion extends Resource<ResourceType.Motion> {
+	type = ResourceType.Motion;
+
+	get manager(): MotionManager {
+		return this.bridge.motions;
+	}
 
 	get enabled(): boolean {
 		return this.data.enabled;
@@ -28,7 +33,7 @@ export class Motion extends Resource<ApiResourceType.Motion> {
 	}
 
 	public async edit(options: MotionEditOptions): Promise<void> {
-		return await this._put({
+		return await this.manager._put(this.id, {
 			enabled: options.enabled,
 		});
 	}

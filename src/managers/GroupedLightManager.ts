@@ -1,8 +1,8 @@
 import { Manager } from './Manager';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { GroupedLight } from '../structures/GroupedLight';
 
-export class GroupedLightManager extends Manager<ApiResourceType.GroupedLight> {
-	type = ApiResourceType.GroupedLight;
+export class GroupedLightManager extends Manager<ResourceType.GroupedLight> {
+	type = ResourceType.GroupedLight;
 	_resourceClass = GroupedLight;
 }

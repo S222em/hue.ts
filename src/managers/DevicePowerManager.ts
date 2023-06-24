@@ -1,8 +1,8 @@
 import { Manager } from './Manager';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { DevicePower } from '../structures/DevicePower';
 
-export class DevicePowerManager extends Manager<ApiResourceType.DevicePower> {
-	type = ApiResourceType.DevicePower;
+export class DevicePowerManager extends Manager<ResourceType.DevicePower> {
+	type = ResourceType.DevicePower;
 	_resourceClass = DevicePower;
 }

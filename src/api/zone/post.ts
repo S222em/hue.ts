@@ -1,11 +1,12 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiZonePost {
-	type?: ApiResourceType.Zone;
+export interface ZonePost {
+	type?: ResourceType.Zone;
 	children: Array<ResourceIdentifier>;
 	metadata: {
 		name: string;
-		archetype: string;
+		archetype: ArcheType;
 	};
 }

@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import { BridgeEvents, Events } from './BridgeEvents';
 import { Rest } from '../connections/Rest';
 import { Sse } from '../connections/Sse';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { NarrowResource } from '../structures/Resource';
 import { LightManager } from '../managers/LightManager';
 import { DeviceManager } from '../managers/DeviceManager';
@@ -48,7 +48,6 @@ export interface BridgeOptions {
 export interface Bridge {
 	on: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
 	once: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
-	emit: <T extends keyof BridgeEvents>(event: T, ...args: BridgeEvents[T]) => boolean;
 	off: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
 	removeAllListeners: <T extends keyof BridgeEvents>(event?: T) => this;
 }
@@ -89,13 +88,13 @@ export class Bridge extends EventEmitter {
 	}
 
 	public _create(data: any): NarrowResource | undefined {
-		if (data.type === ApiResourceType.Light) return this.lights._create(data);
-		else if (data.type === ApiResourceType.Device) return this.devices._create(data);
-		else if (data.type === ApiResourceType.Room) return this.rooms._create(data);
-		else if (data.type === ApiResourceType.Zone) return this.zones._create(data);
-		else if (data.type === ApiResourceType.GroupedLight) return this.groupedLights._create(data);
-		else if (data.type === ApiResourceType.DevicePower) return this.devicePowers._create(data);
-		else if (data.type === ApiResourceType.Scene) return this.scenes._create(data);
-		else if (data.type === ApiResourceType.Motion) return this.motions._create(data);
+		if (data.type === ResourceType.Light) return this.lights._add(data);
+		else if (data.type === ResourceType.Device) return this.devices._add(data);
+		else if (data.type === ResourceType.Room) return this.rooms._add(data);
+		else if (data.type === ResourceType.Zone) return this.zones._add(data);
+		else if (data.type === ResourceType.GroupedLight) return this.groupedLights._add(data);
+		else if (data.type === ResourceType.DevicePower) return this.devicePowers._add(data);
+		else if (data.type === ResourceType.Scene) return this.scenes._add(data);
+		else if (data.type === ResourceType.Motion) return this.motions._add(data);
 	}
 }

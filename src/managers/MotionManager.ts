@@ -1,8 +1,8 @@
 import { Manager } from './Manager';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { Motion } from '../structures/Motion';
 
-export class MotionManager extends Manager<ApiResourceType.Motion> {
-	type = ApiResourceType.Motion;
+export class MotionManager extends Manager<ResourceType.Motion> {
+	type = ResourceType.Motion;
 	_resourceClass = Motion;
 }

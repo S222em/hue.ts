@@ -1,8 +1,8 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
 import { ResourceIdentifier } from '../ResourceIdentifier';
 
-export interface ApiSceneGet {
-	type?: ApiResourceType.Scene;
+export interface SceneGet {
+	type?: ResourceType.Scene;
 	id: string;
 	metadata: {
 		name: string;

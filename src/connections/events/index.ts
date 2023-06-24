@@ -1,4 +1,4 @@
-import { ApiResourceType } from '../../api/ApiResourceType';
+import { ResourceType } from '../../api/ResourceType';
 import deviceAdd from './add/DeviceAdd';
 import devicePowerAdd from './add/DevicePowerAdd';
 import groupedLightAdd from './add/GroupedLightAdd';
@@ -25,35 +25,35 @@ import sceneUpdate from './update/SceneUpdate';
 import zoneUpdate from './update/ZoneUpdate';
 import { Bridge } from '../../bridge/Bridge';
 
-export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => void } = {
-	[ApiResourceType.Device]: deviceAdd,
-	[ApiResourceType.DevicePower]: devicePowerAdd,
-	[ApiResourceType.GroupedLight]: groupedLightAdd,
-	[ApiResourceType.Light]: lightAdd,
-	[ApiResourceType.Motion]: motionAdd,
-	[ApiResourceType.Room]: roomAdd,
-	[ApiResourceType.Scene]: sceneAdd,
-	[ApiResourceType.Zone]: zoneAdd,
+export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+	[ResourceType.Device]: deviceAdd,
+	[ResourceType.DevicePower]: devicePowerAdd,
+	[ResourceType.GroupedLight]: groupedLightAdd,
+	[ResourceType.Light]: lightAdd,
+	[ResourceType.Motion]: motionAdd,
+	[ResourceType.Room]: roomAdd,
+	[ResourceType.Scene]: sceneAdd,
+	[ResourceType.Zone]: zoneAdd,
 };
 
-export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => void } = {
-	[ApiResourceType.Device]: deviceDelete,
-	[ApiResourceType.DevicePower]: devicePowerDelete,
-	[ApiResourceType.GroupedLight]: groupedLightDelete,
-	[ApiResourceType.Light]: lightDelete,
-	[ApiResourceType.Motion]: motionDelete,
-	[ApiResourceType.Room]: roomDelete,
-	[ApiResourceType.Scene]: sceneDelete,
-	[ApiResourceType.Zone]: zoneDelete,
+export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+	[ResourceType.Device]: deviceDelete,
+	[ResourceType.DevicePower]: devicePowerDelete,
+	[ResourceType.GroupedLight]: groupedLightDelete,
+	[ResourceType.Light]: lightDelete,
+	[ResourceType.Motion]: motionDelete,
+	[ResourceType.Room]: roomDelete,
+	[ResourceType.Scene]: sceneDelete,
+	[ResourceType.Zone]: zoneDelete,
 };
 
-export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => void } = {
-	[ApiResourceType.Device]: deviceUpdate,
-	[ApiResourceType.DevicePower]: devicePowerUpdate,
-	[ApiResourceType.GroupedLight]: groupedLightUpdate,
-	[ApiResourceType.Light]: lightUpdate,
-	[ApiResourceType.Motion]: motionUpdate,
-	[ApiResourceType.Room]: roomUpdate,
-	[ApiResourceType.Scene]: sceneUpdate,
-	[ApiResourceType.Zone]: zoneUpdate,
+export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+	[ResourceType.Device]: deviceUpdate,
+	[ResourceType.DevicePower]: devicePowerUpdate,
+	[ResourceType.GroupedLight]: groupedLightUpdate,
+	[ResourceType.Light]: lightUpdate,
+	[ResourceType.Motion]: motionUpdate,
+	[ResourceType.Room]: roomUpdate,
+	[ResourceType.Scene]: sceneUpdate,
+	[ResourceType.Zone]: zoneUpdate,
 };

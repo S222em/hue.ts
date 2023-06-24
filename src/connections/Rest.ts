@@ -85,7 +85,8 @@ export class Rest {
 
 			const responseData = await body.json();
 
-			if (statusCode !== 200) throw new Error(`${responseData?.errors?.[0]?.description ?? 'unknown'}`);
+			if (statusCode !== 200 && statusCode !== 201)
+				throw new Error(`${responseData?.errors?.[0]?.description ?? 'unknown'}`);
 
 			this.bridge.emit(Events.Response, {
 				route,
@@ -106,8 +107,6 @@ export class Rest {
 
 	private _sanitizeRoute(route: string) {
 		// Remove possible resource ID from the route
-		route.replace(/\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/, '');
-
-		return route;
+		return route.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, '');
 	}
 }

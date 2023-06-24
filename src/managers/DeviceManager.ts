@@ -1,8 +1,8 @@
 import { Manager } from './Manager';
-import { ApiResourceType } from '../api/ApiResourceType';
+import { ResourceType } from '../api/ResourceType';
 import { Device } from '../structures/Device';
 
-export class DeviceManager extends Manager<ApiResourceType.Device> {
-	type = ApiResourceType.Device;
+export class DeviceManager extends Manager<ResourceType.Device> {
+	type = ResourceType.Device;
 	_resourceClass = Device;
 }

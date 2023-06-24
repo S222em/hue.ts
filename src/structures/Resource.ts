@@ -1,5 +1,5 @@
 import { Bridge } from '../bridge/Bridge';
-import { ApiResourceType, ApiResourceTypeGet, ApiResourceTypePut } from '../api/ApiResourceType';
+import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
 import { Light } from './Light';
 import { clone } from '../util/clone';
 import { merge } from '../util/merge';
@@ -12,40 +12,42 @@ import { Device } from './Device';
 import { GroupedLight } from './GroupedLight';
 import { DevicePower } from './DevicePower';
 import { Motion } from './Motion';
+import { Manager } from '../managers/Manager';
 
 export interface Resources {
-	[ApiResourceType.Device]: Device;
-	[ApiResourceType.BridgeHome]: Resource<any>;
-	[ApiResourceType.Room]: Room;
-	[ApiResourceType.Zone]: Zone;
-	[ApiResourceType.Light]: Light;
-	[ApiResourceType.Button]: Resource<any>;
-	[ApiResourceType.Temperature]: Resource<any>;
-	[ApiResourceType.LightLevel]: Resource<any>;
-	[ApiResourceType.Motion]: Motion;
-	[ApiResourceType.Entertainment]: Resource<any>;
-	[ApiResourceType.GroupedLight]: GroupedLight;
-	[ApiResourceType.DevicePower]: DevicePower;
-	[ApiResourceType.ZigbeeBridgeConnectivity]: Resource<any>;
-	[ApiResourceType.ZgpConnectivity]: Resource<any>;
-	[ApiResourceType.Bridge]: Resource<any>;
-	[ApiResourceType.Homekit]: Resource<any>;
-	[ApiResourceType.Scene]: Scene;
-	[ApiResourceType.EntertainmentConfiguration]: Resource<any>;
-	[ApiResourceType.PublicImage]: Resource<any>;
-	[ApiResourceType.BehaviourScript]: Resource<any>;
-	[ApiResourceType.BehaviourInstance]: Resource<any>;
-	[ApiResourceType.Geofence]: Resource<any>;
-	[ApiResourceType.GeofenceClient]: Resource<any>;
-	[ApiResourceType.Geolocation]: Resource<any>;
+	[ResourceType.Device]: Device;
+	[ResourceType.BridgeHome]: Resource<any>;
+	[ResourceType.Room]: Room;
+	[ResourceType.Zone]: Zone;
+	[ResourceType.Light]: Light;
+	[ResourceType.Button]: Resource<any>;
+	[ResourceType.Temperature]: Resource<any>;
+	[ResourceType.LightLevel]: Resource<any>;
+	[ResourceType.Motion]: Motion;
+	[ResourceType.Entertainment]: Resource<any>;
+	[ResourceType.GroupedLight]: GroupedLight;
+	[ResourceType.DevicePower]: DevicePower;
+	[ResourceType.ZigbeeBridgeConnectivity]: Resource<any>;
+	[ResourceType.ZgpConnectivity]: Resource<any>;
+	[ResourceType.Bridge]: Resource<any>;
+	[ResourceType.Homekit]: Resource<any>;
+	[ResourceType.Scene]: Scene;
+	[ResourceType.EntertainmentConfiguration]: Resource<any>;
+	[ResourceType.PublicImage]: Resource<any>;
+	[ResourceType.BehaviourScript]: Resource<any>;
+	[ResourceType.BehaviourInstance]: Resource<any>;
+	[ResourceType.Geofence]: Resource<any>;
+	[ResourceType.GeofenceClient]: Resource<any>;
+	[ResourceType.Geolocation]: Resource<any>;
 }
 
-export type NarrowResource<T extends ApiResourceType = ApiResourceType> = Resources[T];
+export type NarrowResource<T extends ResourceType = ResourceType> = Resources[T];
 
-export abstract class Resource<T extends ApiResourceType> {
+export abstract class Resource<T extends ResourceType> {
 	public readonly bridge: Bridge;
-	public abstract readonly type: ApiResourceType;
-	public data: ApiResourceTypeGet<T>;
+	public abstract readonly type: ResourceType;
+	public abstract readonly manager: Manager<T>;
+	public data: ResourceTypeGet<T>;
 
 	get id(): string {
 		return this.data.id;
@@ -55,30 +57,26 @@ export abstract class Resource<T extends ApiResourceType> {
 		return createResourceIdentifier(this.id, this.type);
 	}
 
-	constructor(bridge: Bridge, data: ApiResourceTypeGet<T>) {
+	constructor(bridge: Bridge, data: ResourceTypeGet<T>) {
 		this.bridge = bridge;
 		this.data = data;
 	}
 
-	public isType<T extends ApiResourceType>(type: T): this is NarrowResource<T> {
+	public isType<T extends ResourceType>(type: T): this is NarrowResource<T> {
 		return this.type === type;
 	}
 
-	public _patch(data: Partial<ApiResourceTypeGet<T>>) {
-		this.data = merge<ApiResourceTypeGet<T>>(clone(this.data), data);
+	public _patch(data: Partial<ResourceTypeGet<T>>) {
+		this.data = merge<ResourceTypeGet<T>>(clone(this.data), data);
 	}
 
 	public _clone(): this {
 		return clone(this);
 	}
 
-	public _update(data: Partial<ApiResourceTypeGet<T>>): this {
+	public _update(data: Partial<ResourceTypeGet<T>>): this {
 		const clone = this._clone();
 		this._patch(data);
 		return clone;
-	}
-
-	protected async _put(data: ApiResourceTypePut<T>): Promise<void> {
-		await this.bridge.rest.put(`/resource/${this.type}/${this.id}`, data);
 	}
 }

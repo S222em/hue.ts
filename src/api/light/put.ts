@@ -1,9 +1,10 @@
-import { ApiResourceType } from '../ApiResourceType';
+import { ResourceType } from '../ResourceType';
+import { ArcheType } from '../ArcheType';
 
-export interface ApiLightPut {
-	type?: ApiResourceType.Light;
+export interface LightPut {
+	type?: ResourceType.Light;
 	metadata?: {
-		archetype?: string;
+		archetype?: ArcheType;
 		name?: string;
 	};
 	on?: {
