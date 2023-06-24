@@ -4,6 +4,7 @@ import { ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { ZoneManager } from '../managers/ZoneManager';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
 import { RoomEditOptions } from './Room';
+import { SceneCreateOptions } from './Scene';
 
 export interface ZoneEditOptions extends ArcheTypeResourceEditOptions {
 	children?: string[];
@@ -24,6 +25,10 @@ export class Zone extends NamedResource<ResourceType.Zone> {
 
 	get serviceIds(): string[] {
 		return this.data.services.map((service) => service.rid);
+	}
+
+	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
+		return await this.bridge.scenes._create(this.id, options);
 	}
 
 	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {

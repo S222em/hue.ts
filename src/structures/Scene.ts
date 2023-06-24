@@ -40,6 +40,8 @@ export interface SceneEditOptions {
 	};
 }
 
+export type SceneCreateOptions = Pick<Required<SceneEditOptions>, 'name' | 'actions'>;
+
 export class Scene extends NamedResource<ResourceType.Scene> {
 	type = ResourceType.Scene;
 

@@ -15,6 +15,6 @@ export class RoomManager extends Manager<ResourceType.Room> {
 			}),
 		});
 
-		return identifiers[0]?.rid;
+		return identifiers?.[0]?.rid;
 	}
 }

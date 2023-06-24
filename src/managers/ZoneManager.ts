@@ -15,6 +15,6 @@ export class ZoneManager extends Manager<ResourceType.Zone> {
 			}),
 		});
 
-		return identifiers[0]?.rid;
+		return identifiers?.[0]?.rid;
 	}
 }
