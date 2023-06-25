@@ -1,22 +1,22 @@
-import { LightGet } from './light/get';
-import { LightPut } from './light/put';
-import { SceneGet } from './scene/get';
-import { ScenePut } from './scene/put';
-import { ScenePost } from './scene/post';
-import { RoomPost } from './room/post';
-import { ZonePost } from './zone/post';
-import { RoomPut } from './room/put';
-import { ZonePut } from './zone/put';
-import { RoomGet } from './room/get';
-import { ZoneGet } from './zone/get';
-import { DeviceGet } from './device/get';
-import { DevicePut } from './device/put';
-import { GroupedLightGet } from './grouped_light/get';
-import { GroupedLightPut } from './grouped_light/put';
-import { BridgeHomeGet } from './bridge_home/get';
-import { DevicePowerGet } from './device_power/get';
-import { MotionGet } from './motion/get';
-import { MotionPut } from './motion/put';
+import { DeviceGet } from './get/DeviceGet';
+import { BridgeHomeGet } from './get/BridgeHomeGet';
+import { RoomGet } from './get/RoomGet';
+import { ZoneGet } from './get/ZoneGet';
+import { LightGet } from './get/LightGet';
+import { MotionGet } from './get/MotionGet';
+import { GroupedLightGet } from './get/GroupedLightGet';
+import { DevicePowerGet } from './get/DevicePowerGet';
+import { SceneGet } from './get/SceneGet';
+import { DevicePut } from './put/DevicePut';
+import { RoomPut } from './put/RoomPut';
+import { ZonePut } from './put/ZonePut';
+import { LightPut } from './put/LightPut';
+import { MotionPut } from './put/MotionPut';
+import { GroupedLightPut } from './put/GroupedLightPut';
+import { ScenePut } from './put/ScenePut';
+import { RoomPost } from './post/RoomPost';
+import { ZonePost } from './post/ZonePost';
+import { ScenePost } from './post/ScenePost';
 
 export enum ResourceType {
 	Device = 'device',

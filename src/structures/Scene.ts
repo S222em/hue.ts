@@ -16,7 +16,7 @@ export interface SceneAction {
 
 export interface ScenePalette {
 	color: Array<{
-		gradient: XyPoint;
+		color: XyPoint;
 		brightness: number;
 	}>;
 	brightness: number;
@@ -39,6 +39,8 @@ export interface SceneEditOptions {
 }
 
 export type SceneCreateOptions = Pick<Required<SceneEditOptions>, 'name' | 'actions'>;
+
+// TODO scene palette
 
 export class Scene extends NamedResource<ResourceType.Scene> {
 	type = ResourceType.Scene;

@@ -48,4 +48,3 @@ export * from './color/hex';
 
 // TODO dimming_delta & color_temperature_delta
 // TODO valid type for api response
-// TODO scene palette
