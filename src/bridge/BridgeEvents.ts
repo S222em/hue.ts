@@ -9,6 +9,7 @@ import { Scene } from '../structures/Scene';
 import { GroupedLight } from '../structures/GroupedLight';
 import { DevicePower } from '../structures/DevicePower';
 import { Motion } from '../structures/Motion';
+import { ZigbeeConnectivity } from '../structures/ZigbeeConnectivity';
 
 export const Events = {
 	Ready: 'ready',
@@ -44,6 +45,9 @@ export const Events = {
 	MotionAdd: 'motionAdd',
 	MotionUpdate: 'motionUpdate',
 	MotionDelete: 'motionDelete',
+	ZigbeeConnectivityAdd: 'zigbeeConnectivityAdd',
+	ZigbeeConnectivityUpdate: 'zigbeeConnectivityUpdate',
+	ZigbeeConnectivityDelete: 'zigbeeConnectivityDelete',
 } as const;
 
 export interface BridgeEvents {
@@ -80,4 +84,10 @@ export interface BridgeEvents {
 	[Events.MotionAdd]: [motion: Motion];
 	[Events.MotionUpdate]: [newMotion: Motion, oldMotion: Motion];
 	[Events.MotionDelete]: [motion: Motion];
+	[Events.ZigbeeConnectivityAdd]: [zigbeeConnectivity: ZigbeeConnectivity];
+	[Events.ZigbeeConnectivityUpdate]: [
+		newZigbeeConnectivity: ZigbeeConnectivity,
+		oldZigbeeConnectivity: ZigbeeConnectivity,
+	];
+	[Events.ZigbeeConnectivityDelete]: [zigbeeConnectivity: ZigbeeConnectivity];
 }

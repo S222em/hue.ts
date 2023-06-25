@@ -17,6 +17,7 @@ import { ScenePut } from './put/ScenePut';
 import { RoomPost } from './post/RoomPost';
 import { ZonePost } from './post/ZonePost';
 import { ScenePost } from './post/ScenePost';
+import { ZigbeeConnectivityGet } from './get/ZigbeeConnectivityGet';
 
 export enum ResourceType {
 	Device = 'device',
@@ -31,8 +32,9 @@ export enum ResourceType {
 	Entertainment = 'entertainment',
 	GroupedLight = 'grouped_light',
 	DevicePower = 'device_power',
-	ZigbeeBridgeConnectivity = 'zigbee_bridge_connectivity',
+	ZigbeeConnectivity = 'zigbee_connectivity',
 	ZgpConnectivity = 'zgp_connectivity',
+	ZigbeeDeviceDiscovery = 'zigbee_device_discovery',
 	Bridge = 'bridge',
 	Homekit = 'homekit',
 	Scene = 'scene',
@@ -58,8 +60,9 @@ export interface ResourceTypesGet {
 	[ResourceType.Entertainment]: never;
 	[ResourceType.GroupedLight]: GroupedLightGet;
 	[ResourceType.DevicePower]: DevicePowerGet;
-	[ResourceType.ZigbeeBridgeConnectivity]: never;
+	[ResourceType.ZigbeeConnectivity]: ZigbeeConnectivityGet;
 	[ResourceType.ZgpConnectivity]: never;
+	[ResourceType.ZigbeeDeviceDiscovery]: never;
 	[ResourceType.Bridge]: never;
 	[ResourceType.Homekit]: never;
 	[ResourceType.Scene]: SceneGet;
@@ -87,8 +90,9 @@ export interface ResourceTypesPut {
 	[ResourceType.Entertainment]: never;
 	[ResourceType.GroupedLight]: GroupedLightPut;
 	[ResourceType.DevicePower]: never;
-	[ResourceType.ZigbeeBridgeConnectivity]: never;
+	[ResourceType.ZigbeeConnectivity]: never;
 	[ResourceType.ZgpConnectivity]: never;
+	[ResourceType.ZigbeeDeviceDiscovery]: never;
 	[ResourceType.Bridge]: never;
 	[ResourceType.Homekit]: never;
 	[ResourceType.Scene]: ScenePut;
@@ -116,8 +120,9 @@ export interface ResourceTypesPost {
 	[ResourceType.Entertainment]: never;
 	[ResourceType.GroupedLight]: never;
 	[ResourceType.DevicePower]: never;
-	[ResourceType.ZigbeeBridgeConnectivity]: never;
+	[ResourceType.ZigbeeConnectivity]: never;
 	[ResourceType.ZgpConnectivity]: never;
+	[ResourceType.ZigbeeDeviceDiscovery]: never;
 	[ResourceType.Bridge]: never;
 	[ResourceType.Homekit]: never;
 	[ResourceType.Scene]: ScenePost;

@@ -24,6 +24,9 @@ import roomUpdate from './update/RoomUpdate';
 import sceneUpdate from './update/SceneUpdate';
 import zoneUpdate from './update/ZoneUpdate';
 import { Bridge } from '../../bridge/Bridge';
+import zigbeeConnectivityAdd from './add/ZigbeeConnectivityAdd';
+import zigbeeConnectivityDelete from './delete/ZigbeeConnectivityDelete';
+import zigbeeConnectivityUpdate from './update/ZigbeeConnectivityUpdate';
 
 export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
 	[ResourceType.Device]: deviceAdd,
@@ -34,6 +37,7 @@ export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => (() =
 	[ResourceType.Room]: roomAdd,
 	[ResourceType.Scene]: sceneAdd,
 	[ResourceType.Zone]: zoneAdd,
+	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityAdd,
 };
 
 export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
@@ -45,6 +49,7 @@ export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => ((
 	[ResourceType.Room]: roomDelete,
 	[ResourceType.Scene]: sceneDelete,
 	[ResourceType.Zone]: zoneDelete,
+	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityDelete,
 };
 
 export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
@@ -56,4 +61,5 @@ export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => ((
 	[ResourceType.Room]: roomUpdate,
 	[ResourceType.Scene]: sceneUpdate,
 	[ResourceType.Zone]: zoneUpdate,
+	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityUpdate,
 };

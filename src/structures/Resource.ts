@@ -13,6 +13,7 @@ import { GroupedLight } from './GroupedLight';
 import { DevicePower } from './DevicePower';
 import { Motion } from './Motion';
 import { Manager } from '../managers/Manager';
+import { ZigbeeConnectivity } from './ZigbeeConnectivity';
 
 export interface Resources {
 	[ResourceType.Device]: Device;
@@ -27,8 +28,9 @@ export interface Resources {
 	[ResourceType.Entertainment]: Resource<any>;
 	[ResourceType.GroupedLight]: GroupedLight;
 	[ResourceType.DevicePower]: DevicePower;
-	[ResourceType.ZigbeeBridgeConnectivity]: Resource<any>;
+	[ResourceType.ZigbeeConnectivity]: ZigbeeConnectivity;
 	[ResourceType.ZgpConnectivity]: Resource<any>;
+	[ResourceType.ZigbeeDeviceDiscovery]: Resource<any>;
 	[ResourceType.Bridge]: Resource<any>;
 	[ResourceType.Homekit]: Resource<any>;
 	[ResourceType.Scene]: Scene;

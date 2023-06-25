@@ -12,6 +12,7 @@ import { DevicePowerManager } from '../managers/DevicePowerManager';
 import { GroupedLightManager } from '../managers/GroupedLightManager';
 import { SceneManager } from '../managers/SceneManager';
 import { MotionManager } from '../managers/MotionManager';
+import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -64,6 +65,7 @@ export class Bridge extends EventEmitter {
 	public readonly devicePowers = new DevicePowerManager(this);
 	public readonly scenes = new SceneManager(this);
 	public readonly motions = new MotionManager(this);
+	public readonly zigbeeConnectivities = new ZigbeeConnectivityManager(this);
 
 	public constructor(options: BridgeOptions) {
 		super();
@@ -96,5 +98,6 @@ export class Bridge extends EventEmitter {
 		else if (data.type === ResourceType.DevicePower) return this.devicePowers._add(data);
 		else if (data.type === ResourceType.Scene) return this.scenes._add(data);
 		else if (data.type === ResourceType.Motion) return this.motions._add(data);
+		else if (data.type === ResourceType.ZigbeeConnectivity) return this.zigbeeConnectivities._add(data);
 	}
 }

@@ -2,35 +2,7 @@ import { Bridge } from '../bridge/Bridge';
 import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../bridge/BridgeEvents';
-import { ResourceType } from '../api/ResourceType';
 import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
-
-export const RESOURCES_EVENTS = {
-	[ResourceType.Device]: [Events.DeviceAdd, Events.DeviceUpdate, Events.DeviceDelete],
-	[ResourceType.BridgeHome]: undefined,
-	[ResourceType.Room]: [Events.RoomAdd, Events.RoomUpdate, Events.RoomDelete],
-	[ResourceType.Zone]: [Events.ZoneAdd, Events.ZoneUpdate, Events.ZoneDelete],
-	[ResourceType.Light]: [Events.LightAdd, Events.LightUpdate, Events.LightDelete],
-	[ResourceType.Button]: undefined,
-	[ResourceType.Temperature]: undefined,
-	[ResourceType.LightLevel]: undefined,
-	[ResourceType.Motion]: undefined,
-	[ResourceType.Entertainment]: undefined,
-	[ResourceType.GroupedLight]: [Events.GroupedLightAdd, Events.GroupedLightUpdate, Events.GroupedLightDelete],
-	[ResourceType.DevicePower]: [Events.DevicePowerAdd, Events.DevicePowerUpdate, Events.DevicePowerDelete],
-	[ResourceType.ZigbeeBridgeConnectivity]: undefined,
-	[ResourceType.ZgpConnectivity]: undefined,
-	[ResourceType.Bridge]: undefined,
-	[ResourceType.Homekit]: undefined,
-	[ResourceType.Scene]: [Events.SceneAdd, Events.SceneUpdate, Events.SceneDelete],
-	[ResourceType.EntertainmentConfiguration]: undefined,
-	[ResourceType.PublicImage]: undefined,
-	[ResourceType.BehaviourScript]: undefined,
-	[ResourceType.BehaviourInstance]: undefined,
-	[ResourceType.Geofence]: undefined,
-	[ResourceType.GeofenceClient]: undefined,
-	[ResourceType.Geolocation]: undefined,
-};
 
 export class Sse {
 	public readonly bridge: Bridge;
