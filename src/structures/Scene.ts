@@ -2,8 +2,6 @@ import { NamedResource } from './NamedResource';
 import { ResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
 import { SceneManager } from '../managers/SceneManager';
-import { createResourceIdentifier } from '../util/resourceIdentifier';
-import { ifNotNull } from '../util/ifNotNull';
 
 export interface SceneAction {
 	id: string;
@@ -100,51 +98,10 @@ export class Scene extends NamedResource<ResourceType.Scene> {
 	}
 
 	public async edit(options: SceneEditOptions): Promise<void> {
-		await this.manager._put(this.id, {
-			metadata: ifNotNull(options.name, () => Object({ name: options.name! })),
-			recall: ifNotNull(options.recall, () =>
-				Object({
-					action: options.recall!.action ?? 'active',
-					duration: options.recall!.duration,
-					dimming: { brightness: options.recall!.brightness },
-				}),
-			),
-			actions: ifNotNull(options.actions, () =>
-				options.actions!.map((action) =>
-					Object({
-						target: createResourceIdentifier(action.id, ResourceType.Light),
-						action: {
-							on: ifNotNull(action.on, () => Object({ on: action.on })),
-							dimming: ifNotNull(action.brightness, () => Object({ brightness: action.brightness })),
-							color_temperature: ifNotNull(action.mirek, () =>
-								Object({
-									mirek: action.mirek,
-								}),
-							),
-							color: ifNotNull(action.color, () => Object({ xy: { x: action.color!.x, y: action.color!.y } })),
-							gradient: ifNotNull(action.gradient, () =>
-								Object({
-									points: action.gradient!.map((xy) => {
-										return {
-											color: { xy },
-										};
-									}),
-								}),
-							),
-							effects: action.effects,
-							dynamics: ifNotNull(action.dynamics?.duration, () =>
-								Object({
-									duration: action.dynamics!.duration!,
-								}),
-							),
-						},
-					}),
-				),
-			),
-		});
+		await this.manager.edit(this.id, options);
 	}
 
 	public async delete(): Promise<void> {
-		await this.manager._delete(this.id);
+		await this.manager.delete(this.id);
 	}
 }

@@ -3,7 +3,6 @@ import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeReso
 import { LightManager } from '../managers/LightManager';
 import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../color/xy';
 import { createGamut, Gamut, resolveGamutByType } from '../color/gamut';
-import { ifNotNull } from '../util/ifNotNull';
 
 export enum LightCapabilities {
 	None = 'none',
@@ -169,30 +168,7 @@ export class Light extends ArcheTypeResource<ResourceType.Light> {
 	}
 
 	public async edit(options: LightEditOptions): Promise<void> {
-		await this.manager._put(this.id, {
-			metadata: { name: options.name, archetype: options.archeType },
-			on: { on: options.on },
-			dynamics: { duration: options.dynamics?.duration, speed: options.dynamics?.speed },
-			effects: { effect: options.effect },
-			timed_effects: {
-				effect: options.timedEffects?.effect,
-				duration: options.timedEffects?.duration,
-			},
-			dimming: { brightness: options.brightness ?? options.color?.z },
-			color_temperature: {
-				mirek: options.mirek,
-			},
-			color: { xy: ifNotNull(options.color, () => Object({ x: options.color!.x, y: options.color!.y })) },
-			gradient: ifNotNull(options.gradient, () =>
-				Object({
-					points: options.gradient!.map((xy) => {
-						return {
-							color: { xy },
-						};
-					}),
-				}),
-			),
-		});
+		await this.manager.edit(this.id, options);
 	}
 
 	public isCapableOfDimming(): this is this & LightIsCapableOfDimming {

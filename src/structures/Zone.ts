@@ -2,8 +2,6 @@ import { NamedResource } from './NamedResource';
 import { ResourceType } from '../api/ResourceType';
 import { ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { ZoneManager } from '../managers/ZoneManager';
-import { createResourceIdentifier } from '../util/resourceIdentifier';
-import { RoomEditOptions } from './Room';
 import { SceneCreateOptions } from './Scene';
 
 export interface ZoneEditOptions extends ArcheTypeResourceEditOptions {
@@ -28,7 +26,7 @@ export class Zone extends NamedResource<ResourceType.Zone> {
 	}
 
 	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
-		return await this.bridge.scenes._create(this.id, options);
+		return await this.bridge.scenes.create(this.id, options);
 	}
 
 	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
@@ -47,16 +45,11 @@ export class Zone extends NamedResource<ResourceType.Zone> {
 		await this.edit({ children });
 	}
 
-	public async edit(options: RoomEditOptions): Promise<void> {
-		await this.manager._put(this.id, {
-			metadata: { name: options.name, archetype: options.archeType },
-			children: options.children?.map?.((child) => {
-				return createResourceIdentifier(child, ResourceType.Light);
-			}),
-		});
+	public async edit(options: ZoneEditOptions): Promise<void> {
+		await this.manager.edit(this.id, options);
 	}
 
 	public async delete(): Promise<void> {
-		await this.manager._delete(this.id);
+		await this.manager.delete(this.id);
 	}
 }

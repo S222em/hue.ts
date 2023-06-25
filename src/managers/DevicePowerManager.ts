@@ -4,5 +4,5 @@ import { DevicePower } from '../structures/DevicePower';
 
 export class DevicePowerManager extends Manager<ResourceType.DevicePower> {
 	type = ResourceType.DevicePower;
-	_resourceClass = DevicePower;
+	holds = DevicePower;
 }

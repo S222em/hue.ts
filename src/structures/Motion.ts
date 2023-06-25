@@ -5,6 +5,7 @@ import { MotionManager } from '../managers/MotionManager';
 export interface MotionEditOptions {
 	enabled?: boolean;
 }
+
 export class Motion extends Resource<ResourceType.Motion> {
 	type = ResourceType.Motion;
 
@@ -33,8 +34,6 @@ export class Motion extends Resource<ResourceType.Motion> {
 	}
 
 	public async edit(options: MotionEditOptions): Promise<void> {
-		return await this.manager._put(this.id, {
-			enabled: options.enabled,
-		});
+		await this.manager.edit(this.id, options);
 	}
 }

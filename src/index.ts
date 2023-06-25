@@ -47,6 +47,5 @@ export * from './color/rgb';
 export * from './color/hex';
 
 // TODO dimming_delta & color_temperature_delta
-// TODO create resources
 // TODO valid type for api response
-// TODO scene palette and actions edit
+// TODO scene palette

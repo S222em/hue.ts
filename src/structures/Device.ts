@@ -40,19 +40,14 @@ export class Device extends ArcheTypeResource<ResourceType.Device> {
 	}
 
 	public async identify(): Promise<void> {
-		await this.manager._put(this.id, { identify: { action: 'identify' } });
+		await this.manager.identify(this.id);
 	}
 
 	public async edit(options: DeviceEditOptions): Promise<void> {
-		await this.manager._put(this.id, {
-			metadata: {
-				name: options.name,
-				archetype: options.archeType,
-			},
-		});
+		await this.manager.edit(this.id, options);
 	}
 
 	public async delete(): Promise<void> {
-		await this.manager._delete(this.id);
+		await this.manager.delete(this.id);
 	}
 }

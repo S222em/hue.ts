@@ -16,14 +16,14 @@ export abstract class Manager<T extends ResourceType> {
 	public readonly bridge: Bridge;
 	public readonly cache = new Collection<string, NarrowResource<T>>();
 	public abstract type: ResourceType;
-	public abstract _resourceClass: ResourceConstructorSignature<T>;
+	public abstract holds: ResourceConstructorSignature<T>;
 
 	public constructor(bridge: Bridge) {
 		this.bridge = bridge;
 	}
 
 	public _add(data: any): NarrowResource<T> {
-		const resource = new this._resourceClass(this.bridge, data);
+		const resource = new this.holds(this.bridge, data);
 
 		this.cache.set(data.id, resource);
 

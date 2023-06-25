@@ -1,8 +1,14 @@
 import { Manager } from './Manager';
 import { ResourceType } from '../api/ResourceType';
-import { Motion } from '../structures/Motion';
+import { Motion, MotionEditOptions } from '../structures/Motion';
 
 export class MotionManager extends Manager<ResourceType.Motion> {
 	type = ResourceType.Motion;
-	_resourceClass = Motion;
+	holds = Motion;
+
+	public async edit(id: string, options: MotionEditOptions): Promise<void> {
+		return await this._put(id, {
+			enabled: options.enabled,
+		});
+	}
 }
