@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { ResourceType } from '../api/ResourceType';
 import { Zone, ZoneCreateOptions, ZoneEditOptions } from '../structures/Zone';
-import { createResourceIdentifier } from '../util/resourceIdentifier';
+import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
 
 export class ZoneManager extends Manager<ResourceType.Zone> {
 	type = ResourceType.Zone;
@@ -9,10 +9,8 @@ export class ZoneManager extends Manager<ResourceType.Zone> {
 
 	public async create(options: ZoneCreateOptions): Promise<string | undefined> {
 		const identifiers = await this._post({
-			metadata: { name: options.name, archetype: options.archeType },
-			children: options.children?.map?.((child) => {
-				return createResourceIdentifier(child, ResourceType.Light);
-			}),
+			metadata: transformMetadataWithArcheType(options)!,
+			children: transformChildren(options.children)!,
 		});
 
 		return identifiers?.[0]?.rid;
@@ -20,10 +18,8 @@ export class ZoneManager extends Manager<ResourceType.Zone> {
 
 	public async edit(id: string, options: ZoneEditOptions): Promise<void> {
 		await this._put(id, {
-			metadata: { name: options.name, archetype: options.archeType },
-			children: options.children?.map?.((child) => {
-				return createResourceIdentifier(child, ResourceType.Light);
-			}),
+			metadata: transformMetadataWithArcheType(options),
+			children: transformChildren(options.children),
 		});
 	}
 

@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { ResourceType } from '../api/ResourceType';
 import { GroupedLight, GroupedLightEditOptions } from '../structures/GroupedLight';
-import { ifNotNull } from '../util/ifNotNull';
+import { transformColor, transformColorTemperature, transformDimming, transformOn } from '../util/Transformers';
 
 export class GroupedLightManager extends Manager<ResourceType.GroupedLight> {
 	type = ResourceType.GroupedLight;
@@ -9,12 +9,10 @@ export class GroupedLightManager extends Manager<ResourceType.GroupedLight> {
 
 	public async edit(id: string, options: GroupedLightEditOptions): Promise<void> {
 		await this._put(id, {
-			on: { on: options.on },
-			dimming: ifNotNull(options.brightness, () => Object({ brightness: options.brightness })),
-			color_temperature: {
-				mirek: options.mirek,
-			},
-			color: { xy: ifNotNull(options.xy, () => Object({ x: options.xy!.x, y: options.xy!.y })) },
+			on: transformOn(options.on),
+			dimming: transformDimming(options.brightness),
+			color_temperature: transformColorTemperature(options.mirek),
+			color: transformColor(options.color),
 		});
 	}
 }

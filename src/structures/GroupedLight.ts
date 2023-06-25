@@ -7,7 +7,7 @@ export interface GroupedLightEditOptions {
 	on?: boolean;
 	brightness?: number;
 	mirek?: number;
-	xy?: XyPoint;
+	color?: XyPoint;
 }
 
 export class GroupedLight extends Resource<ResourceType.GroupedLight> {
@@ -49,8 +49,8 @@ export class GroupedLight extends Resource<ResourceType.GroupedLight> {
 		await this.edit({ mirek });
 	}
 
-	public async setXy(xy: GroupedLightEditOptions['xy']): Promise<void> {
-		await this.edit({ xy });
+	public async setColor(color: GroupedLightEditOptions['color']): Promise<void> {
+		await this.edit({ color });
 	}
 
 	public async edit(options: GroupedLightEditOptions): Promise<void> {

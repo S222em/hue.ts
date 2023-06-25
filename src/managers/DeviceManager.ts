@@ -1,6 +1,7 @@
 import { Manager } from './Manager';
 import { ResourceType } from '../api/ResourceType';
 import { Device, DeviceEditOptions } from '../structures/Device';
+import { transformMetadataWithArcheType } from '../util/Transformers';
 
 export class DeviceManager extends Manager<ResourceType.Device> {
 	type = ResourceType.Device;
@@ -12,10 +13,7 @@ export class DeviceManager extends Manager<ResourceType.Device> {
 
 	public async edit(id: string, options: DeviceEditOptions): Promise<void> {
 		await this._put(id, {
-			metadata: {
-				name: options.name,
-				archetype: options.archeType,
-			},
+			metadata: transformMetadataWithArcheType(options),
 		});
 	}
 
