@@ -1,11 +1,11 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function zigbeeConnectivityUpdate(data: any, bridge: Bridge) {
-	const zigbeeConnectivity = bridge.zigbeeConnectivities.cache.get(data.id);
+export default function zigbeeConnectivityUpdate(data: any, hue: Hue) {
+	const zigbeeConnectivity = hue.zigbeeConnectivities.cache.get(data.id);
 	if (!zigbeeConnectivity) return;
 
 	const clone = zigbeeConnectivity._update(data);
 
-	return () => bridge.emit(Events.ZigbeeConnectivityUpdate, zigbeeConnectivity, clone);
+	return () => hue.emit(Events.ZigbeeConnectivityUpdate, zigbeeConnectivity, clone);
 }

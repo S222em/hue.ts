@@ -18,6 +18,9 @@ import { RoomPost } from './post/RoomPost';
 import { ZonePost } from './post/ZonePost';
 import { ScenePost } from './post/ScenePost';
 import { ZigbeeConnectivityGet } from './get/ZigbeeConnectivityGet';
+import { ZigbeeDeviceDiscoveryGet } from './get/ZigbeeDeviceDiscoveryGet';
+import { ZigbeeDeviceDiscoveryPut } from './put/ZigbeeDeviceDiscoveryPut';
+import { BridgeGet } from './get/BridgeGet';
 
 export enum ResourceType {
 	Device = 'device',
@@ -62,8 +65,8 @@ export interface ResourceTypesGet {
 	[ResourceType.DevicePower]: DevicePowerGet;
 	[ResourceType.ZigbeeConnectivity]: ZigbeeConnectivityGet;
 	[ResourceType.ZgpConnectivity]: never;
-	[ResourceType.ZigbeeDeviceDiscovery]: never;
-	[ResourceType.Bridge]: never;
+	[ResourceType.ZigbeeDeviceDiscovery]: ZigbeeDeviceDiscoveryGet;
+	[ResourceType.Bridge]: BridgeGet;
 	[ResourceType.Homekit]: never;
 	[ResourceType.Scene]: SceneGet;
 	[ResourceType.EntertainmentConfiguration]: never;
@@ -92,7 +95,7 @@ export interface ResourceTypesPut {
 	[ResourceType.DevicePower]: never;
 	[ResourceType.ZigbeeConnectivity]: never;
 	[ResourceType.ZgpConnectivity]: never;
-	[ResourceType.ZigbeeDeviceDiscovery]: never;
+	[ResourceType.ZigbeeDeviceDiscovery]: ZigbeeDeviceDiscoveryPut;
 	[ResourceType.Bridge]: never;
 	[ResourceType.Homekit]: never;
 	[ResourceType.Scene]: ScenePut;

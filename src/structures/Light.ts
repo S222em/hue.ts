@@ -43,9 +43,9 @@ export interface LightEditOptions extends ArcheTypeResourceEditOptions {
 		duration?: number;
 		speed?: number;
 	};
-	effect?: 'fire' | 'candle' | 'no_effect';
+	effect?: LightEffect;
 	timedEffects?: {
-		effect?: 'sunrise' | 'no_effect';
+		effect?: LightTimedEffect;
 		duration?: number;
 	};
 	brightness?: number;
@@ -54,11 +54,29 @@ export interface LightEditOptions extends ArcheTypeResourceEditOptions {
 	gradient?: XyPoint[];
 }
 
+export enum LightEffect {
+	Fire = 'fire',
+	Candle = 'candle',
+	NoEffect = 'no_effect',
+}
+
+export enum LightTimedEffect {
+	Sunrise = 'sunrise',
+	NoEffect = 'no_effect',
+}
+
+export enum LightMode {
+	Normal = 'normal',
+	Streaming = 'streaming',
+}
+
+// TODO add effects and timed_effects getters
+// TODO dimming_delta & color_temperature_delta
 export class Light extends ArcheTypeResource<ResourceType.Light> {
 	type = ResourceType.Light;
 
 	get manager(): LightManager {
-		return this.bridge.lights;
+		return this.hue.lights;
 	}
 
 	public isOn(): boolean {
@@ -119,8 +137,8 @@ export class Light extends ArcheTypeResource<ResourceType.Light> {
 		return this.data.gradient?.points?.map((point) => point.color.xy);
 	}
 
-	get mode(): 'normal' | 'streaming' {
-		return this.data.mode;
+	get mode(): LightMode {
+		return this.data.mode as LightMode;
 	}
 
 	public async on(duration?: number): Promise<void> {

@@ -14,7 +14,7 @@ export class Zone extends NamedResource<ResourceType.Zone> {
 	type = ResourceType.Zone;
 
 	get manager(): ZoneManager {
-		return this.bridge.zones;
+		return this.hue.zones;
 	}
 
 	get childIds(): string[] {
@@ -26,7 +26,7 @@ export class Zone extends NamedResource<ResourceType.Zone> {
 	}
 
 	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
-		return await this.bridge.scenes.create(this.id, options);
+		return await this.hue.scenes.create(this.id, options);
 	}
 
 	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {

@@ -1,7 +1,7 @@
 import { NamedResource, NamedResourceEditOptions } from './NamedResource';
 import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
 import { ArcheType } from '../api/ArcheType';
-import { Bridge } from '../bridge/Bridge';
+import { Hue } from '../hue/Hue';
 
 export interface ArcheTypeResourceEditOptions extends NamedResourceEditOptions {
 	archeType?: ArcheType;
@@ -12,7 +12,7 @@ export type ArcheTypeResourceCreateOptions = Required<ArcheTypeResourceEditOptio
 export abstract class ArcheTypeResource<T extends ResourceType> extends NamedResource<T> {
 	public data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } };
 
-	constructor(bridge: Bridge, data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } }) {
+	constructor(bridge: Hue, data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } }) {
 		super(bridge, data);
 		this.data = data;
 	}

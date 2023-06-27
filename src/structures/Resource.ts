@@ -1,4 +1,4 @@
-import { Bridge } from '../bridge/Bridge';
+import { Hue } from '../hue/Hue';
 import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
 import { Light } from './Light';
 import { clone } from '../util/clone';
@@ -14,6 +14,8 @@ import { DevicePower } from './DevicePower';
 import { Motion } from './Motion';
 import { Manager } from '../managers/Manager';
 import { ZigbeeConnectivity } from './ZigbeeConnectivity';
+import { ZigbeeDeviceDiscovery } from './ZigbeeDeviceDiscovery';
+import { Bridge } from './Bridge';
 
 export interface Resources {
 	[ResourceType.Device]: Device;
@@ -30,8 +32,8 @@ export interface Resources {
 	[ResourceType.DevicePower]: DevicePower;
 	[ResourceType.ZigbeeConnectivity]: ZigbeeConnectivity;
 	[ResourceType.ZgpConnectivity]: Resource<any>;
-	[ResourceType.ZigbeeDeviceDiscovery]: Resource<any>;
-	[ResourceType.Bridge]: Resource<any>;
+	[ResourceType.ZigbeeDeviceDiscovery]: ZigbeeDeviceDiscovery;
+	[ResourceType.Bridge]: Bridge;
 	[ResourceType.Homekit]: Resource<any>;
 	[ResourceType.Scene]: Scene;
 	[ResourceType.EntertainmentConfiguration]: Resource<any>;
@@ -46,7 +48,7 @@ export interface Resources {
 export type NarrowResource<T extends ResourceType = ResourceType> = Resources[T];
 
 export abstract class Resource<T extends ResourceType> {
-	public readonly bridge: Bridge;
+	public readonly hue: Hue;
 	public abstract readonly type: ResourceType;
 	public abstract readonly manager: Manager<T>;
 	public data: ResourceTypeGet<T>;
@@ -59,8 +61,8 @@ export abstract class Resource<T extends ResourceType> {
 		return createResourceIdentifier(this.id, this.type);
 	}
 
-	constructor(bridge: Bridge, data: ResourceTypeGet<T>) {
-		this.bridge = bridge;
+	constructor(hue: Hue, data: ResourceTypeGet<T>) {
+		this.hue = hue;
 		this.data = data;
 	}
 

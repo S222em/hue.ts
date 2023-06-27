@@ -1,13 +1,13 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function lightDelete(data: any, bridge: Bridge) {
-	const light = bridge.lights.cache.get(data.id);
+export default function lightDelete(data: any, hue: Hue) {
+	const light = hue.lights.cache.get(data.id);
 	if (!light) return;
 
 	const clone = light._clone();
 
-	bridge.devices.cache.delete(data.id);
+	hue.devices.cache.delete(data.id);
 
-	return () => bridge.emit(Events.LightDelete, clone);
+	return () => hue.emit(Events.LightDelete, clone);
 }

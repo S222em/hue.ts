@@ -66,15 +66,19 @@ export interface LightGet {
 	};
 	effects?: {
 		effect: 'fire' | 'candle' | 'no_effect';
+		// TODO any[] not correct type
 		status_value: any[];
 		status: 'fire' | 'candle' | 'no_effect';
+		// TODO any[] not correct type
 		effect_values: any[];
 	};
 	timed_effects?: {
 		effect: 'sunrise' | 'no_effect';
 		duration: number;
+		// TODO any[] not correct type
 		status_values: any[];
 		status: 'sunrise' | 'no_effect';
+		// TODO any[] not correct type
 		effect_values: any[];
 	};
 }

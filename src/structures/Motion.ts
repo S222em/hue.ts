@@ -10,7 +10,7 @@ export class Motion extends Resource<ResourceType.Motion> {
 	type = ResourceType.Motion;
 
 	get manager(): MotionManager {
-		return this.bridge.motions;
+		return this.hue.motions;
 	}
 
 	get enabled(): boolean {

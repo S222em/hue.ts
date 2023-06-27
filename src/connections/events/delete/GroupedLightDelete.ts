@@ -1,13 +1,13 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function groupedLightDelete(data: any, bridge: Bridge) {
-	const groupedLight = bridge.groupedLights.cache.get(data.id);
+export default function groupedLightDelete(data: any, hue: Hue) {
+	const groupedLight = hue.groupedLights.cache.get(data.id);
 	if (!groupedLight) return;
 
 	const clone = groupedLight._clone();
 
-	bridge.groupedLights.cache.delete(data.id);
+	hue.groupedLights.cache.delete(data.id);
 
-	return () => bridge.emit(Events.GroupedLightDelete, clone);
+	return () => hue.emit(Events.GroupedLightDelete, clone);
 }

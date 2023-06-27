@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function zigbeeConnectivityAdd(data: any, bridge: Bridge) {
-	const zigbeeConnectivity = bridge.zigbeeConnectivities._add(data);
+export default function zigbeeConnectivityAdd(data: any, hue: Hue) {
+	const zigbeeConnectivity = hue.zigbeeConnectivities._add(data);
 	if (!zigbeeConnectivity) return;
 
-	return () => bridge.emit(Events.ZigbeeConnectivityAdd, zigbeeConnectivity);
+	return () => hue.emit(Events.ZigbeeConnectivityAdd, zigbeeConnectivity);
 }

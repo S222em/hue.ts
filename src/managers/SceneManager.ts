@@ -9,7 +9,7 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 	holds = Scene;
 
 	public async create(groupId: string, options: SceneCreateOptions): Promise<string | undefined> {
-		const group = this.bridge.zones.cache.get(groupId) ?? this.bridge.rooms.cache.get(groupId);
+		const group = this.hue.zones.cache.get(groupId) ?? this.hue.rooms.cache.get(groupId);
 		if (!group) return;
 
 		const identifiers = await this._post({

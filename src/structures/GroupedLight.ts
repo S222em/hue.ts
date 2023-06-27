@@ -14,7 +14,7 @@ export class GroupedLight extends Resource<ResourceType.GroupedLight> {
 	type = ResourceType.GroupedLight;
 
 	get manager(): GroupedLightManager {
-		return this.bridge.groupedLights;
+		return this.hue.groupedLights;
 	}
 
 	get ownerId(): string {

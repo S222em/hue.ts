@@ -8,7 +8,7 @@ export class Device extends ArcheTypeResource<ResourceType.Device> {
 	type = ResourceType.Device;
 
 	get manager(): DeviceManager {
-		return this.bridge.devices;
+		return this.hue.devices;
 	}
 
 	get modelId(): string {

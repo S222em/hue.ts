@@ -1,16 +1,16 @@
-import { Bridge } from '../bridge/Bridge';
+import { Hue } from '../hue/Hue';
 import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
-import { Events } from '../bridge/BridgeEvents';
+import { Events } from '../hue/HueEvents';
 import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
 
 export class Sse {
-	public readonly bridge: Bridge;
+	public readonly hue: Hue;
 	public readonly dispatcher: Agent;
 	public connection?: BodyReadable & Dispatcher.BodyMixin;
 
-	constructor(bridge: Bridge) {
-		this.bridge = bridge;
+	constructor(hue: Hue) {
+		this.hue = hue;
 		this.dispatcher = new Agent({
 			connect: {
 				// ca: CA,
@@ -24,20 +24,20 @@ export class Sse {
 	}
 
 	public debug(message: string) {
-		this.bridge.emit(Events.Debug, `[SSE] ${message}`);
+		this.hue.emit(Events.Debug, `[SSE] ${message}`);
 	}
 
 	public async connect(): Promise<void> {
 		this.connection = undefined;
 
-		const { body, statusCode } = await request(`${this.bridge._url}/eventstream/clip/v2`, {
+		const { body, statusCode } = await request(`${this.hue._url}/eventstream/clip/v2`, {
 			method: 'GET',
 			headers: {
 				Authorization:
-					'accessToken' in this.bridge.options.connection
-						? `Bearer ${this.bridge.options.connection.accessToken}`
+					'accessToken' in this.hue.options.connection
+						? `Bearer ${this.hue.options.connection.accessToken}`
 						: undefined,
-				'hue-application-key': this.bridge.options.connection.applicationKey,
+				'hue-application-key': this.hue.options.connection.applicationKey,
 				Accept: 'text/event-stream',
 			},
 			bodyTimeout: 0,
@@ -62,13 +62,13 @@ export class Sse {
 			this.debug(`Received ${event.data.length} ${event.type} event(s)`);
 
 			for (const data of event.data) {
-				let handler: ((data: any, bridge: Bridge) => (() => boolean) | undefined) | undefined;
+				let handler: ((data: any, hue: Hue) => (() => boolean) | undefined) | undefined;
 
 				if (event.type == 'add') handler = RESOURCE_ADD[data.type];
 				else if (event.type == 'delete') handler = RESOURCE_DELETE[data.type];
 				else if (event.type == 'update') handler = RESOURCE_UPDATE[data.type];
 
-				if (handler) queue.push(handler(data, this.bridge));
+				if (handler) queue.push(handler(data, this.hue));
 			}
 		}
 
@@ -76,7 +76,7 @@ export class Sse {
 			if (typeof emitter === 'function') emitter();
 		}
 
-		this.bridge.emit(Events.Raw, events);
+		this.hue.emit(Events.Raw, events);
 	}
 
 	public _parse(raw: string): Array<Record<string, any>> {

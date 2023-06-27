@@ -2,7 +2,7 @@ import { ifNotNull } from './ifNotNull';
 import { createResourceIdentifier } from './resourceIdentifier';
 import { ResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
-import { SceneAction } from '../structures/Scene';
+import { SceneAction, SceneRecallAction } from '../structures/Scene';
 import { NamedResourceEditOptions } from '../structures/NamedResource';
 import { ArcheTypeResourceEditOptions } from '../structures/ArcheTypeResource';
 
@@ -96,7 +96,7 @@ export function transformGradient(gradient?: XyPoint[]) {
 export function transformRecall(recall?: { action?: string; duration?: number; brightness?: number }) {
 	return ifNotNull(recall, () =>
 		Object({
-			action: recall!.action ?? 'active',
+			action: recall!.action ?? SceneRecallAction.Active,
 			duration: recall!.duration,
 			dimming: { brightness: recall!.brightness },
 		}),
@@ -119,5 +119,13 @@ export function transformSceneActions(actions?: SceneAction[]) {
 				},
 			}),
 		),
+	);
+}
+
+export function transformAction(action: { actionType: 'search' }) {
+	return ifNotNull(action, () =>
+		Object({
+			action_type: action.actionType,
+		}),
 	);
 }

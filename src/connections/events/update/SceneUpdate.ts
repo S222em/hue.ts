@@ -1,11 +1,11 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function sceneUpdate(data: any, bridge: Bridge) {
-	const scene = bridge.scenes.cache.get(data.id);
+export default function sceneUpdate(data: any, hue: Hue) {
+	const scene = hue.scenes.cache.get(data.id);
 	if (!scene) return;
 
 	const clone = scene._update(data);
 
-	return () => bridge.emit(Events.SceneUpdate, scene, clone);
+	return () => hue.emit(Events.SceneUpdate, scene, clone);
 }

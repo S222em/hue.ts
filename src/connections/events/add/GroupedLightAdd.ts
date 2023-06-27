@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function groupedLightAdd(data: any, bridge: Bridge) {
-	const groupedLight = bridge.groupedLights._add(data);
+export default function groupedLightAdd(data: any, hue: Hue) {
+	const groupedLight = hue.groupedLights._add(data);
 	if (!groupedLight) return;
 
-	return () => bridge.emit(Events.GroupedLightAdd, groupedLight);
+	return () => hue.emit(Events.GroupedLightAdd, groupedLight);
 }

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { BridgeEvents, Events } from './BridgeEvents';
+import { Events, HueEvents } from './HueEvents';
 import { Rest } from '../connections/Rest';
 import { Sse } from '../connections/Sse';
 import { ResourceType } from '../api/ResourceType';
@@ -13,6 +13,8 @@ import { GroupedLightManager } from '../managers/GroupedLightManager';
 import { SceneManager } from '../managers/SceneManager';
 import { MotionManager } from '../managers/MotionManager';
 import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
+import { ZigbeeDeviceDiscoveryManager } from '../managers/ZigbeeDeviceDiscoveryManager';
+import { BridgeManager } from '../managers/BridgeManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -30,33 +32,31 @@ export const CA =
 	'sFgDAiEA1Fj/C3AN5psFMjo0//mrQebo0eKd3aWRx+pQY08mk48=\n' +
 	'-----END CERTIFICATE-----';
 
-export interface BridgeConnectionOptions {
+export interface HueConnectionOptions {
 	applicationKey: string;
 }
 
-export interface LocalBridgeConnectionsOptions extends BridgeConnectionOptions {
+export interface LocalHueConnectionsOptions extends HueConnectionOptions {
 	ip: string;
 }
 
-export interface ExternalBridgeConnectionOptions extends BridgeConnectionOptions {
+export interface ExternalHueConnectionOptions extends HueConnectionOptions {
 	accessToken: string;
 }
 
-export interface BridgeOptions {
-	connection: LocalBridgeConnectionsOptions | ExternalBridgeConnectionOptions;
+export interface HueOptions {
+	connection: LocalHueConnectionsOptions | ExternalHueConnectionOptions;
 }
 
-export interface Bridge {
-	on: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
-	once: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
-	off: <T extends keyof BridgeEvents>(event: T, listener: (...args: BridgeEvents[T]) => any) => this;
-	removeAllListeners: <T extends keyof BridgeEvents>(event?: T) => this;
+export interface Hue {
+	on: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
+	once: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
+	off: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
+	removeAllListeners: <T extends keyof HueEvents>(event?: T) => this;
 }
 
-export class Bridge extends EventEmitter {
-	public readonly options: BridgeOptions;
-	public readonly rest = new Rest(this);
-	public readonly sse = new Sse(this);
+export class Hue extends EventEmitter {
+	public readonly options: HueOptions;
 	public readonly lights = new LightManager(this);
 	public readonly devices = new DeviceManager(this);
 	public readonly rooms = new RoomManager(this);
@@ -66,8 +66,12 @@ export class Bridge extends EventEmitter {
 	public readonly scenes = new SceneManager(this);
 	public readonly motions = new MotionManager(this);
 	public readonly zigbeeConnectivities = new ZigbeeConnectivityManager(this);
+	public readonly zigbeeDeviceDiscoveries = new ZigbeeDeviceDiscoveryManager(this);
+	public readonly bridges = new BridgeManager(this);
+	public readonly _rest = new Rest(this);
+	public readonly _sse = new Sse(this);
 
-	public constructor(options: BridgeOptions) {
+	public constructor(options: HueOptions) {
 		super();
 		this.options = options;
 	}
@@ -78,13 +82,13 @@ export class Bridge extends EventEmitter {
 	}
 
 	public async connect(): Promise<void> {
-		const data = await this.rest.get('/resource');
+		const data = await this._rest.get('/resource');
 
 		for (const resource of data) {
 			this._create(resource);
 		}
 
-		await this.sse.connect();
+		await this._sse.connect();
 
 		this.emit(Events.Ready, this);
 	}
@@ -99,5 +103,7 @@ export class Bridge extends EventEmitter {
 		else if (data.type === ResourceType.Scene) return this.scenes._add(data);
 		else if (data.type === ResourceType.Motion) return this.motions._add(data);
 		else if (data.type === ResourceType.ZigbeeConnectivity) return this.zigbeeConnectivities._add(data);
+		else if (data.type === ResourceType.ZigbeeDeviceDiscovery) return this.zigbeeDeviceDiscoveries._add(data);
+		else if (data.type === ResourceType.Bridge) return this.bridges._add(data);
 	}
 }

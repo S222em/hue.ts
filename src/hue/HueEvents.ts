@@ -1,4 +1,4 @@
-import { Bridge } from './Bridge';
+import { Hue } from './Hue';
 import { Request, Response } from '../connections/Rest';
 import { Light } from '../structures/Light';
 import { NarrowResource } from '../structures/Resource';
@@ -10,6 +10,8 @@ import { GroupedLight } from '../structures/GroupedLight';
 import { DevicePower } from '../structures/DevicePower';
 import { Motion } from '../structures/Motion';
 import { ZigbeeConnectivity } from '../structures/ZigbeeConnectivity';
+import { ZigbeeDeviceDiscovery } from '../structures/ZigbeeDeviceDiscovery';
+import { Bridge } from '../structures/Bridge';
 
 export const Events = {
 	Ready: 'ready',
@@ -48,10 +50,16 @@ export const Events = {
 	ZigbeeConnectivityAdd: 'zigbeeConnectivityAdd',
 	ZigbeeConnectivityUpdate: 'zigbeeConnectivityUpdate',
 	ZigbeeConnectivityDelete: 'zigbeeConnectivityDelete',
+	ZigbeeDeviceDiscoveryAdd: 'zigbeeDeviceDiscoveryAdd',
+	ZigbeeDeviceDiscoveryUpdate: 'zigbeeDeviceDiscoveryUpdate',
+	ZigbeeDeviceDiscoveryDelete: 'zigbeeDeviceDiscoveryDelete',
+	BridgeAdd: 'bridgeAdd',
+	BridgeUpdate: 'bridgeUpdate',
+	BridgeDelete: 'bridgeDelete',
 } as const;
 
-export interface BridgeEvents {
-	[Events.Ready]: [bridge: Bridge];
+export interface HueEvents {
+	[Events.Ready]: [bridge: Hue];
 	[Events.Error]: [error: Error];
 	[Events.Raw]: [data: Record<string, any>];
 	[Events.Debug]: [debug: string];
@@ -90,4 +98,13 @@ export interface BridgeEvents {
 		oldZigbeeConnectivity: ZigbeeConnectivity,
 	];
 	[Events.ZigbeeConnectivityDelete]: [zigbeeConnectivity: ZigbeeConnectivity];
+	[Events.ZigbeeDeviceDiscoveryAdd]: [zigbeeDeviceDiscovery: ZigbeeDeviceDiscovery];
+	[Events.ZigbeeDeviceDiscoveryUpdate]: [
+		newZigbeeDeviceDiscovery: ZigbeeDeviceDiscovery,
+		oldZigbeeDeviceDiscovery: ZigbeeDeviceDiscovery,
+	];
+	[Events.ZigbeeDeviceDiscoveryDelete]: [zigbeeDeviceDiscovery: ZigbeeDeviceDiscovery];
+	[Events.BridgeAdd]: [bridge: Bridge];
+	[Events.BridgeUpdate]: [newBridge: Bridge, oldBridge: Bridge];
+	[Events.BridgeDelete]: [bridge: Bridge];
 }

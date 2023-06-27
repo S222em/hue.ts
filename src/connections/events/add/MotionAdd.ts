@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function motionAdd(data: any, bridge: Bridge) {
-	const motion = bridge.motions._add(data);
+export default function motionAdd(data: any, hue: Hue) {
+	const motion = hue.motions._add(data);
 	if (!motion) return;
 
-	return () => bridge.emit(Events.MotionAdd, motion);
+	return () => hue.emit(Events.MotionAdd, motion);
 }

@@ -7,7 +7,7 @@ export class MotionManager extends Manager<ResourceType.Motion> {
 	holds = Motion;
 
 	public async edit(id: string, options: MotionEditOptions): Promise<void> {
-		return await this._put(id, {
+		await this._put(id, {
 			enabled: options.enabled,
 		});
 	}

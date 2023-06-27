@@ -23,12 +23,18 @@ import motionUpdate from './update/MotionUpdate';
 import roomUpdate from './update/RoomUpdate';
 import sceneUpdate from './update/SceneUpdate';
 import zoneUpdate from './update/ZoneUpdate';
-import { Bridge } from '../../bridge/Bridge';
+import { Hue } from '../../hue/Hue';
 import zigbeeConnectivityAdd from './add/ZigbeeConnectivityAdd';
 import zigbeeConnectivityDelete from './delete/ZigbeeConnectivityDelete';
 import zigbeeConnectivityUpdate from './update/ZigbeeConnectivityUpdate';
+import zigbeeDeviceDiscoveryAdd from './add/ZigbeeDeviceDiscoveryAdd';
+import zigbeeDeviceDiscoveryDelete from './delete/ZigbeeDeviceDiscoveryDelete';
+import zigbeeDeviceDiscoveryUpdate from './update/ZigbeeDeviceDiscoveryUpdate';
+import bridgeAdd from './add/BridgeAdd';
+import bridgeDelete from './delete/BridgeDelete';
+import bridgeUpdate from './update/BridgeUpdate';
 
-export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+export const RESOURCE_ADD: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
 	[ResourceType.Device]: deviceAdd,
 	[ResourceType.DevicePower]: devicePowerAdd,
 	[ResourceType.GroupedLight]: groupedLightAdd,
@@ -38,9 +44,11 @@ export const RESOURCE_ADD: { [key: string]: (data: any, bridge: Bridge) => (() =
 	[ResourceType.Scene]: sceneAdd,
 	[ResourceType.Zone]: zoneAdd,
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityAdd,
+	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryAdd,
+	[ResourceType.Bridge]: bridgeAdd,
 };
 
-export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+export const RESOURCE_DELETE: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
 	[ResourceType.Device]: deviceDelete,
 	[ResourceType.DevicePower]: devicePowerDelete,
 	[ResourceType.GroupedLight]: groupedLightDelete,
@@ -50,9 +58,11 @@ export const RESOURCE_DELETE: { [key: string]: (data: any, bridge: Bridge) => ((
 	[ResourceType.Scene]: sceneDelete,
 	[ResourceType.Zone]: zoneDelete,
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityDelete,
+	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryDelete,
+	[ResourceType.Bridge]: bridgeDelete,
 };
 
-export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => (() => boolean) | undefined } = {
+export const RESOURCE_UPDATE: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
 	[ResourceType.Device]: deviceUpdate,
 	[ResourceType.DevicePower]: devicePowerUpdate,
 	[ResourceType.GroupedLight]: groupedLightUpdate,
@@ -62,4 +72,6 @@ export const RESOURCE_UPDATE: { [key: string]: (data: any, bridge: Bridge) => ((
 	[ResourceType.Scene]: sceneUpdate,
 	[ResourceType.Zone]: zoneUpdate,
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityUpdate,
+	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryUpdate,
+	[ResourceType.Bridge]: bridgeUpdate,
 };

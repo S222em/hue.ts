@@ -13,7 +13,7 @@ export class ZigbeeConnectivity extends Resource<ResourceType.ZigbeeConnectivity
 	type = ResourceType.ZigbeeConnectivity;
 
 	get manager(): ZigbeeConnectivityManager {
-		return this.bridge.zigbeeConnectivities;
+		return this.hue.zigbeeConnectivities;
 	}
 
 	get ownerId(): string {

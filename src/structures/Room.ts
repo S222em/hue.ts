@@ -14,7 +14,7 @@ export class Room extends ArcheTypeResource<ResourceType.Room> {
 	type = ResourceType.Room;
 
 	get manager(): RoomManager {
-		return this.bridge.rooms;
+		return this.hue.rooms;
 	}
 
 	get childIds(): string[] {
@@ -26,7 +26,7 @@ export class Room extends ArcheTypeResource<ResourceType.Room> {
 	}
 
 	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
-		return await this.bridge.scenes.create(this.id, options);
+		return await this.hue.scenes.create(this.id, options);
 	}
 
 	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {

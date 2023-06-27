@@ -1,6 +1,6 @@
-// Bridge
-export * from './bridge/Bridge';
-export * from './bridge/BridgeEvents';
+// Hue
+export * from './hue/Hue';
+export * from './hue/HueEvents';
 
 // Connections
 export * from './connections/Rest';
@@ -45,6 +45,3 @@ export * from './color/xy';
 export * from './color/gamut';
 export * from './color/rgb';
 export * from './color/hex';
-
-// TODO dimming_delta & color_temperature_delta
-// TODO valid type for api response

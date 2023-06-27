@@ -2,6 +2,7 @@ import { NamedResource } from './NamedResource';
 import { ResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
 import { SceneManager } from '../managers/SceneManager';
+import { LightEffect } from './Light';
 
 export interface SceneAction {
 	id: string;
@@ -10,7 +11,7 @@ export interface SceneAction {
 	mirek?: number;
 	color?: XyPoint;
 	gradient?: XyPoint[];
-	effects?: 'fire' | 'candle' | 'no_effect';
+	effects?: LightEffect;
 	dynamics?: { duration?: number };
 }
 
@@ -40,13 +41,18 @@ export interface SceneEditOptions {
 
 export type SceneCreateOptions = Pick<Required<SceneEditOptions>, 'name' | 'actions'>;
 
+export enum SceneRecallAction {
+	Active = 'active',
+	DynamicPalette = 'dynamic_palette',
+}
+
 // TODO scene palette
 
 export class Scene extends NamedResource<ResourceType.Scene> {
 	type = ResourceType.Scene;
 
 	get manager(): SceneManager {
-		return this.bridge.scenes;
+		return this.hue.scenes;
 	}
 
 	get groupId(): string {
@@ -62,7 +68,7 @@ export class Scene extends NamedResource<ResourceType.Scene> {
 				mirek: action.color_temperature?.mirek,
 				color: action.color?.xy,
 				gradient: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
-				effects: action.effects,
+				effects: action.effects as LightEffect,
 				dynamics: action.dynamics,
 			};
 		});

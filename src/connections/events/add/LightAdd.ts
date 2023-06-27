@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function lightAdd(data: any, bridge: Bridge) {
-	const light = bridge.lights._add(data);
+export default function lightAdd(data: any, hue: Hue) {
+	const light = hue.lights._add(data);
 	if (!light) return;
 
-	return () => bridge.emit(Events.LightAdd, light);
+	return () => hue.emit(Events.LightAdd, light);
 }

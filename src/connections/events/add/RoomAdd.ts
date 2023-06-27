@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function roomAdd(data: any, bridge: Bridge) {
-	const room = bridge.rooms._add(data);
+export default function roomAdd(data: any, hue: Hue) {
+	const room = hue.rooms._add(data);
 	if (!room) return;
 
-	return () => bridge.emit(Events.RoomAdd, room);
+	return () => hue.emit(Events.RoomAdd, room);
 }

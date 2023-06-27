@@ -1,9 +1,9 @@
-import { Bridge } from '../../../bridge/Bridge';
-import { Events } from '../../../bridge/BridgeEvents';
+import { Hue } from '../../../hue/Hue';
+import { Events } from '../../../hue/HueEvents';
 
-export default function devicePowerAdd(data: any, bridge: Bridge) {
-	const devicePower = bridge.devicePowers._add(data);
+export default function devicePowerAdd(data: any, hue: Hue) {
+	const devicePower = hue.devicePowers._add(data);
 	if (!devicePower) return;
 
-	return () => bridge.emit(Events.DevicePowerAdd, devicePower);
+	return () => hue.emit(Events.DevicePowerAdd, devicePower);
 }
