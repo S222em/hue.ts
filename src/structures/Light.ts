@@ -1,9 +1,8 @@
-import { NamedResource } from './NamedResource';
-import { ApiResourceType, ApiResourceTypePut } from '../api/ApiResourceType';
-import { DimmableLight } from './DimmableLight';
-import { MirekLight } from './MirekLight';
-import { XyLight } from './XyLight';
-import { XysLight } from './XysLight';
+import { ResourceType } from '../api/ResourceType';
+import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
+import { LightManager } from '../managers/LightManager';
+import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../color/xy';
+import { createGamut, Gamut, resolveGamutByType } from '../color/gamut';
 
 export enum LightCapabilities {
 	None = 'none',
@@ -13,78 +12,133 @@ export enum LightCapabilities {
 	Xys = 'xys',
 }
 
-export interface Lights {
-	[LightCapabilities.None]: Light | DimmableLight | MirekLight | XyLight | XysLight;
-	[LightCapabilities.Dimming]: DimmableLight | MirekLight | XyLight | XysLight;
-	[LightCapabilities.Mirek]: MirekLight | XyLight | XysLight;
-	[LightCapabilities.Xy]: XyLight | XysLight;
-	[LightCapabilities.Xys]: XysLight;
+export interface LightIsCapableOfDimming {
+	brightness: number;
+	minBrightnessLevel: number;
 }
 
-export type NarrowLight<T extends LightCapabilities> = Lights[T];
+export interface LightIsCapableOfColorTemperature extends LightIsCapableOfDimming {
+	colorTemperature: number;
+	minColorTemperature: number;
+	maxColorTemperature: number;
+}
 
-export interface LightEditOptions {
-	name?: string;
+export interface LightIsCapableOfColor extends LightIsCapableOfColorTemperature {
+	color: XyPoint;
+	maxGamutRed: number;
+	maxGamutGreen: number;
+	maxGamutBlue: number;
+	gamut: Gamut;
+	colorInRange: (xy: XyPoint) => boolean;
+	colorToRange: (xy: XyPoint) => XyPoint;
+}
+
+export interface LightIsCapableOfGradient extends LightIsCapableOfColor {
+	gradient: XyPoint[];
+}
+
+export interface LightEditOptions extends ArcheTypeResourceEditOptions {
 	on?: boolean;
 	dynamics?: {
 		duration?: number;
 		speed?: number;
 	};
-	effect?: 'fire' | 'candle' | 'no_effect';
+	effect?: LightEffect;
 	timedEffects?: {
-		effect?: 'sunrise' | 'no_effect';
+		effect?: LightTimedEffect;
 		duration?: number;
 	};
+	brightness?: number;
+	colorTemperature?: number;
+	color?: XyPoint;
+	gradient?: XyPoint[];
 }
 
-export interface LightStateOptions {
-	on?: boolean;
-	dynamics?: {
-		duration?: number;
-		speed?: number;
-	};
-	effect?: 'fire' | 'candle' | 'no_effect';
-	timedEffects?: {
-		effect?: 'sunrise' | 'no_effect';
-		duration?: number;
-	};
+export enum LightEffect {
+	Fire = 'fire',
+	Candle = 'candle',
+	NoEffect = 'no_effect',
 }
 
-export class Light extends NamedResource<ApiResourceType.Light> {
-	public capabilities: LightCapabilities = LightCapabilities.None;
-	type = ApiResourceType.Light;
+export enum LightTimedEffect {
+	Sunrise = 'sunrise',
+	NoEffect = 'no_effect',
+}
+
+export enum LightMode {
+	Normal = 'normal',
+	Streaming = 'streaming',
+}
+
+// TODO add effects and timed_effects getters
+// TODO dimming_delta & color_temperature_delta
+export class Light extends ArcheTypeResource<ResourceType.Light> {
+	type = ResourceType.Light;
+
+	get manager(): LightManager {
+		return this.hue.lights;
+	}
 
 	public isOn(): boolean {
 		return this.data.on.on;
 	}
 
-	get mode(): 'normal' | 'streaming' {
-		return this.data.mode;
+	get brightness(): number | undefined {
+		return this.data.dimming?.brightness;
 	}
 
-	public isCapableOf<T extends LightCapabilities>(capability: T): this is NarrowLight<T> {
-		const order = [LightCapabilities.Dimming, LightCapabilities.Mirek, LightCapabilities.Xy, LightCapabilities.Xys];
-
-		const index = order.indexOf(capability);
-		const left = order.slice(index, order.length);
-
-		return left.includes(this.capabilities);
+	get minBrightnessLevel(): number | undefined {
+		return this.data.dimming?.min_dim_level;
 	}
 
-	public isCapableOfDimming(): this is NarrowLight<LightCapabilities.Dimming> {
-		return this.isCapableOf(LightCapabilities.Dimming);
+	get colorTemperature(): number | undefined {
+		return this.data.color_temperature?.mirek;
 	}
 
-	public isCapableOfMirek(): this is NarrowLight<LightCapabilities.Mirek> {
-		return this.isCapableOf(LightCapabilities.Mirek);
+	get minColorTemperature(): number | undefined {
+		return this.data.color_temperature?.mirek_schema?.mirek_minimum;
 	}
 
-	public isCapableOfXy(): this is NarrowLight<LightCapabilities.Xy> {
-		return this.isCapableOf(LightCapabilities.Xy);
+	get maxColorTemperature(): number | undefined {
+		return this.data.color_temperature?.mirek_schema?.mirek_maximum;
 	}
 
-	public isCapableOfXys(): this is NarrowLight<LightCapabilities.Xys> {
-		return this.isCapableOf(LightCapabilities.Xys);
+	get color(): XyPoint | undefined {
+		return this.data.color
+			? createXy(this.data.color.xy.x, this.data.color!.xy.y, this.data.dimming!.brightness)
+			: undefined;
+	}
+
+	get maxGamutRed(): XyPoint | undefined {
+		return this.data.color
+			? this.data.color.gamut?.red ?? resolveGamutByType(this.data.color.gamut_type).red
+			: undefined;
+	}
+
+	get maxGamutGreen(): XyPoint | undefined {
+		return this.data.color
+			? this.data.color.gamut?.green ?? resolveGamutByType(this.data.color.gamut_type).green
+			: undefined;
+	}
+
+	get maxGamutBlue(): XyPoint | undefined {
+		return this.data.color
+			? this.data.color.gamut?.blue ?? resolveGamutByType(this.data.color.gamut_type).blue
+			: undefined;
+	}
+
+	get gamut(): Gamut | undefined {
+		return this.maxGamutRed && this.maxGamutGreen && this.maxGamutBlue
+			? createGamut(this.maxGamutRed, this.maxGamutGreen, this.maxGamutBlue)
+			: undefined;
+	}
+
+	get gradient(): XyPoint[] | undefined {
+		return this.data.gradient?.points?.map((point) => point.color.xy);
+	}
+
+	get mode(): LightMode {
+		return this.data.mode as LightMode;
 	}
 
 	public async on(duration?: number): Promise<void> {
@@ -99,25 +153,55 @@ export class Light extends NamedResource<ApiResourceType.Light> {
 		await this.edit({ on: !this.isOn(), dynamics: { duration } });
 	}
 
-	public async effect(effect: LightStateOptions['effect']): Promise<void> {
+	public async effect(effect: LightEditOptions['effect']): Promise<void> {
 		await this.edit({ effect });
 	}
 
-	public async timedEffect(timedEffects: LightStateOptions['timedEffects']): Promise<void> {
+	public async timedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<void> {
 		await this.edit({ timedEffects });
 	}
 
-	public async edit(options: LightEditOptions, _inject?: ApiResourceTypePut<ApiResourceType.Light>): Promise<void> {
-		await this._put({
-			metadata: options.name ? { name: options.name } : undefined,
-			on: { on: options.on ?? true },
-			dynamics: { duration: options.dynamics?.duration, speed: options.dynamics?.speed },
-			effects: { effect: options.effect },
-			timed_effects: {
-				effect: options.timedEffects?.effect,
-				duration: options.timedEffects?.duration,
-			},
-			..._inject,
-		});
+	public async setBrightness(brightness: LightEditOptions['brightness'], duration?: number): Promise<void> {
+		await this.edit({ brightness, on: true, dynamics: { duration } });
+	}
+
+	public async setMirek(mirek: LightEditOptions['colorTemperature'], duration?: number): Promise<void> {
+		await this.edit({ colorTemperature: mirek, on: true, dynamics: { duration } });
+	}
+
+	public colorInRange(color: XyPoint): boolean | undefined {
+		return this.gamut ? checkXyInReach(color, this.gamut) : undefined;
+	}
+
+	public colorToRange(color: XyPoint): XyPoint | undefined {
+		return this.gamut ? getClosestXy(color, this.gamut) : undefined;
+	}
+
+	public async setColor(color: LightEditOptions['color'], duration?: number): Promise<void> {
+		await this.edit({ color, on: true, dynamics: { duration } });
+	}
+
+	public async setGradient(gradient: LightEditOptions['gradient'], duration?: number): Promise<void> {
+		await this.edit({ gradient, on: true, dynamics: { duration } });
+	}
+
+	public async edit(options: LightEditOptions): Promise<void> {
+		await this.manager.edit(this.id, options);
+	}
+
+	public isCapableOfDimming(): this is this & LightIsCapableOfDimming {
+		return typeof this.data.dimming != 'undefined';
+	}
+
+	public isCapableOfColorTemperature(): this is this & LightIsCapableOfColorTemperature {
+		return typeof this.data.color_temperature != 'undefined';
+	}
+
+	public isCapableOfColor(): this is this & LightIsCapableOfColor {
+		return typeof this.data.color != 'undefined';
+	}
+
+	public isCapableOfGradient(): this is this & LightIsCapableOfGradient {
+		return typeof this.data.gradient != 'undefined';
 	}
 }

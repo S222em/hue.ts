@@ -1,24 +1,24 @@
-import { NarrowResource, Resource } from './Resource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { XyPoint } from '../util/color/xy';
+import { Resource } from './Resource';
+import { ResourceType } from '../api/ResourceType';
+import { XyPoint } from '../color/xy';
+import { GroupedLightManager } from '../managers/GroupedLightManager';
 
 export interface GroupedLightEditOptions {
 	on?: boolean;
 	brightness?: number;
 	mirek?: number;
-	xy?: XyPoint;
+	color?: XyPoint;
 }
 
-export class GroupedLight extends Resource<ApiResourceType.GroupedLight> {
-	type = ApiResourceType.GroupedLight;
+export class GroupedLight extends Resource<ResourceType.GroupedLight> {
+	type = ResourceType.GroupedLight;
 
-	get owner(): NarrowResource {
-		return this.bridge.resources.getByIdentifier(this.ownerIdentifier);
+	get manager(): GroupedLightManager {
+		return this.hue.groupedLights;
 	}
 
-	get ownerIdentifier(): ResourceIdentifier {
-		return this.data.owner;
+	get ownerId(): string {
+		return this.data.owner.rid;
 	}
 
 	public isOn(): boolean | undefined {
@@ -49,18 +49,11 @@ export class GroupedLight extends Resource<ApiResourceType.GroupedLight> {
 		await this.edit({ mirek });
 	}
 
-	public async setXy(xy: GroupedLightEditOptions['xy']): Promise<void> {
-		await this.edit({ xy });
+	public async setColor(color: GroupedLightEditOptions['color']): Promise<void> {
+		await this.edit({ color });
 	}
 
 	public async edit(options: GroupedLightEditOptions): Promise<void> {
-		await this._put({
-			on: { on: options.on ?? true },
-			dimming: options.brightness ? { brightness: options.brightness } : undefined,
-			color_temperature: {
-				mirek: options.mirek,
-			},
-			color: { xy: options.xy ? { x: options.xy.x, y: options.xy.y } : undefined },
-		});
+		await this.manager.edit(this.id, options);
 	}
 }

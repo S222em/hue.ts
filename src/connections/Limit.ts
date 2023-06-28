@@ -7,7 +7,7 @@ export interface RateLimits {
 }
 
 export const RateLimits: RateLimits = {
-	'/resources/lights': 100,
+	'/resource/light/': 100,
 } as const;
 
 export class Limit extends AsyncQueue {

@@ -4,25 +4,23 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-**WARNING: this library is still under heavy construction**
-
 <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#About">About</a>
-    </li>
-    <li>
-      <a href="#example-usage">Example usage</a>
+      <a href="#about">About</a>
     </li>
     <li>
       <a href="#installation">Installation</a>
     </li>
     <li>
-      <a href="#docs">Docs</a>
+      <a href="#example-usage">Example usage</a>
     </li>
     <li>
-      <a href="#guides">Guides</a>
+      <a href="#colors">Colors</a>
+    </li>
+    <li>
+      <a href="#other">Other</a>
     </li>
     <li>
       <a href="#roadmap">Roadmap</a>
@@ -30,43 +28,15 @@
   </ol>
 </details>
 
+> ⚠️ Library is under construction and may not work as expected
+
 # About
 
 hue.ts is a node module that allows you to easily interact with the hue API (V2).
 
 - Object-oriented
 - Written in TypeScript
-- Future 100%-coverage of the hue API
-
-# Docs
-
-Docs can be found on our wiki [here][wiki-url].
-
-# Example usage
-
-```js
-const { Bridge, ApiResourceType } = require('hue.ts');
-
-const bridge = new Bridge({
-   connection: {
-      ip: 'some-ip',
-      applicationKey: 'some-key',  
-   },
-});
-
-bridge.on('ready', async () => {
-   console.log('Ready!');
-
-   const scene = bridge.resources.getByName('Best Scene Ever', {
-      type: ApiResourceType.Scene,
-      force: true,
-   });
-
-   await scene.recall({ duration: 5000 });
-});
-
-bridge.connect();
-```
+- Future 100%-coverage of the hue API (v2)
 
 # Installation
 
@@ -77,25 +47,17 @@ the hue app, Settings -> My Hue system -> Select your bridge -> Software
 npm install hue.ts
 ```
 
-# Guides
+# Example usage
 
-## Connecting to a bridge
+This examples goal is to create a new zone, and adding a scene to this zone.
 
-```ts
-import { Bridge } from 'hue.ts';
-
-const bridge = new Bridge({
-   connection: {
-      ip: 'some-ip',
-      applicationKey: 'some-key',  
-   },
-});
+```shell
+npm install hue.ts
 ```
 
-The **some-ip** can be found in the Hue app at Settings -> My hue system -> Select your bridge -> IP
-
-You can get **some-key** by following the steps below:
-
+Before connecting to your hue bridge, its ip address and an application key are required.
+The ip address can be found in the Hue app at Settings -> My hue system -> Select your bridge -> IP
+After, an application key can be acquired by the following method:
 1. Open your browser and go to `https://<bridge ip address>/debug/clip.html`
 2. Next fill in the options below:
    URL: /api
@@ -107,192 +69,120 @@ You can get **some-key** by following the steps below:
 
 For more information on retrieving this key visit: https://developers.meethue.com/develop/hue-api-v2/getting-started/
 
-Finally, connect to your bridge by calling `bridge.connect()`.
-
-After the bridge has successfully connected and cached all resources the **ready** event is emitted. You can also listen to other events which can be found [here](https://github.com/S222em/hue.ts/wiki/BridgeEvents).
-
 ```ts
-import { Bridge, Events } from 'hue.ts';
+import { Hue, ArcheType, SceneAction } from 'hue.ts';
 
-const bridge = new Bridge({
+// Create new Hue, with the ip address and application key
+const hue = new Hue({
    connection: {
       ip: 'some-ip',
       applicationKey: 'some-key',
    },
 });
 
-bridge.on(Events.Ready, () => {
-	// Do stuff
+// Listen to the 'ready' event, which is emitted when the socket has connected and cached all resources
+hue.on('ready', async () => {
+   // Get the lights we want in the new zone
+   const light1 = hue.lights.cache.find((light) => light.name == 'Demo Light 1')!;
+   const light2 = hue.lights.cache.find((light) => light.name == 'Demo Light 2')!;
+
+   // Create the zone
+   await hue.zones.create({
+      name: 'Demo',
+      archeType: ArcheType.ManCave,
+      children: [light1.id, light2.id],
+   });
 });
 
-bridge.connect();
-```
+// Listen to the 'zoneAdd' event, emitted on creation of a new zone
+hue.on('zoneAdd', async (zone) => {
+    // Ignore if the zone is not the one created above
+   if (zone.name !== 'Demo') return;
 
-### Connecting via Cloud2Cloud
+   // Find the lights belonging to the zone again, in this case these will be Demo Light 1 & Demo Light 2
+   const lights = hue.lights.cache.filter((light) => zone.childIds.includes(light.id));
 
-> ⚠️ **It is not advised to use Cloud2Cloud at this time**
+   // Make the actions
+   const actions = lights.map((light) => {
+      const action: SceneAction = {
+         id: light.id,
+         on: true,
+      };
 
-```ts
-const bridge = new Bridge({
-   connection: {
-      accessToken: 'some-token',
-      applicationKey: 'some-key',  
-   },
+      // Check if the light can do dimming, and if so, set the brightness of the light to 50%
+      if (light.isCapableOfDimming()) action.brightness = 50;
+
+      // Check if the light can display color, and if so, set the color to #eb403
+      if (light.isCapableOfColor()) action.color = fromHex('#eb403');
+
+      return action;
+   });
+
+   // Create the scene
+   await zone.createScene({
+      name: 'Awesome scene',
+      actions,
+   });
+});
+
+// Listen to the sceneAdd event, emitted on creation of a new scene
+hue.on('sceneAdd', async (scene) => {
+    // Ignore if not the scene just created above
+   if (scene.name !== 'Awesome scene') return;
+
+   // Recall the scene
+   await scene.recall();
 });
 ```
+# Colors
 
-To find the **accessToken** and **applicationKey** visit https://developers.meethue.com/develop/hue-api-v2/cloud2cloud-getting-started/
+Colors... get more complicated. The hue system uses the C.I.E. color representation. This representation is a 2D-colored diagram.
+This also means, to get a color of this diagram, a coordinate (position on the horizontal and vertical axes) is needed.
+A color is therefor represented as `{ x: number; y: number }`. Where x is the horizontal placement and y the vertical.
 
-## Resources
+![cie-url]
 
-All the resources belonging to the connect bridge are cached after calling `bridge.connect()`.
-You can access resources in the cache with the following methods.
-
-Can be used to find a resource by its unique ID.
+As this is a sort of 'non-standard' color representation, utility functions are provided to convert a rgb/hex value to C.I.E.
 ```ts
-const resource = bridge.resources.getById('some-id');
-```
+const xy = fromHex('#eb4034');
 
-Can be used to find a resource by its identifier, similar to an ID, but an identifier also includes the type of the resource.
-```ts
-const resource = bridge.resources.getByIdentifier({
-   rid: 'some-id',
-   rtype: 'some-type',
-});
-```
-
-Find multiple resources by identifier.
-```ts
-const resource = bridge.resources.getByIdentifiers([
-   {
-       rid: 'some-id', rtype: 'some-type',
-   },
-   {
-       rid: 'some-id', rtype: 'some-type',
-   }
-]);
-```
-
-> ⚠️ **.getByName will return the first occurrence**
-
-Find a resource by its name.
-```ts
-const resource = bridge.resources.getByName('some-name');
-```
-
-These methods include additional options as second parameter:
-- **force**, if true, error is thrown if resource does not exist.
-- **type**, the type of the resource, will not return resources of other types.
-
-Here is an example:
-```ts
-const resource = bridge.resources.getById('some-id', {
-    type: ApiResourceType.Light,
-    force: true,
-});
-```
-
-## Lights
-
-### On/Off
-
-```ts
-light.isOn();
-
-await light.off();
-await light.on();
-await light.toggle();
-await light.edit({
-   on: true,
-});
-```
-
-### Brightness
-
-```ts
-// Number between 1%-100%
-light.brightness
-
-await light.setBrightness(50);
-await light.edit({
-   brightness: 50,
-});
-```
-
-### Color temperature
-
-```ts
-// Number between 153-500
-light.mirek
-
-await light.setMirek(300);
-await light.edit({
-   mirek: 300,
-});
-```
-
-### Color
-
-> ⚠️ **Given color is always transpiled to the closest point in the lights display range**
-
-```ts
-// Number between 153-500
-light.xy
-
-await light.setXy({
-   x: 0.3,
-   y: 0.5,
-})
-await light.edit({
-   xy: {
-      x: 0.3,
-      y: 0.5,
-   },
-});
-```
-
-To convert hex or rgb to a xy value the following utility functions can be used:
-```ts
-const xy = fromHex('#e62d20');
-const hex = toHex(xy);
-
-await light.setXy(fromHex('#e62d20'));
+await light.setColor(xy);
 ```
 ```ts
 const xy = fromRGB({
-   red: 230,
-   green: 45,
-   blue: 32,
+   red: 235,
+   green: 64,
+   blue: 52,
 });
-const rgb = toRGB(xy);
 
-await light.setXy(fromRGB({
-   red: 230,
-   green: 45,
-   blue: 32,
-}));
+await light.setColor(xy);
 ```
-
-### Type Guards
-
-Not all lights support color or color temperature. To make sure a light supports these, type guards are available
-
 ```ts
-light.isCapableOfDimming()
-light.isCapableOfMirek()
-light.isCapableOfXy()
-light.isCapableOfXys()
+const hex = toHex(light.color);
+```
+```ts
+const rgb = toRGB(light.color);
 ```
 
-## Other resources
+As also visible in the C.I.E. above, defined by the triangles,
+there is a limit to what the light is able to display.
+Because of that, there might be a difference of your input and the color of the light.
+In order to calculate the color the light is currently showing, the following method can be used.
+```ts
+const xy = light.colorToRange(light.color);
 
-Not all resources are currently supported. Although most important ones are. Guides on these resources will be added later. For now reference to [documentation](https://github.com/S222em/hue.ts/wiki).
-For further assistance, feel free to open up an issue on our GitHub.
+const hex = toHex(xy);
+```
 
-# Roadmap
+# Links
 
-This library is still a work in progress, and I plan to add support for all API features, currently focusing on the structure of the library itself. The Hue API V2 is currently
-not in a finished state yet, so many features **can't** be implemented yet.
+- [Documentation](documentation-url)
+- [GitHub](github-url)
+- [npm](npm-url)
+
+# Help
+
+For questions or issues, please open an issue on our [github](issues-url) page.
 
 [contributors-shield]: https://img.shields.io/github/contributors/S222em/hue.js.svg?style=for-the-badge
 [contributors-url]: https://github.com/S222em/hue.js/graphs/contributors
@@ -304,4 +194,7 @@ not in a finished state yet, so many features **can't** be implemented yet.
 [issues-url]: https://github.com/S222em/hue.js/issues
 [license-shield]: https://img.shields.io/github/license/S222em/hue.js.svg?style=for-the-badge
 [license-url]: https://github.com/S222em/hue.js/blob/master/LICENSE.txt
-[wiki-url]: https://github.com/S222em/hue.ts/wiki
+[cie-url]: https://developers.meethue.com/wp-content/uploads/2018/02/color.png
+[documentation-url]: https://github.com/S222em/hue.ts/wiki/Exports
+[github-url]: https://github.com/S222em/hue.ts
+[npm-url]: https://www.npmjs.com/package/hue.ts

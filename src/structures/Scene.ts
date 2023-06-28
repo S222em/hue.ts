@@ -1,23 +1,23 @@
 import { NamedResource } from './NamedResource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { XyPoint } from '../util/color/xy';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
+import { ResourceType } from '../api/ResourceType';
+import { XyPoint } from '../color/xy';
+import { SceneManager } from '../managers/SceneManager';
+import { LightEffect } from './Light';
 
 export interface SceneAction {
-	target: ResourceIdentifier;
+	id: string;
 	on?: boolean;
 	brightness?: number;
-	mirek?: number;
-	xy?: XyPoint;
-	xys?: XyPoint[];
-	effects?: 'fire' | 'candle' | 'no_effect';
+	colorTemperature?: number;
+	color?: XyPoint;
+	gradient?: XyPoint[];
+	effects?: LightEffect;
 	dynamics?: { duration?: number };
 }
 
 export interface ScenePalette {
 	color: Array<{
-		xy: XyPoint;
+		color: XyPoint;
 		brightness: number;
 	}>;
 	brightness: number;
@@ -30,7 +30,7 @@ export interface ScenePalette {
 export interface SceneEditOptions {
 	name?: string;
 	actions?: Array<SceneAction>;
-	palette?: ScenePalette;
+	// palette?: ScenePalette;
 	speed?: number;
 	recall?: {
 		action?: 'active' | 'dynamic_palette';
@@ -39,55 +39,77 @@ export interface SceneEditOptions {
 	};
 }
 
-// TODO palette and actions edit
-export class Scene extends NamedResource<ApiResourceType.Scene> {
-	type = ApiResourceType.Scene;
+export type SceneCreateOptions = Pick<Required<SceneEditOptions>, 'name' | 'actions'>;
 
-	get group(): NarrowResource {
-		return this.bridge.resources.getByIdentifier(this.groupIdentifier);
+export enum SceneRecallAction {
+	Active = 'active',
+	DynamicPalette = 'dynamic_palette',
+}
+
+// TODO scene palette
+
+export class Scene extends NamedResource<ResourceType.Scene> {
+	type = ResourceType.Scene;
+
+	get manager(): SceneManager {
+		return this.hue.scenes;
 	}
 
-	get groupIdentifier(): ResourceIdentifier {
-		return this.data.group;
+	get groupId(): string {
+		return this.data.group.rid;
 	}
 
 	get actions(): SceneAction[] {
 		return this.data.actions.map(({ target, action }) => {
 			return {
-				target: target,
+				id: target.rid,
 				on: action.on?.on,
 				brightness: action.dimming?.brightness,
-				mirek: action.color_temperature?.mirek,
-				xy: action.color?.xy,
-				xys: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
-				effects: action.effects,
+				colorTemperature: action.color_temperature?.mirek,
+				color: action.color?.xy,
+				gradient: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
+				effects: action.effects as LightEffect,
 				dynamics: action.dynamics,
 			};
 		});
-	}
-
-	public actionFor(identifier: ResourceIdentifier<ApiResourceType.Light>): SceneAction | undefined {
-		return this.actions.find((action) => action.target === identifier);
 	}
 
 	get speed(): number {
 		return this.data.speed;
 	}
 
+	public actionFor(id: string): SceneAction | undefined {
+		return this.actions.find((action) => action.id == id);
+	}
+
 	public async recall(options?: SceneEditOptions['recall']): Promise<void> {
-		await this._put({ recall: { action: 'active', ...options } });
+		await this.edit({ recall: { ...options } });
+	}
+
+	public async createActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<void> {
+		const newAction = { ...options, id };
+
+		await this.setActions([...this.actions, newAction]);
+	}
+
+	public async editActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<void> {
+		const action = this.actionFor(id);
+		if (!action) return;
+
+		const newAction = { ...action, ...options };
+
+		await this.setActions([...this.actions.filter((action) => action.id != id), newAction]);
+	}
+
+	public async setActions(actions: SceneAction[]): Promise<void> {
+		await this.edit({ actions });
 	}
 
 	public async edit(options: SceneEditOptions): Promise<void> {
-		await this._put({
-			metadata: options.name ? { name: options.name } : undefined,
-			recall: options.recall
-				? {
-						action: options.recall?.action ?? 'active',
-						duration: options.recall?.duration,
-						dimming: { brightness: options.recall?.brightness },
-				  }
-				: undefined,
-		});
+		await this.manager.edit(this.id, options);
+	}
+
+	public async delete(): Promise<void> {
+		await this.manager.delete(this.id);
 	}
 }

@@ -1,45 +1,55 @@
 import { NamedResource } from './NamedResource';
-import { ApiResourceType } from '../api/ApiResourceType';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
-import { NarrowResource } from './Resource';
+import { ResourceType } from '../api/ResourceType';
+import { ArcheTypeResourceEditOptions } from './ArcheTypeResource';
+import { ZoneManager } from '../managers/ZoneManager';
+import { SceneCreateOptions } from './Scene';
 
-export interface ZoneEditOptions {
-	name?: string;
-	children?: ResourceIdentifier[];
+export interface ZoneEditOptions extends ArcheTypeResourceEditOptions {
+	children?: string[];
 }
 
-export class Zone extends NamedResource<ApiResourceType.Zone> {
-	type = ApiResourceType.Zone;
+export type ZoneCreateOptions = Required<ZoneEditOptions>;
 
-	get children(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.childIdentifiers);
+export class Zone extends NamedResource<ResourceType.Zone> {
+	type = ResourceType.Zone;
+
+	get manager(): ZoneManager {
+		return this.hue.zones;
 	}
 
-	get childIdentifiers(): ResourceIdentifier[] {
-		return this.data.children;
+	get childIds(): string[] {
+		return this.data.children.map((child) => child.rid);
 	}
 
-	get services(): NarrowResource[] {
-		return this.bridge.resources.getByIdentifiers(this.serviceIdentifiers);
+	get serviceIds(): string[] {
+		return this.data.services.map((service) => service.rid);
 	}
 
-	get serviceIdentifiers(): ResourceIdentifier[] {
-		return this.data.services;
+	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
+		return await this.hue.scenes.create(this.id, options);
 	}
 
-	public async removeChildren(...children: ResourceIdentifier[]): Promise<void> {
-		const newChildren = this.childIdentifiers.filter((identifier) => !children.includes(identifier));
+	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
+		const newChildren = [...this.childIds, ...children];
 
-		await this.edit({ children: newChildren });
+		await this.setChildren(newChildren);
 	}
 
-	public async addChildren(...children: ResourceIdentifier[]): Promise<void> {
-		const newChildren = [...this.childIdentifiers, ...children];
+	public async removeChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
+		const newChildren = this.childIds.filter((id) => !children.includes(id));
 
-		await this.edit({ children: newChildren });
+		await this.setChildren(newChildren);
+	}
+
+	public async setChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
+		await this.edit({ children });
 	}
 
 	public async edit(options: ZoneEditOptions): Promise<void> {
-		await this._put({ metadata: options.name ? { name: options.name } : undefined, children: options.children });
+		await this.manager.edit(this.id, options);
+	}
+
+	public async delete(): Promise<void> {
+		await this.manager.delete(this.id);
 	}
 }
