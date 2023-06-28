@@ -3,10 +3,25 @@ import { ResourceType } from '../api/ResourceType';
 import { Room, RoomCreateOptions, RoomEditOptions } from '../structures/Room';
 import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
 
+/**
+ * Manages the room resource
+ */
 export class RoomManager extends Manager<ResourceType.Room> {
 	type = ResourceType.Room;
 	holds = Room;
 
+	/**
+	 * Creates a new room
+	 * @param options Options for creating the new room
+	 * @example
+	 * ```
+	 * await hue.rooms.create({
+	 *    name: 'Attic',
+	 *    archeType: ArcheType.Attic,
+	 *    children: ['some-lightId-1', 'some-lightId-2'],
+	 * });
+	 * ```
+	 */
 	public async create(options: RoomCreateOptions): Promise<string | undefined> {
 		const identifiers = await this._post({
 			metadata: transformMetadataWithArcheType(options)!,
@@ -16,6 +31,17 @@ export class RoomManager extends Manager<ResourceType.Room> {
 		return identifiers?.[0]?.rid;
 	}
 
+	/**
+	 * Edits specified room
+	 * @param id ID of the room
+	 * @param options Options for editing the room
+	 * @example
+	 * ```ts
+	 * await hue.rooms.edit('some-id', {
+	 *    name: 'New name',
+	 * });
+	 * ```
+	 */
 	public async edit(id: string, options: RoomEditOptions): Promise<void> {
 		await this._put(id, {
 			metadata: transformMetadataWithArcheType(options),
@@ -23,6 +49,10 @@ export class RoomManager extends Manager<ResourceType.Room> {
 		});
 	}
 
+	/**
+	 * Deletes specified room
+	 * @param id ID of the room
+	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);
 	}

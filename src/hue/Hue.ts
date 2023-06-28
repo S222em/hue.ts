@@ -2,8 +2,6 @@ import { EventEmitter } from 'node:events';
 import { Events, HueEvents } from './HueEvents';
 import { Rest } from '../connections/Rest';
 import { Sse } from '../connections/Sse';
-import { ResourceType } from '../api/ResourceType';
-import { NarrowResource } from '../structures/Resource';
 import { LightManager } from '../managers/LightManager';
 import { DeviceManager } from '../managers/DeviceManager';
 import { RoomManager } from '../managers/RoomManager';
@@ -17,7 +15,7 @@ import { ZigbeeDeviceDiscoveryManager } from '../managers/ZigbeeDeviceDiscoveryM
 import { BridgeManager } from '../managers/BridgeManager';
 import { BridgeHomeManager } from '../managers/BridgeHomeManager';
 import { GeolocationManager } from '../managers/GeolocationManager';
-import { Manager } from '../managers/Manager';
+import { RESOURCE_ADD } from '../connections/events';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -58,22 +56,90 @@ export interface Hue {
 	removeAllListeners: <T extends keyof HueEvents>(event?: T) => this;
 }
 
+/**
+ * The main hub for interacting with the hue API, and the start of every project
+ */
 export class Hue extends EventEmitter {
+	/**
+	 * The options the client was instantiated with
+	 */
 	public readonly options: HueOptions;
+
+	/**
+	 * All of the {@link Light} objects that have been cached, mapped by their ids
+	 */
 	public readonly lights = new LightManager(this);
+
+	/**
+	 * All of the {@link Device} objects that have been cached, mapped by their ids
+	 */
 	public readonly devices = new DeviceManager(this);
+
+	/**
+	 * All of the {@link Room} objects that have been cached, mapped by their ids
+	 */
 	public readonly rooms = new RoomManager(this);
+
+	/**
+	 * All of the {@link Zone} objects that have been cached, mapped by their ids
+	 */
 	public readonly zones = new ZoneManager(this);
+
+	/**
+	 * All of the {@link GroupedLight} objects that have been cached, mapped by their ids
+	 */
 	public readonly groupedLights = new GroupedLightManager(this);
+
+	/**
+	 * All of the {@link DevicePower} objects that have been cached, mapped by their ids
+	 */
 	public readonly devicePowers = new DevicePowerManager(this);
+
+	/**
+	 * All of the {@link Scene} objects that have been cached, mapped by their ids
+	 */
 	public readonly scenes = new SceneManager(this);
+
+	/**
+	 * All of the {@link Motion} objects that have been cached, mapped by their ids
+	 */
 	public readonly motions = new MotionManager(this);
+
+	/**
+	 * All of the {@link ZigbeeConnectivity} objects that have been cached, mapped by their ids
+	 */
 	public readonly zigbeeConnectivities = new ZigbeeConnectivityManager(this);
+
+	/**
+	 * All of the {@link ZigbeeDeviceDiscovery} objects that have been cached, mapped by their ids
+	 */
 	public readonly zigbeeDeviceDiscoveries = new ZigbeeDeviceDiscoveryManager(this);
+
+	/**
+	 * All of the {@link Bridge} objects that have been cached, mapped by their ids
+	 */
 	public readonly bridges = new BridgeManager(this);
+
+	/**
+	 * All of the {@link BridgeHome} objects that have been cached, mapped by their ids
+	 */
 	public readonly bridgeHomes = new BridgeHomeManager(this);
+
+	/**
+	 * All of the {@link Geolocation} objects that have been cached, mapped by their ids
+	 */
 	public readonly geolocations = new GeolocationManager(this);
+
+	/**
+	 * The REST manager
+	 * @private
+	 */
 	public readonly _rest = new Rest(this);
+
+	/**
+	 * The SSE manager
+	 * @private
+	 */
 	public readonly _sse = new Sse(this);
 
 	public constructor(options: HueOptions) {
@@ -81,41 +147,28 @@ export class Hue extends EventEmitter {
 		this.options = options;
 	}
 
+	/**
+	 * Resolves the url for connections
+	 * @private
+	 */
 	get _url(): string {
 		if ('ip' in this.options.connection) return `https://${this.options.connection.ip}:443`;
 		else return `https://api.meethue.com/route`;
 	}
 
+	/**
+	 * Caches all resources and opens the SSE connection
+	 */
 	public async connect(): Promise<void> {
 		const data = await this._rest.get('/resource');
 
 		for (const resource of data) {
-			this._create(resource);
+			const handler = RESOURCE_ADD[resource.type];
+			if (handler) handler(resource, this);
 		}
 
 		await this._sse.connect();
 
 		this.emit(Events.Ready, this);
-	}
-
-	public _getManagerFor(type: ResourceType): Manager<any> | undefined {
-		if (type === ResourceType.Light) return this.lights;
-		else if (type === ResourceType.Device) return this.devices;
-		else if (type === ResourceType.Room) return this.rooms;
-		else if (type === ResourceType.Zone) return this.zones;
-		else if (type === ResourceType.GroupedLight) return this.groupedLights;
-		else if (type === ResourceType.DevicePower) return this.devicePowers;
-		else if (type === ResourceType.Scene) return this.scenes;
-		else if (type === ResourceType.Motion) return this.motions;
-		else if (type === ResourceType.ZigbeeConnectivity) return this.zigbeeConnectivities;
-		else if (type === ResourceType.ZigbeeDeviceDiscovery) return this.zigbeeDeviceDiscoveries;
-		else if (type === ResourceType.Bridge) return this.bridges;
-		else if (type === ResourceType.BridgeHome) return this.bridgeHomes;
-		else if (type === ResourceType.Geolocation) return this.geolocations;
-	}
-
-	public _create(data: any): NarrowResource | undefined {
-		const manager = this._getManagerFor(data.type);
-		if (manager) return manager._add(data);
 	}
 }

@@ -13,10 +13,27 @@ import {
 	transformTimedEffects,
 } from '../util/Transformers';
 
+/**
+ * Manages the light resource
+ */
 export class LightManager extends Manager<ResourceType.Light> {
 	type = ResourceType.Light;
 	holds = Light;
 
+	/**
+	 * Edits specified light
+	 * @param id ID of the light
+	 * @param options Options for editing the light
+	 * @example
+	 * ```
+	 * await hue.lights.edit('some-id', {
+	 *    name: 'Some cool name',
+	 *    on: true,
+	 *    brightness: 50,
+	 *    colorTemperature: 200,
+	 * });
+	 * ```
+	 */
 	public async edit(id: string, options: LightEditOptions): Promise<void> {
 		await this._put(id, {
 			metadata: transformMetadataWithArcheType(options),

@@ -5,10 +5,31 @@ import { transformMetadata, transformRecall, transformSceneActions } from '../ut
 import { createResourceIdentifier } from '../util/resourceIdentifier';
 import { ifNotNull } from '../util/ifNotNull';
 
+/**
+ * Manages the scene resource
+ */
 export class SceneManager extends Manager<ResourceType.Scene> {
 	type = ResourceType.Scene;
 	holds = Scene;
 
+	/**
+	 * Creates a new scene
+	 * @param groupId ID of zone or room this scene has to belong to
+	 * @param options Options for creating the new scene
+	 * @example
+	 * ```
+	 * await hue.scenes.create('some-id', {
+	 *    name: 'Some awesome scene',
+	 *    actions: [
+	 *        {
+	 *            id: 'some-lightId',
+	 *            on: true,
+	 *            brightness: 50,
+	 *        }
+	 *    ]
+	 * });
+	 * ```
+	 */
 	public async create(groupId: string, options: SceneCreateOptions): Promise<string | undefined> {
 		const group = this.hue.zones.cache.get(groupId) ?? this.hue.rooms.cache.get(groupId);
 		if (!group) return;
@@ -21,6 +42,24 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 
 		return identifiers?.[0]?.rid;
 	}
+
+	/**
+	 * Edits specified scene
+	 * @param id ID of the scene
+	 * @param options Options for editing the scene
+	 * @example
+	 * ```
+	 * await hue.scenes.edit('some-id', {
+	 *    actions: [
+	 *        {
+	 *            id: 'some-lightId',
+	 *            on: true,
+	 *            brightness: 50,
+	 *        }
+	 *    ]
+	 * });
+	 * ```
+	 */
 	public async edit(id: string, options: SceneEditOptions): Promise<void> {
 		await this._put(id, {
 			metadata: transformMetadata(options),
@@ -30,6 +69,10 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 		});
 	}
 
+	/**
+	 * Deletes specified scene
+	 * @param id ID of the scene
+	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);
 	}
