@@ -21,6 +21,8 @@ import { ZigbeeConnectivityGet } from './get/ZigbeeConnectivityGet';
 import { ZigbeeDeviceDiscoveryGet } from './get/ZigbeeDeviceDiscoveryGet';
 import { ZigbeeDeviceDiscoveryPut } from './put/ZigbeeDeviceDiscoveryPut';
 import { BridgeGet } from './get/BridgeGet';
+import { GeolocationGet } from './get/GeolocationGet';
+import { GeolocationPut } from './put/GeolocationPut';
 
 export enum ResourceType {
 	Device = 'device',
@@ -75,7 +77,7 @@ export interface ResourceTypesGet {
 	[ResourceType.BehaviourInstance]: never;
 	[ResourceType.Geofence]: never;
 	[ResourceType.GeofenceClient]: never;
-	[ResourceType.Geolocation]: never;
+	[ResourceType.Geolocation]: GeolocationGet;
 }
 
 export type ResourceTypeGet<T extends ResourceType> = ResourceTypesGet[T];
@@ -105,7 +107,7 @@ export interface ResourceTypesPut {
 	[ResourceType.BehaviourInstance]: never;
 	[ResourceType.Geofence]: never;
 	[ResourceType.GeofenceClient]: never;
-	[ResourceType.Geolocation]: never;
+	[ResourceType.Geolocation]: GeolocationPut;
 }
 
 export type ResourceTypePut<T extends ResourceType> = ResourceTypesPut[T];

@@ -12,6 +12,8 @@ import { Motion } from '../structures/Motion';
 import { ZigbeeConnectivity } from '../structures/ZigbeeConnectivity';
 import { ZigbeeDeviceDiscovery } from '../structures/ZigbeeDeviceDiscovery';
 import { Bridge } from '../structures/Bridge';
+import { BridgeHome } from '../structures/BridgeHome';
+import { Geolocation } from '../structures/Geolocation';
 
 export const Events = {
 	Ready: 'ready',
@@ -56,6 +58,12 @@ export const Events = {
 	BridgeAdd: 'bridgeAdd',
 	BridgeUpdate: 'bridgeUpdate',
 	BridgeDelete: 'bridgeDelete',
+	BridgeHomeAdd: 'bridgeHomeAdd',
+	BridgeHomeUpdate: 'bridgeHomeUpdate',
+	BridgeHomeDelete: 'bridgeHomeDelete',
+	GeolocationAdd: 'geolocationAdd',
+	GeolocationUpdate: 'geolocationUpdate',
+	GeolocationDelete: 'geolocationDelete',
 } as const;
 
 export interface HueEvents {
@@ -107,4 +115,10 @@ export interface HueEvents {
 	[Events.BridgeAdd]: [bridge: Bridge];
 	[Events.BridgeUpdate]: [newBridge: Bridge, oldBridge: Bridge];
 	[Events.BridgeDelete]: [bridge: Bridge];
+	[Events.BridgeHomeAdd]: [bridgeHome: BridgeHome];
+	[Events.BridgeHomeUpdate]: [newBridgeHome: BridgeHome, oldBridgeHome: BridgeHome];
+	[Events.BridgeHomeDelete]: [bridgeHome: BridgeHome];
+	[Events.GeolocationAdd]: [geolocation: Geolocation];
+	[Events.GeolocationUpdate]: [newGeolocation: Geolocation, oldGeolocation: Geolocation];
+	[Events.GeolocationDelete]: [geolocation: Geolocation];
 }

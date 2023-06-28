@@ -33,6 +33,12 @@ import zigbeeDeviceDiscoveryUpdate from './update/ZigbeeDeviceDiscoveryUpdate';
 import bridgeAdd from './add/BridgeAdd';
 import bridgeDelete from './delete/BridgeDelete';
 import bridgeUpdate from './update/BridgeUpdate';
+import bridgeHomeAdd from './add/BridgeHomeAdd';
+import bridgeHomeDelete from './delete/BridgeHomeDelete';
+import bridgeHomeUpdate from './update/BridgeHomeUpdate';
+import geolocationAdd from './add/GeolocationAdd';
+import geolocationDelete from './delete/GeolocationDelete';
+import geolocationUpdate from './update/GeolocationUpdate';
 
 export const RESOURCE_ADD: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
 	[ResourceType.Device]: deviceAdd,
@@ -46,6 +52,8 @@ export const RESOURCE_ADD: { [key: string]: (data: any, hue: Hue) => (() => bool
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityAdd,
 	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryAdd,
 	[ResourceType.Bridge]: bridgeAdd,
+	[ResourceType.BridgeHome]: bridgeHomeAdd,
+	[ResourceType.Geolocation]: geolocationAdd,
 };
 
 export const RESOURCE_DELETE: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
@@ -60,6 +68,8 @@ export const RESOURCE_DELETE: { [key: string]: (data: any, hue: Hue) => (() => b
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityDelete,
 	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryDelete,
 	[ResourceType.Bridge]: bridgeDelete,
+	[ResourceType.BridgeHome]: bridgeHomeDelete,
+	[ResourceType.Geolocation]: geolocationDelete,
 };
 
 export const RESOURCE_UPDATE: { [key: string]: (data: any, hue: Hue) => (() => boolean) | undefined } = {
@@ -74,4 +84,6 @@ export const RESOURCE_UPDATE: { [key: string]: (data: any, hue: Hue) => (() => b
 	[ResourceType.ZigbeeConnectivity]: zigbeeConnectivityUpdate,
 	[ResourceType.ZigbeeDeviceDiscovery]: zigbeeDeviceDiscoveryUpdate,
 	[ResourceType.Bridge]: bridgeUpdate,
+	[ResourceType.BridgeHome]: bridgeHomeUpdate,
+	[ResourceType.Geolocation]: geolocationUpdate,
 };

@@ -16,10 +16,12 @@ import { Manager } from '../managers/Manager';
 import { ZigbeeConnectivity } from './ZigbeeConnectivity';
 import { ZigbeeDeviceDiscovery } from './ZigbeeDeviceDiscovery';
 import { Bridge } from './Bridge';
+import { BridgeHome } from './BridgeHome';
+import { Geolocation } from './Geolocation';
 
 export interface Resources {
 	[ResourceType.Device]: Device;
-	[ResourceType.BridgeHome]: Resource<any>;
+	[ResourceType.BridgeHome]: BridgeHome;
 	[ResourceType.Room]: Room;
 	[ResourceType.Zone]: Zone;
 	[ResourceType.Light]: Light;
@@ -42,7 +44,7 @@ export interface Resources {
 	[ResourceType.BehaviourInstance]: Resource<any>;
 	[ResourceType.Geofence]: Resource<any>;
 	[ResourceType.GeofenceClient]: Resource<any>;
-	[ResourceType.Geolocation]: Resource<any>;
+	[ResourceType.Geolocation]: Geolocation;
 }
 
 export type NarrowResource<T extends ResourceType = ResourceType> = Resources[T];

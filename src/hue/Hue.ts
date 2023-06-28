@@ -15,6 +15,9 @@ import { MotionManager } from '../managers/MotionManager';
 import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
 import { ZigbeeDeviceDiscoveryManager } from '../managers/ZigbeeDeviceDiscoveryManager';
 import { BridgeManager } from '../managers/BridgeManager';
+import { BridgeHomeManager } from '../managers/BridgeHomeManager';
+import { GeolocationManager } from '../managers/GeolocationManager';
+import { Manager } from '../managers/Manager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -68,6 +71,8 @@ export class Hue extends EventEmitter {
 	public readonly zigbeeConnectivities = new ZigbeeConnectivityManager(this);
 	public readonly zigbeeDeviceDiscoveries = new ZigbeeDeviceDiscoveryManager(this);
 	public readonly bridges = new BridgeManager(this);
+	public readonly bridgeHomes = new BridgeHomeManager(this);
+	public readonly geolocations = new GeolocationManager(this);
 	public readonly _rest = new Rest(this);
 	public readonly _sse = new Sse(this);
 
@@ -93,17 +98,24 @@ export class Hue extends EventEmitter {
 		this.emit(Events.Ready, this);
 	}
 
+	public _getManagerFor(type: ResourceType): Manager<any> | undefined {
+		if (type === ResourceType.Light) return this.lights;
+		else if (type === ResourceType.Device) return this.devices;
+		else if (type === ResourceType.Room) return this.rooms;
+		else if (type === ResourceType.Zone) return this.zones;
+		else if (type === ResourceType.GroupedLight) return this.groupedLights;
+		else if (type === ResourceType.DevicePower) return this.devicePowers;
+		else if (type === ResourceType.Scene) return this.scenes;
+		else if (type === ResourceType.Motion) return this.motions;
+		else if (type === ResourceType.ZigbeeConnectivity) return this.zigbeeConnectivities;
+		else if (type === ResourceType.ZigbeeDeviceDiscovery) return this.zigbeeDeviceDiscoveries;
+		else if (type === ResourceType.Bridge) return this.bridges;
+		else if (type === ResourceType.BridgeHome) return this.bridgeHomes;
+		else if (type === ResourceType.Geolocation) return this.geolocations;
+	}
+
 	public _create(data: any): NarrowResource | undefined {
-		if (data.type === ResourceType.Light) return this.lights._add(data);
-		else if (data.type === ResourceType.Device) return this.devices._add(data);
-		else if (data.type === ResourceType.Room) return this.rooms._add(data);
-		else if (data.type === ResourceType.Zone) return this.zones._add(data);
-		else if (data.type === ResourceType.GroupedLight) return this.groupedLights._add(data);
-		else if (data.type === ResourceType.DevicePower) return this.devicePowers._add(data);
-		else if (data.type === ResourceType.Scene) return this.scenes._add(data);
-		else if (data.type === ResourceType.Motion) return this.motions._add(data);
-		else if (data.type === ResourceType.ZigbeeConnectivity) return this.zigbeeConnectivities._add(data);
-		else if (data.type === ResourceType.ZigbeeDeviceDiscovery) return this.zigbeeDeviceDiscoveries._add(data);
-		else if (data.type === ResourceType.Bridge) return this.bridges._add(data);
+		const manager = this._getManagerFor(data.type);
+		if (manager) return manager._add(data);
 	}
 }
