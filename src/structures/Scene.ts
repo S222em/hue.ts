@@ -8,7 +8,7 @@ export interface SceneAction {
 	id: string;
 	on?: boolean;
 	brightness?: number;
-	mirek?: number;
+	colorTemperature?: number;
 	color?: XyPoint;
 	gradient?: XyPoint[];
 	effects?: LightEffect;
@@ -30,7 +30,7 @@ export interface ScenePalette {
 export interface SceneEditOptions {
 	name?: string;
 	actions?: Array<SceneAction>;
-	palette?: ScenePalette;
+	// palette?: ScenePalette;
 	speed?: number;
 	recall?: {
 		action?: 'active' | 'dynamic_palette';
@@ -65,7 +65,7 @@ export class Scene extends NamedResource<ResourceType.Scene> {
 				id: target.rid,
 				on: action.on?.on,
 				brightness: action.dimming?.brightness,
-				mirek: action.color_temperature?.mirek,
+				colorTemperature: action.color_temperature?.mirek,
 				color: action.color?.xy,
 				gradient: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
 				effects: action.effects as LightEffect,

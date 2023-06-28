@@ -25,7 +25,7 @@ export class LightManager extends Manager<ResourceType.Light> {
 			effects: transformEffects(options.effect),
 			timed_effects: transformTimedEffects(options.timedEffects),
 			dimming: transformDimming(options.brightness ?? options.color?.z),
-			color_temperature: transformColorTemperature(options.mirek),
+			color_temperature: transformColorTemperature(options.colorTemperature),
 			color: transformColor(options.color),
 			gradient: transformGradient(options.gradient),
 		});

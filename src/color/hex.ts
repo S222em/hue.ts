@@ -6,13 +6,13 @@ export function rgbToHex({ red, green, blue }: RGB) {
 }
 
 export function hexToRgb(hex: string): RGB {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	if (!result) throw new TypeError('Invalid hex');
+	const parsed = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
+	if (!parsed) throw new TypeError('Invalid hex');
 
 	return {
-		red: parseInt(result[1], 16),
-		green: parseInt(result[2], 16),
-		blue: parseInt(result[3], 16),
+		red: parseInt(parsed.substring(1, 3), 16),
+		green: parseInt(parsed.substring(3, 5), 16),
+		blue: parseInt(parsed.substring(5, 7), 16),
 	};
 }
 

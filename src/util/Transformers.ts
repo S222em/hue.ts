@@ -5,6 +5,8 @@ import { XyPoint } from '../color/xy';
 import { SceneAction, SceneRecallAction } from '../structures/Scene';
 import { NamedResourceEditOptions } from '../structures/NamedResource';
 import { ArcheTypeResourceEditOptions } from '../structures/ArcheTypeResource';
+import { LightEffect, LightTimedEffect } from '../structures/Light';
+import { ZigbeeDeviceDiscoveryActionType } from '../structures/ZigbeeDeviceDiscovery';
 
 export function transformMetadata(options: NamedResourceEditOptions) {
 	return ifNotNull(options.name, () =>
@@ -40,7 +42,7 @@ export function transformDynamics(dynamics?: { duration?: number; speed?: number
 	);
 }
 
-export function transformEffects(effect?: 'fire' | 'candle' | 'no_effect') {
+export function transformEffects(effect?: LightEffect) {
 	return ifNotNull(effect, () =>
 		Object({
 			effect: effect,
@@ -48,7 +50,7 @@ export function transformEffects(effect?: 'fire' | 'candle' | 'no_effect') {
 	);
 }
 
-export function transformTimedEffects(timedEffects?: { effect?: 'sunrise' | 'no_effect'; duration?: number }) {
+export function transformTimedEffects(timedEffects?: { effect?: LightTimedEffect; duration?: number }) {
 	return ifNotNull(timedEffects, () =>
 		Object({
 			effect: timedEffects!.effect,
@@ -65,10 +67,10 @@ export function transformDimming(brightness?: number) {
 	);
 }
 
-export function transformColorTemperature(mirek?: number) {
-	return ifNotNull(mirek, () =>
+export function transformColorTemperature(colorTemperature?: number) {
+	return ifNotNull(colorTemperature, () =>
 		Object({
-			mirek,
+			mirek: colorTemperature,
 		}),
 	);
 }
@@ -111,7 +113,7 @@ export function transformSceneActions(actions?: SceneAction[]) {
 				action: {
 					on: transformOn(action.on),
 					dimming: transformDimming(action.brightness),
-					color_temperature: transformColorTemperature(action.mirek),
+					color_temperature: transformColorTemperature(action.colorTemperature),
 					color: transformColor(action.color),
 					gradient: transformGradient(action.gradient),
 					effects: transformEffects(action.effects),
@@ -122,7 +124,7 @@ export function transformSceneActions(actions?: SceneAction[]) {
 	);
 }
 
-export function transformAction(action: { actionType: 'search' }) {
+export function transformAction(action: { actionType: ZigbeeDeviceDiscoveryActionType }) {
 	return ifNotNull(action, () =>
 		Object({
 			action_type: action.actionType,

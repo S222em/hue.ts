@@ -3,6 +3,7 @@ import { ResourceType } from '../api/ResourceType';
 import { Scene, SceneCreateOptions, SceneEditOptions } from '../structures/Scene';
 import { transformMetadata, transformRecall, transformSceneActions } from '../util/Transformers';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
+import { ifNotNull } from '../util/ifNotNull';
 
 export class SceneManager extends Manager<ResourceType.Scene> {
 	type = ResourceType.Scene;
@@ -23,6 +24,7 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 	public async edit(id: string, options: SceneEditOptions): Promise<void> {
 		await this._put(id, {
 			metadata: transformMetadata(options),
+			speed: ifNotNull(options.speed, () => options.speed),
 			recall: transformRecall(options.recall),
 			actions: transformSceneActions(options.actions),
 		});

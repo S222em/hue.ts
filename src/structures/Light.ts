@@ -18,9 +18,9 @@ export interface LightIsCapableOfDimming {
 }
 
 export interface LightIsCapableOfColorTemperature extends LightIsCapableOfDimming {
-	mirek: number;
-	minMirek: number;
-	maxMirek: number;
+	colorTemperature: number;
+	minColorTemperature: number;
+	maxColorTemperature: number;
 }
 
 export interface LightIsCapableOfColor extends LightIsCapableOfColorTemperature {
@@ -49,7 +49,7 @@ export interface LightEditOptions extends ArcheTypeResourceEditOptions {
 		duration?: number;
 	};
 	brightness?: number;
-	mirek?: number;
+	colorTemperature?: number;
 	color?: XyPoint;
 	gradient?: XyPoint[];
 }
@@ -91,15 +91,15 @@ export class Light extends ArcheTypeResource<ResourceType.Light> {
 		return this.data.dimming?.min_dim_level;
 	}
 
-	get mirek(): number | undefined {
+	get colorTemperature(): number | undefined {
 		return this.data.color_temperature?.mirek;
 	}
 
-	get minMirek(): number | undefined {
+	get minColorTemperature(): number | undefined {
 		return this.data.color_temperature?.mirek_schema?.mirek_minimum;
 	}
 
-	get maxMirek(): number | undefined {
+	get maxColorTemperature(): number | undefined {
 		return this.data.color_temperature?.mirek_schema?.mirek_maximum;
 	}
 
@@ -165,8 +165,8 @@ export class Light extends ArcheTypeResource<ResourceType.Light> {
 		await this.edit({ brightness, on: true, dynamics: { duration } });
 	}
 
-	public async setMirek(mirek: LightEditOptions['mirek'], duration?: number): Promise<void> {
-		await this.edit({ mirek, on: true, dynamics: { duration } });
+	public async setMirek(mirek: LightEditOptions['colorTemperature'], duration?: number): Promise<void> {
+		await this.edit({ colorTemperature: mirek, on: true, dynamics: { duration } });
 	}
 
 	public colorInRange(color: XyPoint): boolean | undefined {

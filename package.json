@@ -1,11 +1,11 @@
 {
   "name": "hue.ts",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A powerful library to interact with the Hue API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/S222em/hue.ts",
-  "homepage": "https://github.com/S222em/hue.ts/wiki",
+  "homepage": "https://github.com/S222em/hue.ts#readme",
   "bugs": {
     "url": "https://github.com/S222em/hue.ts/issues"
   },
@@ -20,7 +20,7 @@
     "Hue"
   ],
   "author": "S222em",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/collection": "1.5.1",
     "@sapphire/async-queue": "1.5.0",
