@@ -1,11 +1,11 @@
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { DeviceManager } from '../managers/DeviceManager';
 
 export type DeviceEditOptions = ArcheTypeResourceEditOptions;
 
-export class Device extends ArcheTypeResource<ResourceType.Device> {
-	type = ResourceType.Device;
+export class Device extends ArcheTypeResource<APIResourceType.Device> {
+	type = APIResourceType.Device;
 
 	get manager(): DeviceManager {
 		return this.hue.devices;

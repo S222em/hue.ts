@@ -1,5 +1,5 @@
 import { NamedResource } from './NamedResource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { ZoneManager } from '../managers/ZoneManager';
 import { SceneCreateOptions } from './Scene';
@@ -10,8 +10,8 @@ export interface ZoneEditOptions extends ArcheTypeResourceEditOptions {
 
 export type ZoneCreateOptions = Required<ZoneEditOptions>;
 
-export class Zone extends NamedResource<ResourceType.Zone> {
-	type = ResourceType.Zone;
+export class Zone extends NamedResource<APIResourceType.Zone> {
+	type = APIResourceType.Zone;
 
 	get manager(): ZoneManager {
 		return this.hue.zones;

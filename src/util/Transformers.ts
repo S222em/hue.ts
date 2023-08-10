@@ -1,6 +1,6 @@
 import { ifNotNull } from './ifNotNull';
 import { createResourceIdentifier } from './resourceIdentifier';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
 import { SceneAction, SceneRecallAction } from '../structures/Scene';
 import { NamedResourceEditOptions } from '../structures/NamedResource';
@@ -26,7 +26,7 @@ export function transformMetadataWithArcheType(options: ArcheTypeResourceEditOpt
 }
 
 export function transformChildren(children?: string[]) {
-	return ifNotNull(children, () => children!.map((child) => createResourceIdentifier(child, ResourceType.Light)));
+	return ifNotNull(children, () => children!.map((child) => createResourceIdentifier(child, APIResourceType.Light)));
 }
 
 export function transformOn(on?: boolean) {
@@ -109,7 +109,7 @@ export function transformSceneActions(actions?: SceneAction[]) {
 	return ifNotNull(actions, () =>
 		actions!.map((action) =>
 			Object({
-				target: createResourceIdentifier(action.id, ResourceType.Light),
+				target: createResourceIdentifier(action.id, APIResourceType.Light),
 				action: {
 					on: transformOn(action.on),
 					dimming: transformDimming(action.brightness),

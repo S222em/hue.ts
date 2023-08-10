@@ -53,6 +53,7 @@ export interface Hue {
 	on: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
 	once: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
 	off: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
+	removeListener: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
 	removeAllListeners: <T extends keyof HueEvents>(event?: T) => this;
 }
 
@@ -162,7 +163,7 @@ export class Hue extends EventEmitter {
 	public async connect(): Promise<void> {
 		const data = await this._rest.get('/resource');
 
-		for (const resource of data) {
+		for (const resource of data.data) {
 			const handler = RESOURCE_ADD[resource.type];
 			if (handler) handler(resource, this);
 		}

@@ -1,18 +1,18 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Room, RoomCreateOptions, RoomEditOptions } from '../structures/Room';
 import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
 
 /**
  * Manages the room resource
  */
-export class RoomManager extends Manager<ResourceType.Room> {
-	type = ResourceType.Room;
+export class RoomManager extends Manager<APIResourceType.Room> {
+	type = APIResourceType.Room;
 	holds = Room;
 
 	/**
 	 * Creates a new room
-	 * @param options Options for creating the new room
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.rooms.create({
@@ -33,8 +33,8 @@ export class RoomManager extends Manager<ResourceType.Room> {
 
 	/**
 	 * Edits specified room
-	 * @param id ID of the room
-	 * @param options Options for editing the room
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```ts
 	 * await hue.rooms.edit('some-id', {
@@ -51,7 +51,7 @@ export class RoomManager extends Manager<ResourceType.Room> {
 
 	/**
 	 * Deletes specified room
-	 * @param id ID of the room
+	 * @param id
 	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);

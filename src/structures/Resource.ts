@@ -1,9 +1,9 @@
 import { Hue } from '../hue/Hue';
-import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Light } from './Light';
 import { clone } from '../util/clone';
 import { merge } from '../util/merge';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
+import { APIResourceIdentifier } from '../api/ResourceIdentifier';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
 import { Scene } from './Scene';
 import { Room } from './Room';
@@ -18,69 +18,67 @@ import { ZigbeeDeviceDiscovery } from './ZigbeeDeviceDiscovery';
 import { Bridge } from './Bridge';
 import { BridgeHome } from './BridgeHome';
 import { Geolocation } from './Geolocation';
+import { Base } from './Base';
+import { APIResource } from '../api/Resource';
+import { SSEUpdateData } from '../api/Update';
 
-export interface Resources {
-	[ResourceType.Device]: Device;
-	[ResourceType.BridgeHome]: BridgeHome;
-	[ResourceType.Room]: Room;
-	[ResourceType.Zone]: Zone;
-	[ResourceType.Light]: Light;
-	[ResourceType.Button]: Resource<any>;
-	[ResourceType.Temperature]: Resource<any>;
-	[ResourceType.LightLevel]: Resource<any>;
-	[ResourceType.Motion]: Motion;
-	[ResourceType.Entertainment]: Resource<any>;
-	[ResourceType.GroupedLight]: GroupedLight;
-	[ResourceType.DevicePower]: DevicePower;
-	[ResourceType.ZigbeeConnectivity]: ZigbeeConnectivity;
-	[ResourceType.ZgpConnectivity]: Resource<any>;
-	[ResourceType.ZigbeeDeviceDiscovery]: ZigbeeDeviceDiscovery;
-	[ResourceType.Bridge]: Bridge;
-	[ResourceType.Homekit]: Resource<any>;
-	[ResourceType.Scene]: Scene;
-	[ResourceType.EntertainmentConfiguration]: Resource<any>;
-	[ResourceType.PublicImage]: Resource<any>;
-	[ResourceType.BehaviourScript]: Resource<any>;
-	[ResourceType.BehaviourInstance]: Resource<any>;
-	[ResourceType.Geofence]: Resource<any>;
-	[ResourceType.GeofenceClient]: Resource<any>;
-	[ResourceType.Geolocation]: Geolocation;
+export interface PossibleResources {
+	[APIResourceType.Device]: Device;
+	[APIResourceType.BridgeHome]: BridgeHome;
+	[APIResourceType.Room]: Room;
+	[APIResourceType.Zone]: Zone;
+	[APIResourceType.Light]: Light;
+	[APIResourceType.Button]: Resource<any>;
+	[APIResourceType.Temperature]: Resource<any>;
+	[APIResourceType.LightLevel]: Resource<any>;
+	[APIResourceType.Motion]: Motion;
+	[APIResourceType.Entertainment]: Resource<any>;
+	[APIResourceType.GroupedLight]: GroupedLight;
+	[APIResourceType.DevicePower]: DevicePower;
+	[APIResourceType.ZigbeeConnectivity]: ZigbeeConnectivity;
+	[APIResourceType.ZgpConnectivity]: Resource<any>;
+	[APIResourceType.ZigbeeDeviceDiscovery]: ZigbeeDeviceDiscovery;
+	[APIResourceType.Bridge]: Bridge;
+	[APIResourceType.Homekit]: Resource<any>;
+	[APIResourceType.Scene]: Scene;
+	[APIResourceType.EntertainmentConfiguration]: Resource<any>;
+	[APIResourceType.PublicImage]: Resource<any>;
+	[APIResourceType.BehaviourScript]: Resource<any>;
+	[APIResourceType.BehaviourInstance]: Resource<any>;
+	[APIResourceType.Geofence]: Resource<any>;
+	[APIResourceType.GeofenceClient]: Resource<any>;
+	[APIResourceType.Geolocation]: Geolocation;
 }
 
-export type NarrowResource<T extends ResourceType = ResourceType> = Resources[T];
+export type NarrowResource<T extends APIResourceType = APIResourceType> = PossibleResources[T];
 
-export abstract class Resource<T extends ResourceType> {
-	public readonly hue: Hue;
-	public abstract readonly type: ResourceType;
-	public abstract readonly manager: Manager<T>;
-	public data: ResourceTypeGet<T>;
+export abstract class Resource<TAPIResourceType extends APIResourceType> extends Base {
+	public abstract readonly type: APIResourceType;
+	public abstract readonly manager: Manager<TAPIResourceType>;
+	public data: APIResource<TAPIResourceType>;
 
 	get id(): string {
 		return this.data.id;
 	}
 
-	get identifier(): ResourceIdentifier {
+	get identifier(): APIResourceIdentifier {
 		return createResourceIdentifier(this.id, this.type);
 	}
 
-	constructor(hue: Hue, data: ResourceTypeGet<T>) {
-		this.hue = hue;
+	constructor(hue: Hue, data: APIResource<TAPIResourceType>) {
+		super(hue);
 		this.data = data;
 	}
 
-	public isType<T extends ResourceType>(type: T): this is NarrowResource<T> {
-		return this.type === type;
-	}
-
-	public _patch(data: Partial<ResourceTypeGet<T>>) {
-		this.data = merge<ResourceTypeGet<T>>(clone(this.data), data);
+	public _patch(data: SSEUpdateData<TAPIResourceType>) {
+		this.data = merge<APIResource<TAPIResourceType>>(clone(this.data), data);
 	}
 
 	public _clone(): this {
 		return clone(this);
 	}
 
-	public _update(data: Partial<ResourceTypeGet<T>>): this {
+	public _update(data: SSEUpdateData<TAPIResourceType>): this {
 		const clone = this._clone();
 		this._patch(data);
 		return clone;

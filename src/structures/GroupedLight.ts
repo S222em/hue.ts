@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
 import { GroupedLightManager } from '../managers/GroupedLightManager';
 
@@ -10,8 +10,8 @@ export interface GroupedLightEditOptions {
 	color?: XyPoint;
 }
 
-export class GroupedLight extends Resource<ResourceType.GroupedLight> {
-	type = ResourceType.GroupedLight;
+export class GroupedLight extends Resource<APIResourceType.GroupedLight> {
+	type = APIResourceType.GroupedLight;
 
 	get manager(): GroupedLightManager {
 		return this.hue.groupedLights;

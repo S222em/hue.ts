@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
 
 export enum ZigbeeConnectivityStatus {
@@ -9,8 +9,8 @@ export enum ZigbeeConnectivityStatus {
 	UnidirectionalIncoming = 'unidirectional_incoming',
 }
 
-export class ZigbeeConnectivity extends Resource<ResourceType.ZigbeeConnectivity> {
-	type = ResourceType.ZigbeeConnectivity;
+export class ZigbeeConnectivity extends Resource<APIResourceType.ZigbeeConnectivity> {
+	type = APIResourceType.ZigbeeConnectivity;
 
 	get manager(): ZigbeeConnectivityManager {
 		return this.hue.zigbeeConnectivities;

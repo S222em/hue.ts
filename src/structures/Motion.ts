@@ -1,13 +1,13 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { MotionManager } from '../managers/MotionManager';
 
 export interface MotionEditOptions {
 	enabled?: boolean;
 }
 
-export class Motion extends Resource<ResourceType.Motion> {
-	type = ResourceType.Motion;
+export class Motion extends Resource<APIResourceType.Motion> {
+	type = APIResourceType.Motion;
 
 	get manager(): MotionManager {
 		return this.hue.motions;

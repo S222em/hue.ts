@@ -1,9 +1,9 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { BridgeHomeManager } from '../managers/BridgeHomeManager';
 
-export class BridgeHome extends Resource<ResourceType.BridgeHome> {
-	type = ResourceType.BridgeHome;
+export class BridgeHome extends Resource<APIResourceType.BridgeHome> {
+	type = APIResourceType.BridgeHome;
 
 	get manager(): BridgeHomeManager {
 		return this.hue.bridgeHomes;

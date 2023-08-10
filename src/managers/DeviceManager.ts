@@ -1,19 +1,19 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Device, DeviceEditOptions } from '../structures/Device';
 import { transformMetadataWithArcheType } from '../util/Transformers';
 
 /**
  * Manages the device resource
  */
-export class DeviceManager extends Manager<ResourceType.Device> {
-	type = ResourceType.Device;
+export class DeviceManager extends Manager<APIResourceType.Device> {
+	type = APIResourceType.Device;
 	holds = Device;
 
 	/**
 	 * Sends an identify request for specified device
 	 * This causes the device to blink
-	 * @param id ID of the resource
+	 * @param id
 	 */
 	public async identify(id: string): Promise<void> {
 		await this._put(id, { identify: { action: 'identify' } });
@@ -21,8 +21,8 @@ export class DeviceManager extends Manager<ResourceType.Device> {
 
 	/**
 	 * Edits specified device
-	 * @param id ID of the device
-	 * @param options Options for editing the device
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.devices.edit('some-id', {
@@ -38,7 +38,7 @@ export class DeviceManager extends Manager<ResourceType.Device> {
 
 	/**
 	 * Deletes specified device
-	 * @param id ID of the device
+	 * @param id
 	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);

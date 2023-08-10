@@ -1,4 +1,4 @@
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { RoomManager } from '../managers/RoomManager';
 import { ZoneEditOptions } from './Zone';
@@ -10,8 +10,8 @@ export interface RoomEditOptions extends ArcheTypeResourceEditOptions {
 
 export type RoomCreateOptions = Required<RoomEditOptions>;
 
-export class Room extends ArcheTypeResource<ResourceType.Room> {
-	type = ResourceType.Room;
+export class Room extends ArcheTypeResource<APIResourceType.Room> {
+	type = APIResourceType.Room;
 
 	get manager(): RoomManager {
 		return this.hue.rooms;

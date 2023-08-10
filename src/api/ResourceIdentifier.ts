@@ -1,6 +1,6 @@
-import { ResourceType } from './ResourceType';
+import { APIResourceType } from './ResourceType';
 
-export interface ResourceIdentifier<T extends ResourceType = ResourceType> {
+export interface APIResourceIdentifier<T extends APIResourceType = APIResourceType> {
 	rid: string;
 	rtype: T;
 }

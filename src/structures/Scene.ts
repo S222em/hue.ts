@@ -1,5 +1,5 @@
 import { NamedResource } from './NamedResource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { XyPoint } from '../color/xy';
 import { SceneManager } from '../managers/SceneManager';
 import { LightEffect } from './Light';
@@ -48,8 +48,8 @@ export enum SceneRecallAction {
 
 // TODO scene palette
 
-export class Scene extends NamedResource<ResourceType.Scene> {
-	type = ResourceType.Scene;
+export class Scene extends NamedResource<APIResourceType.Scene> {
+	type = APIResourceType.Scene;
 
 	get manager(): SceneManager {
 		return this.hue.scenes;

@@ -1,4 +1,4 @@
-export enum ArcheType {
+export enum APIArcheType {
 	Unknown = 'unknown_archetype',
 	ClassicBulb = 'classic_bulb',
 	SultanBulb = 'sultan_bulb',

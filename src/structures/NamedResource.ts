@@ -1,7 +1,7 @@
-import { ResourceType, ResourceTypeGet } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Hue } from '../hue/Hue';
-import { ArcheType } from '../api/ArcheType';
 import { Resource } from './Resource';
+import { APIResource } from '../api/Resource';
 
 export interface NamedResourceEditOptions {
 	name?: string;
@@ -9,10 +9,10 @@ export interface NamedResourceEditOptions {
 
 export type NamedResourceCreateOptions = Required<NamedResourceEditOptions>;
 
-export abstract class NamedResource<T extends ResourceType> extends Resource<T> {
-	public data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } };
+export abstract class NamedResource<TAPIResourceType extends APIResourceType> extends Resource<TAPIResourceType> {
+	public data: APIResource<TAPIResourceType> & { metadata: { name: string } };
 
-	constructor(bridge: Hue, data: ResourceTypeGet<T> & { metadata: { name: string; archetype: ArcheType } }) {
+	constructor(bridge: Hue, data: APIResource<TAPIResourceType> & { metadata: { name: string } }) {
 		super(bridge, data);
 		this.data = data;
 	}
@@ -21,17 +21,9 @@ export abstract class NamedResource<T extends ResourceType> extends Resource<T> 
 		return this.data.metadata.name;
 	}
 
-	get archeType(): ArcheType {
-		return this.data.metadata.archetype;
-	}
-
 	public async setName(name: string): Promise<void> {
 		await this.edit({ name });
 	}
 
-	public async setArcheType(archeType: ArcheType): Promise<void> {
-		await this.edit({ archeType });
-	}
-
-	public abstract edit(options: { name?: string; archeType?: ArcheType }): Promise<void>;
+	public abstract edit(options: NamedResourceEditOptions): Promise<void>;
 }

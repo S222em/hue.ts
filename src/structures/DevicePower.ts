@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { DevicePowerManager } from '../managers/DevicePowerManager';
 
 export enum DevicePowerBatteryState {
@@ -8,8 +8,8 @@ export enum DevicePowerBatteryState {
 	Critical = 'critical',
 }
 
-export class DevicePower extends Resource<ResourceType.DevicePower> {
-	type = ResourceType.DevicePower;
+export class DevicePower extends Resource<APIResourceType.DevicePower> {
+	type = APIResourceType.DevicePower;
 
 	get manager(): DevicePowerManager {
 		return this.hue.devicePowers;

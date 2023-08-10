@@ -1,18 +1,18 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Zone, ZoneCreateOptions, ZoneEditOptions } from '../structures/Zone';
 import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
 
 /**
  * Manages the zone resource
  */
-export class ZoneManager extends Manager<ResourceType.Zone> {
-	type = ResourceType.Zone;
+export class ZoneManager extends Manager<APIResourceType.Zone> {
+	type = APIResourceType.Zone;
 	holds = Zone;
 
 	/**
 	 * Creates a new zone
-	 * @param options Options for creating the new zone
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.zones.create({
@@ -33,8 +33,8 @@ export class ZoneManager extends Manager<ResourceType.Zone> {
 
 	/**
 	 * Edits specified zone
-	 * @param id ID of the zone
-	 * @param options Options for editing the zone
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```ts
 	 * await hue.zones.edit('some-id', {
@@ -51,7 +51,7 @@ export class ZoneManager extends Manager<ResourceType.Zone> {
 
 	/**
 	 * Deletes specified zone
-	 * @param id ID of the zone
+	 * @param id
 	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);

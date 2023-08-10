@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ZigbeeDeviceDiscoveryManager } from '../managers/ZigbeeDeviceDiscoveryManager';
 
 export enum ZigbeeDeviceDiscoveryStatus {
@@ -15,8 +15,8 @@ export interface ZigbeeDeviceDiscoveryEdit {
 	actionType: ZigbeeDeviceDiscoveryActionType;
 }
 
-export class ZigbeeDeviceDiscovery extends Resource<ResourceType.ZigbeeDeviceDiscovery> {
-	type = ResourceType.ZigbeeDeviceDiscovery;
+export class ZigbeeDeviceDiscovery extends Resource<APIResourceType.ZigbeeDeviceDiscovery> {
+	type = APIResourceType.ZigbeeDeviceDiscovery;
 
 	get manager(): ZigbeeDeviceDiscoveryManager {
 		return this.hue.zigbeeDeviceDiscoveries;

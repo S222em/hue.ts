@@ -1,5 +1,5 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Light, LightEditOptions } from '../structures/Light';
 import {
 	transformColor,
@@ -16,14 +16,14 @@ import {
 /**
  * Manages the light resource
  */
-export class LightManager extends Manager<ResourceType.Light> {
-	type = ResourceType.Light;
+export class LightManager extends Manager<APIResourceType.Light> {
+	type = APIResourceType.Light;
 	holds = Light;
 
 	/**
 	 * Edits specified light
-	 * @param id ID of the light
-	 * @param options Options for editing the light
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.lights.edit('some-id', {

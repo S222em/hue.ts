@@ -1,5 +1,5 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Scene, SceneCreateOptions, SceneEditOptions } from '../structures/Scene';
 import { transformMetadata, transformRecall, transformSceneActions } from '../util/Transformers';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
@@ -8,14 +8,14 @@ import { ifNotNull } from '../util/ifNotNull';
 /**
  * Manages the scene resource
  */
-export class SceneManager extends Manager<ResourceType.Scene> {
-	type = ResourceType.Scene;
+export class SceneManager extends Manager<APIResourceType.Scene> {
+	type = APIResourceType.Scene;
 	holds = Scene;
 
 	/**
 	 * Creates a new scene
-	 * @param groupId ID of zone or room this scene has to belong to
-	 * @param options Options for creating the new scene
+	 * @param groupId
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.scenes.create('some-id', {
@@ -45,8 +45,8 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 
 	/**
 	 * Edits specified scene
-	 * @param id ID of the scene
-	 * @param options Options for editing the scene
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.scenes.edit('some-id', {
@@ -71,7 +71,7 @@ export class SceneManager extends Manager<ResourceType.Scene> {
 
 	/**
 	 * Deletes specified scene
-	 * @param id ID of the scene
+	 * @param id
 	 */
 	public async delete(id: string): Promise<void> {
 		await this._delete(id);

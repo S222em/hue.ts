@@ -1,4 +1,4 @@
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { LightManager } from '../managers/LightManager';
 import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../color/xy';
@@ -72,8 +72,8 @@ export enum LightMode {
 
 // TODO add effects and timed_effects getters
 // TODO dimming_delta & color_temperature_delta
-export class Light extends ArcheTypeResource<ResourceType.Light> {
-	type = ResourceType.Light;
+export class Light extends ArcheTypeResource<APIResourceType.Light> {
+	type = APIResourceType.Light;
 
 	get manager(): LightManager {
 		return this.hue.lights;

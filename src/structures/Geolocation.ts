@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { GeolocationManager } from '../managers/GeolocationManager';
 
 export interface GeolocationEditOptions {
@@ -7,8 +7,8 @@ export interface GeolocationEditOptions {
 	latitude: number;
 }
 
-export class Geolocation extends Resource<ResourceType.Geolocation> {
-	type = ResourceType.Geolocation;
+export class Geolocation extends Resource<APIResourceType.Geolocation> {
+	type = APIResourceType.Geolocation;
 
 	get manager(): GeolocationManager {
 		return this.hue.geolocations;

@@ -1,21 +1,21 @@
 import { Collection } from '@discordjs/collection';
-import { ResourceType, ResourceTypeGet, ResourceTypePost, ResourceTypePut } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { NarrowResource } from '../structures/Resource';
-import { ResourceIdentifier } from '../api/ResourceIdentifier';
 import { Hue } from '../hue/Hue';
+import {
+	RESTDeleteResponseData,
+	RESTGetResponseData,
+	RESTPostResponseData,
+	RESTPutResponseData,
+} from '../api/Response';
+import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 
-export type By = string | ResourceIdentifier;
-
-export type Force<B extends boolean, T extends ResourceType> = B extends true
-	? NarrowResource<T>
-	: NarrowResource<T> | undefined;
-
-export type ResourceConstructorSignature<T extends ResourceType> = new (bridge: Hue, data: any) => NarrowResource<T>;
+export type ResourceConstructorSignature<T extends APIResourceType> = new (bridge: Hue, data: any) => NarrowResource<T>;
 
 /**
  * Manages and caches resources
  */
-export abstract class Manager<T extends ResourceType> {
+export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	/**
 	 * Owner of this manager
 	 */
@@ -32,17 +32,17 @@ export abstract class Manager<T extends ResourceType> {
 	 * const resource = manager.cache.find((resource) => resource.name == 'Some cool name');
 	 * ```
 	 */
-	public readonly cache = new Collection<string, NarrowResource<T>>();
+	public readonly cache = new Collection<string, NarrowResource<TAPIResourceType>>();
 
 	/**
 	 * Type of the resource this manager holds
 	 */
-	public abstract type: ResourceType;
+	public abstract type: APIResourceType;
 
 	/**
 	 * Class this manager holds
 	 */
-	public abstract holds: ResourceConstructorSignature<T>;
+	public abstract holds: ResourceConstructorSignature<TAPIResourceType>;
 
 	public constructor(hue: Hue) {
 		this.hue = hue;
@@ -50,9 +50,9 @@ export abstract class Manager<T extends ResourceType> {
 
 	/**
 	 * Adds a new resource to this managers cache
-	 * @param data Resource data from API
+	 * @param data
 	 */
-	public _add(data: any): NarrowResource<T> {
+	public _add(data: any): NarrowResource<TAPIResourceType> {
 		const resource = new this.holds(this.hue, data);
 
 		this.cache.set(data.id, resource);
@@ -62,38 +62,49 @@ export abstract class Manager<T extends ResourceType> {
 
 	/**
 	 * Performs a get request to specified endpoint
-	 * @param id ID of the resource
+	 * @param id
 	 * @private
 	 */
-	public async _get(id: string): Promise<ResourceTypeGet<T>> {
-		return await this.hue._rest.get(`/resource/${this.type}/${id}`);
+	public async _get(id: string): Promise<RESTGetResponseData<TAPIResourceType>> {
+		const data = await this.hue._rest.get<TAPIResourceType>(`/resource/${this.type}/${id}`);
+
+		return data.data;
 	}
 
 	/**
 	 * Performs a put request to specified endpoint
-	 * @param id ID of the resource
-	 * @param data Resource data for API
+	 * @param id
+	 * @param payload
 	 * @private
 	 */
-	public async _put(id: string, data: ResourceTypePut<T>): Promise<ResourceIdentifier[]> {
-		return await this.hue._rest.put(`/resource/${this.type}/${id}`, data);
+	public async _put(
+		id: string,
+		payload: RESTPutPayload<TAPIResourceType>,
+	): Promise<RESTPutResponseData<TAPIResourceType>> {
+		const data = await this.hue._rest.put<TAPIResourceType>(`/resource/${this.type}/${id}`, payload);
+
+		return data.data;
 	}
 
 	/**
 	 * Performs a post request to specified endpoint
-	 * @param data Resource data for API
+	 * @param payload
 	 * @private
 	 */
-	public async _post(data: ResourceTypePost<T>): Promise<ResourceIdentifier[]> {
-		return await this.hue._rest.post(`/resource/${this.type}`, data);
+	public async _post(payload: RESTPostPayload<TAPIResourceType>): Promise<RESTPostResponseData<TAPIResourceType>> {
+		const data = await this.hue._rest.post<TAPIResourceType>(`/resource/${this.type}`, payload);
+
+		return data.data;
 	}
 
 	/**
 	 * Performs a delete request to specified endpoint
-	 * @param id ID of the resource
+	 * @param id
 	 * @private
 	 */
-	public async _delete(id: string): Promise<ResourceIdentifier[]> {
-		return await this.hue._rest.delete(`/resource/${this.type}/${id}`);
+	public async _delete(id: string): Promise<RESTDeleteResponseData<TAPIResourceType>> {
+		const data = await this.hue._rest.delete<TAPIResourceType>(`/resource/${this.type}/${id}`);
+
+		return data.data;
 	}
 }

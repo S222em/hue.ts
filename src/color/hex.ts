@@ -1,10 +1,18 @@
 import { XyPoint } from './xy';
 import { fromRGB, RGB, toRGB } from './rgb';
 
-export function rgbToHex({ red, green, blue }: RGB) {
-	return '#' + ((1 << 24) | (red << 16) | (green << 8) | blue).toString(16).slice(1);
+/**
+ * Converts an {@link RGB} to hex
+ * @param rgb
+ */
+export function rgbToHex(rgb: RGB) {
+	return '#' + ((1 << 24) | (rgb.red << 16) | (rgb.green << 8) | rgb.blue).toString(16).slice(1);
 }
 
+/**
+ * Converts hex to {@link RGB}
+ * @param hex
+ */
 export function hexToRgb(hex: string): RGB {
 	const parsed = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
 	if (!parsed) throw new TypeError('Invalid hex');
@@ -16,12 +24,20 @@ export function hexToRgb(hex: string): RGB {
 	};
 }
 
+/**
+ * Converts an {@link XyPoint} to hex
+ * @param point
+ */
 export function toHex(point: XyPoint): string {
 	const rgb = toRGB(point);
 
 	return rgbToHex(rgb);
 }
 
+/**
+ * Converts hex to an {@link XyPoint}
+ * @param hex
+ */
 export function fromHex(hex: string): XyPoint {
 	const rgb = hexToRgb(hex);
 

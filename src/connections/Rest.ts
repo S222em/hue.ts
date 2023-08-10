@@ -3,6 +3,11 @@ import { Agent, request } from 'undici';
 import { Collection } from '@discordjs/collection';
 import { Limit } from './Limit';
 import { Events } from '../hue/HueEvents';
+import { APIError } from '../errors/APIError';
+import { APITypeError } from '../errors/APITypeError';
+import { APIResourceType } from '../api/ResourceType';
+import { RESTDeleteResponse, RESTGetResponse, RESTPostResponse, RESTPutResponse } from '../api/Response';
+import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 
 export interface Request {
 	route: string;
@@ -40,69 +45,81 @@ export class Rest {
 		this.limits = new Collection<string, Limit>();
 	}
 
-	public async get(route: string) {
+	public async get<TAPIResourceType extends APIResourceType>(
+		route: string,
+	): Promise<RESTGetResponse<TAPIResourceType>> {
 		return await this._queue(route, RestRequestType.Get);
 	}
 
-	public async put(route: string, data: Record<string, any>) {
-		return await this._queue(route, RestRequestType.Put, data);
+	public async put<TAPIResourceType extends APIResourceType>(
+		route: string,
+		payload: RESTPutPayload<TAPIResourceType>,
+	): Promise<RESTPutResponse<TAPIResourceType>> {
+		return await this._queue(route, RestRequestType.Put, payload);
 	}
 
-	public async post(route: string, data: Record<string, any>) {
-		return await this._queue(route, RestRequestType.Post, data);
+	public async post<TAPIResourceType extends APIResourceType>(
+		route: string,
+		payload: RESTPostPayload<TAPIResourceType>,
+	): Promise<RESTPostResponse<TAPIResourceType>> {
+		return await this._queue(route, RestRequestType.Post, payload);
 	}
 
-	public async delete(route: string) {
+	public async delete<TAPIResourceType extends APIResourceType>(
+		route: string,
+	): Promise<RESTDeleteResponse<TAPIResourceType>> {
 		return await this._queue(route, RestRequestType.Delete);
 	}
 
-	public async _queue(route: string, method: RestRequestType, data?: Record<string, any>) {
+	public async _queue(route: string, method: RestRequestType, payload?: Record<string, any>): Promise<any> {
 		this.hue.emit(Events.Request, {
 			route,
 			method,
-			body: data,
+			body: payload,
 		});
 
-		const limit = this._getLimit(this._sanitizeRoute(route));
-
+		const limit = this._getLimit(route);
 		await limit.wait();
 
-		try {
-			const { body, statusCode } = await request(`${this.hue._url}/clip/v2${route}`, {
-				method,
-				body: data ? JSON.stringify(data) : null,
-				headers: {
-					Authorization:
-						'accessToken' in this.hue.options.connection
-							? `Bearer ${this.hue.options.connection.accessToken}`
-							: undefined,
-					'hue-application-key': this.hue.options.connection.applicationKey,
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
-				dispatcher: this.dispatcher,
-			});
+		const { body, statusCode } = await request(`${this.hue._url}/clip/v2${route}`, {
+			method,
+			body: payload ? JSON.stringify(payload) : null,
+			headers: {
+				Authorization:
+					'accessToken' in this.hue.options.connection
+						? `Bearer ${this.hue.options.connection.accessToken}`
+						: undefined,
+				'hue-application-key': this.hue.options.connection.applicationKey,
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			dispatcher: this.dispatcher,
+		});
 
-			const responseData = await body.json();
+		const responseData = await body.json();
 
-			if (statusCode !== 200 && statusCode !== 201)
-				throw new Error(`${responseData?.errors?.[0]?.description ?? 'unknown'}`);
-
-			this.hue.emit(Events.Response, {
-				route,
-				method,
-				body: responseData,
-				statusCode: statusCode,
-			});
-
-			return responseData.data;
-		} finally {
-			limit.shift();
+		const possibleError = responseData?.errors?.[0]?.description;
+		if (possibleError) {
+			if (statusCode == 400) throw new APITypeError(possibleError);
+			throw new APIError(possibleError);
 		}
+
+		this.hue.emit(Events.Response, {
+			route,
+			method,
+			body: responseData,
+			statusCode: statusCode,
+		});
+
+		limit.shift();
+
+		return responseData;
 	}
 
 	public _getLimit(route: string) {
-		return this.limits.ensure(route, () => new Limit(this, route));
+		const sanitized = this._sanitizeRoute(route);
+
+		return this.limits.ensure(sanitized, () => new Limit(this, sanitized));
 	}
 
 	public _sanitizeRoute(route: string) {

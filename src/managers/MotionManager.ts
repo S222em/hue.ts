@@ -1,18 +1,18 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Motion, MotionEditOptions } from '../structures/Motion';
 
 /**
  * Manages the motion resource
  */
-export class MotionManager extends Manager<ResourceType.Motion> {
-	type = ResourceType.Motion;
+export class MotionManager extends Manager<APIResourceType.Motion> {
+	type = APIResourceType.Motion;
 	holds = Motion;
 
 	/**
 	 * Edits specified motion
-	 * @param id ID of the motion
-	 * @param options Options for editing the motion
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.motions.edit('some-id', {

@@ -1,11 +1,18 @@
 import { createXy, XyPoint } from './xy';
 
+/**
+ * RGB
+ */
 export interface RGB {
 	red: number;
 	green: number;
 	blue: number;
 }
 
+/**
+ * Converts an {@link XyPoint} to {@link RGB}
+ * @param point
+ */
 export function toRGB(point: XyPoint): RGB {
 	const bri = point.z || 100;
 
@@ -35,6 +42,10 @@ export function toRGB(point: XyPoint): RGB {
 	};
 }
 
+/**
+ * Converts {@link RGB} to an {@link XyPoint}
+ * @param rgb
+ */
 export function fromRGB(rgb: RGB): XyPoint {
 	const red = rgb.red / 255;
 	const green = rgb.green / 255;
@@ -44,9 +55,9 @@ export function fromRGB(rgb: RGB): XyPoint {
 	const g = green > 0.04045 ? Math.pow((green + 0.055) / (1.0 + 0.055), 2.4) : green / 12.92;
 	const b = blue > 0.04045 ? Math.pow((blue + 0.055) / (1.0 + 0.055), 2.4) : blue / 12.92;
 
-	const X = r * 0.664511 + g * 0.154324 + b * 0.162028;
-	const Y = r * 0.283881 + g * 0.668433 + b * 0.047685;
-	const Z = r * 0.000088 + g * 0.07231 + b * 0.986039;
+	const x = r * 0.664511 + g * 0.154324 + b * 0.162028;
+	const y = r * 0.283881 + g * 0.668433 + b * 0.047685;
+	const z = r * 0.000088 + g * 0.07231 + b * 0.986039;
 
-	return createXy(X / (X + Y + Z), Y / (X + Y + Z), Y * 100);
+	return createXy(x / (x + y + z), y / (x + y + z), y * 100);
 }

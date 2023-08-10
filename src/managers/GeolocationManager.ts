@@ -1,18 +1,18 @@
 import { Manager } from './Manager';
-import { ResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../api/ResourceType';
 import { Geolocation, GeolocationEditOptions } from '../structures/Geolocation';
 
 /**
  * Manages the geolocation resource
  */
-export class GeolocationManager extends Manager<ResourceType.Geolocation> {
-	type = ResourceType.Geolocation;
+export class GeolocationManager extends Manager<APIResourceType.Geolocation> {
+	type = APIResourceType.Geolocation;
 	holds = Geolocation;
 
 	/**
 	 * Edits specified geolocation
-	 * @param id ID of the geolocation
-	 * @param options Options for editing the geolocation
+	 * @param id
+	 * @param options
 	 * @example
 	 * ```
 	 * await hue.geolocations.edit('some-id', {

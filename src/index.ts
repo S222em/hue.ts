@@ -29,6 +29,7 @@ export * from './structures/Room';
 export * from './structures/Scene';
 export * from './structures/Zone';
 export * from './structures/Motion';
+export * from './structures/Bridge';
 
 // API
 export * from './api/ResourceType';
