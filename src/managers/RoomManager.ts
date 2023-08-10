@@ -22,13 +22,11 @@ export class RoomManager extends Manager<APIResourceType.Room> {
 	 * });
 	 * ```
 	 */
-	public async create(options: RoomCreateOptions): Promise<string | undefined> {
-		const identifiers = await this._post({
+	public async create(options: RoomCreateOptions): Promise<string> {
+		return await this._post({
 			metadata: transformMetadataWithArcheType(options)!,
 			children: transformChildren(options.children)!,
 		});
-
-		return identifiers?.[0]?.rid;
 	}
 
 	/**
@@ -42,8 +40,8 @@ export class RoomManager extends Manager<APIResourceType.Room> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: RoomEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: RoomEditOptions): Promise<string> {
+		return await this._put(id, {
 			metadata: transformMetadataWithArcheType(options),
 			children: transformChildren(options.children),
 		});
@@ -53,7 +51,7 @@ export class RoomManager extends Manager<APIResourceType.Room> {
 	 * Deletes specified room
 	 * @param id
 	 */
-	public async delete(id: string): Promise<void> {
-		await this._delete(id);
+	public async delete(id: string): Promise<string> {
+		return await this._delete(id);
 	}
 }

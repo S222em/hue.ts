@@ -26,8 +26,8 @@ export class ZigbeeDeviceDiscoveryManager extends Manager<APIResourceType.Zigbee
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: ZigbeeDeviceDiscoveryEdit) {
-		await this._put(id, {
+	public async edit(id: string, options: ZigbeeDeviceDiscoveryEdit): Promise<string> {
+		return await this._put(id, {
 			action: transformAction({ ...options, actionType: ZigbeeDeviceDiscoveryActionType.Search }),
 		});
 	}

@@ -15,8 +15,8 @@ export class DeviceManager extends Manager<APIResourceType.Device> {
 	 * This causes the device to blink
 	 * @param id
 	 */
-	public async identify(id: string): Promise<void> {
-		await this._put(id, { identify: { action: 'identify' } });
+	public async identify(id: string): Promise<string> {
+		return await this._put(id, { identify: { action: 'identify' } });
 	}
 
 	/**
@@ -30,8 +30,8 @@ export class DeviceManager extends Manager<APIResourceType.Device> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: DeviceEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: DeviceEditOptions): Promise<string> {
+		return await this._put(id, {
 			metadata: transformMetadataWithArcheType(options),
 		});
 	}
@@ -40,7 +40,7 @@ export class DeviceManager extends Manager<APIResourceType.Device> {
 	 * Deletes specified device
 	 * @param id
 	 */
-	public async delete(id: string): Promise<void> {
-		await this._delete(id);
+	public async delete(id: string): Promise<string> {
+		return await this._delete(id);
 	}
 }

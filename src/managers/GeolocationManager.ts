@@ -21,8 +21,8 @@ export class GeolocationManager extends Manager<APIResourceType.Geolocation> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: GeolocationEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: GeolocationEditOptions): Promise<string> {
+		return await this._put(id, {
 			latitude: options.latitude,
 			longitude: options.longitude,
 		});

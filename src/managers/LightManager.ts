@@ -34,8 +34,8 @@ export class LightManager extends Manager<APIResourceType.Light> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: LightEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: LightEditOptions): Promise<string> {
+		return await this._put(id, {
 			metadata: transformMetadataWithArcheType(options),
 			on: transformOn(options.on),
 			dynamics: transformDynamics(options.dynamics),

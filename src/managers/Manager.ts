@@ -2,12 +2,7 @@ import { Collection } from '@discordjs/collection';
 import { APIResourceType } from '../api/ResourceType';
 import { NarrowResource } from '../structures/Resource';
 import { Hue } from '../hue/Hue';
-import {
-	RESTDeleteResponseData,
-	RESTGetResponseData,
-	RESTPostResponseData,
-	RESTPutResponseData,
-} from '../api/Response';
+import { RESTGetResponseData } from '../api/Response';
 import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 
 export type ResourceConstructorSignature<T extends APIResourceType> = new (bridge: Hue, data: any) => NarrowResource<T>;
@@ -77,13 +72,10 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	 * @param payload
 	 * @private
 	 */
-	public async _put(
-		id: string,
-		payload: RESTPutPayload<TAPIResourceType>,
-	): Promise<RESTPutResponseData<TAPIResourceType>> {
+	public async _put(id: string, payload: RESTPutPayload<TAPIResourceType>): Promise<string> {
 		const data = await this.hue._rest.put<TAPIResourceType>(`/resource/${this.type}/${id}`, payload);
 
-		return data.data;
+		return data.data[0].rid;
 	}
 
 	/**
@@ -91,10 +83,10 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	 * @param payload
 	 * @private
 	 */
-	public async _post(payload: RESTPostPayload<TAPIResourceType>): Promise<RESTPostResponseData<TAPIResourceType>> {
+	public async _post(payload: RESTPostPayload<TAPIResourceType>): Promise<string> {
 		const data = await this.hue._rest.post<TAPIResourceType>(`/resource/${this.type}`, payload);
 
-		return data.data;
+		return data.data[0].rid;
 	}
 
 	/**
@@ -102,9 +94,9 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	 * @param id
 	 * @private
 	 */
-	public async _delete(id: string): Promise<RESTDeleteResponseData<TAPIResourceType>> {
+	public async _delete(id: string): Promise<string> {
 		const data = await this.hue._rest.delete<TAPIResourceType>(`/resource/${this.type}/${id}`);
 
-		return data.data;
+		return data.data[0].rid;
 	}
 }

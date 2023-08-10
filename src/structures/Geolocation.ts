@@ -18,7 +18,7 @@ export class Geolocation extends Resource<APIResourceType.Geolocation> {
 		return this.data.is_configured;
 	}
 
-	public async edit(options: GeolocationEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: GeolocationEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 }

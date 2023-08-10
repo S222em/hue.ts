@@ -29,31 +29,31 @@ export class GroupedLight extends Resource<APIResourceType.GroupedLight> {
 		return this.data.dimming?.brightness;
 	}
 
-	public async on(): Promise<void> {
-		await this.edit({ on: true });
+	public async on(): Promise<string> {
+		return await this.edit({ on: true });
 	}
 
-	public async off(): Promise<void> {
-		await this.edit({ on: false });
+	public async off(): Promise<string> {
+		return await this.edit({ on: false });
 	}
 
-	public async toggle(): Promise<void> {
-		await this.edit({ on: !this.isOn() });
+	public async toggle(): Promise<string> {
+		return await this.edit({ on: !this.isOn() });
 	}
 
-	public async setBrightness(brightness: GroupedLightEditOptions['brightness']): Promise<void> {
-		await this.edit({ brightness });
+	public async setBrightness(brightness: GroupedLightEditOptions['brightness']): Promise<string> {
+		return await this.edit({ brightness });
 	}
 
-	public async setMirek(mirek: GroupedLightEditOptions['mirek']): Promise<void> {
-		await this.edit({ mirek });
+	public async setMirek(mirek: GroupedLightEditOptions['mirek']): Promise<string> {
+		return await this.edit({ mirek });
 	}
 
-	public async setColor(color: GroupedLightEditOptions['color']): Promise<void> {
-		await this.edit({ color });
+	public async setColor(color: GroupedLightEditOptions['color']): Promise<string> {
+		return await this.edit({ color });
 	}
 
-	public async edit(options: GroupedLightEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: GroupedLightEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 }

@@ -82,34 +82,32 @@ export class Scene extends NamedResource<APIResourceType.Scene> {
 		return this.actions.find((action) => action.id == id);
 	}
 
-	public async recall(options?: SceneEditOptions['recall']): Promise<void> {
-		await this.edit({ recall: { ...options } });
+	public async recall(options?: SceneEditOptions['recall']): Promise<string> {
+		return await this.edit({ recall: { ...options } });
 	}
 
-	public async createActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<void> {
+	public async createActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<string> {
 		const newAction = { ...options, id };
 
-		await this.setActions([...this.actions, newAction]);
+		return await this.setActions([...this.actions, newAction]);
 	}
 
-	public async editActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<void> {
-		const action = this.actionFor(id);
-		if (!action) return;
-
+	public async editActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<string> {
+		const action = this.actionFor(id)!;
 		const newAction = { ...action, ...options };
 
-		await this.setActions([...this.actions.filter((action) => action.id != id), newAction]);
+		return await this.setActions([...this.actions.filter((action) => action.id != id), newAction]);
 	}
 
-	public async setActions(actions: SceneAction[]): Promise<void> {
-		await this.edit({ actions });
+	public async setActions(actions: SceneAction[]): Promise<string> {
+		return await this.edit({ actions });
 	}
 
-	public async edit(options: SceneEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: SceneEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 
-	public async delete(): Promise<void> {
-		await this.manager.delete(this.id);
+	public async delete(): Promise<string> {
+		return await this.manager.delete(this.id);
 	}
 }

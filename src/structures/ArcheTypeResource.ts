@@ -27,9 +27,9 @@ export abstract class ArcheTypeResource<
 		return this.data.metadata.archetype;
 	}
 
-	public async setArcheType(archeType: APIArcheType): Promise<void> {
-		await this.edit({ archeType });
+	public async setArcheType(archeType: APIArcheType): Promise<string> {
+		return await this.edit({ archeType });
 	}
 
-	public abstract edit(options: ArcheTypeResourceEditOptions): Promise<void>;
+	public abstract edit(options: ArcheTypeResourceEditOptions): Promise<string>;
 }

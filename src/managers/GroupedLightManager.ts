@@ -22,8 +22,8 @@ export class GroupedLightManager extends Manager<APIResourceType.GroupedLight> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: GroupedLightEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: GroupedLightEditOptions): Promise<string> {
+		return await this._put(id, {
 			on: transformOn(options.on),
 			dimming: transformDimming(options.brightness),
 			color_temperature: transformColorTemperature(options.mirek),

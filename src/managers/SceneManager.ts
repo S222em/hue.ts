@@ -30,17 +30,14 @@ export class SceneManager extends Manager<APIResourceType.Scene> {
 	 * });
 	 * ```
 	 */
-	public async create(groupId: string, options: SceneCreateOptions): Promise<string | undefined> {
-		const group = this.hue.zones.cache.get(groupId) ?? this.hue.rooms.cache.get(groupId);
-		if (!group) return;
+	public async create(groupId: string, options: SceneCreateOptions): Promise<string> {
+		const group = this.hue.zones.cache.get(groupId) ?? this.hue.rooms.cache.get(groupId)!;
 
-		const identifiers = await this._post({
+		return await this._post({
 			group: createResourceIdentifier(groupId, group.type),
 			metadata: transformMetadata(options)!,
 			actions: transformSceneActions(options.actions)!,
 		});
-
-		return identifiers?.[0]?.rid;
 	}
 
 	/**
@@ -60,8 +57,8 @@ export class SceneManager extends Manager<APIResourceType.Scene> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: SceneEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: SceneEditOptions): Promise<string> {
+		return await this._put(id, {
 			metadata: transformMetadata(options),
 			speed: ifNotNull(options.speed, () => options.speed),
 			recall: transformRecall(options.recall),
@@ -73,7 +70,7 @@ export class SceneManager extends Manager<APIResourceType.Scene> {
 	 * Deletes specified scene
 	 * @param id
 	 */
-	public async delete(id: string): Promise<void> {
-		await this._delete(id);
+	public async delete(id: string): Promise<string> {
+		return await this._delete(id);
 	}
 }

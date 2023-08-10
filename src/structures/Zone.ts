@@ -25,31 +25,31 @@ export class Zone extends NamedResource<APIResourceType.Zone> {
 		return this.data.services.map((service) => service.rid);
 	}
 
-	public async createScene(options: SceneCreateOptions): Promise<string | undefined> {
+	public async createScene(options: SceneCreateOptions): Promise<string> {
 		return await this.hue.scenes.create(this.id, options);
 	}
 
-	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
+	public async addChildren(children: Required<ZoneEditOptions>['children']): Promise<string> {
 		const newChildren = [...this.childIds, ...children];
 
-		await this.setChildren(newChildren);
+		return await this.setChildren(newChildren);
 	}
 
-	public async removeChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
+	public async removeChildren(children: Required<ZoneEditOptions>['children']): Promise<string> {
 		const newChildren = this.childIds.filter((id) => !children.includes(id));
 
-		await this.setChildren(newChildren);
+		return await this.setChildren(newChildren);
 	}
 
-	public async setChildren(children: Required<ZoneEditOptions>['children']): Promise<void> {
-		await this.edit({ children });
+	public async setChildren(children: Required<ZoneEditOptions>['children']): Promise<string> {
+		return await this.edit({ children });
 	}
 
-	public async edit(options: ZoneEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: ZoneEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 
-	public async delete(): Promise<void> {
-		await this.manager.delete(this.id);
+	public async delete(): Promise<string> {
+		return await this.manager.delete(this.id);
 	}
 }

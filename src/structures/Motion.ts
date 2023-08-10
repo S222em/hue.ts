@@ -25,15 +25,15 @@ export class Motion extends Resource<APIResourceType.Motion> {
 		return this.data.motion.motion_valid;
 	}
 
-	public async disable(): Promise<void> {
+	public async disable(): Promise<string> {
 		return await this.edit({ enabled: false });
 	}
 
-	public async enable(): Promise<void> {
+	public async enable(): Promise<string> {
 		return await this.edit({ enabled: true });
 	}
 
-	public async edit(options: MotionEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: MotionEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 }

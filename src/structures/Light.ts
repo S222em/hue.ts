@@ -141,32 +141,32 @@ export class Light extends ArcheTypeResource<APIResourceType.Light> {
 		return this.data.mode as LightMode;
 	}
 
-	public async on(duration?: number): Promise<void> {
-		await this.edit({ on: true, dynamics: { duration } });
+	public async on(duration?: number): Promise<string> {
+		return await this.edit({ on: true, dynamics: { duration } });
 	}
 
-	public async off(duration?: number): Promise<void> {
-		await this.edit({ on: false, dynamics: { duration } });
+	public async off(duration?: number): Promise<string> {
+		return await this.edit({ on: false, dynamics: { duration } });
 	}
 
-	public async toggle(duration?: number): Promise<void> {
-		await this.edit({ on: !this.isOn(), dynamics: { duration } });
+	public async toggle(duration?: number): Promise<string> {
+		return await this.edit({ on: !this.isOn(), dynamics: { duration } });
 	}
 
-	public async effect(effect: LightEditOptions['effect']): Promise<void> {
-		await this.edit({ effect });
+	public async effect(effect: LightEditOptions['effect']): Promise<string> {
+		return await this.edit({ effect });
 	}
 
-	public async timedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<void> {
-		await this.edit({ timedEffects });
+	public async timedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<string> {
+		return await this.edit({ timedEffects });
 	}
 
-	public async setBrightness(brightness: LightEditOptions['brightness'], duration?: number): Promise<void> {
-		await this.edit({ brightness, on: true, dynamics: { duration } });
+	public async setBrightness(brightness: LightEditOptions['brightness'], duration?: number): Promise<string> {
+		return await this.edit({ brightness, on: true, dynamics: { duration } });
 	}
 
-	public async setMirek(mirek: LightEditOptions['colorTemperature'], duration?: number): Promise<void> {
-		await this.edit({ colorTemperature: mirek, on: true, dynamics: { duration } });
+	public async setMirek(mirek: LightEditOptions['colorTemperature'], duration?: number): Promise<string> {
+		return await this.edit({ colorTemperature: mirek, on: true, dynamics: { duration } });
 	}
 
 	public colorInRange(color: XyPoint): boolean | undefined {
@@ -177,16 +177,16 @@ export class Light extends ArcheTypeResource<APIResourceType.Light> {
 		return this.gamut ? getClosestXy(color, this.gamut) : undefined;
 	}
 
-	public async setColor(color: LightEditOptions['color'], duration?: number): Promise<void> {
-		await this.edit({ color, on: true, dynamics: { duration } });
+	public async setColor(color: LightEditOptions['color'], duration?: number): Promise<string> {
+		return await this.edit({ color, on: true, dynamics: { duration } });
 	}
 
-	public async setGradient(gradient: LightEditOptions['gradient'], duration?: number): Promise<void> {
-		await this.edit({ gradient, on: true, dynamics: { duration } });
+	public async setGradient(gradient: LightEditOptions['gradient'], duration?: number): Promise<string> {
+		return await this.edit({ gradient, on: true, dynamics: { duration } });
 	}
 
-	public async edit(options: LightEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: LightEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 
 	public isCapableOfDimming(): this is this & LightIsCapableOfDimming {

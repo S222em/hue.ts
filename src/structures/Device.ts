@@ -39,15 +39,15 @@ export class Device extends ArcheTypeResource<APIResourceType.Device> {
 		return this.data.services.map((service) => service.rid);
 	}
 
-	public async identify(): Promise<void> {
-		await this.manager.identify(this.id);
+	public async identify(): Promise<string> {
+		return await this.manager.identify(this.id);
 	}
 
-	public async edit(options: DeviceEditOptions): Promise<void> {
-		await this.manager.edit(this.id, options);
+	public async edit(options: DeviceEditOptions): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 
-	public async delete(): Promise<void> {
-		await this.manager.delete(this.id);
+	public async delete(): Promise<string> {
+		return await this.manager.delete(this.id);
 	}
 }

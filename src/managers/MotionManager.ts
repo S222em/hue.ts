@@ -20,8 +20,8 @@ export class MotionManager extends Manager<APIResourceType.Motion> {
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: MotionEditOptions): Promise<void> {
-		await this._put(id, {
+	public async edit(id: string, options: MotionEditOptions): Promise<string> {
+		return await this._put(id, {
 			enabled: options.enabled,
 		});
 	}

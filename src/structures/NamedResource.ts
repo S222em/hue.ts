@@ -21,9 +21,9 @@ export abstract class NamedResource<TAPIResourceType extends APIResourceType> ex
 		return this.data.metadata.name;
 	}
 
-	public async setName(name: string): Promise<void> {
-		await this.edit({ name });
+	public async setName(name: string): Promise<string> {
+		return await this.edit({ name });
 	}
 
-	public abstract edit(options: NamedResourceEditOptions): Promise<void>;
+	public abstract edit(options: NamedResourceEditOptions): Promise<string>;
 }

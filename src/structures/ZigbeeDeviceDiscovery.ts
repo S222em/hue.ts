@@ -30,7 +30,11 @@ export class ZigbeeDeviceDiscovery extends Resource<APIResourceType.ZigbeeDevice
 		return this.data.status as ZigbeeDeviceDiscoveryStatus;
 	}
 
-	public async edit(options: ZigbeeDeviceDiscoveryEdit) {
-		await this.manager.edit(this.id, options);
+	public async search(): Promise<string> {
+		return await this.edit({ actionType: ZigbeeDeviceDiscoveryActionType.Search });
+	}
+
+	public async edit(options: ZigbeeDeviceDiscoveryEdit): Promise<string> {
+		return await this.manager.edit(this.id, options);
 	}
 }
