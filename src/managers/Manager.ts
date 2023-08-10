@@ -56,6 +56,16 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	}
 
 	/**
+	 * Fetches a resource
+	 * @param id
+	 */
+	public async fetch(id: string): Promise<NarrowResource<TAPIResourceType>> {
+		const data = await this._get(id);
+
+		return new this.holds(this.hue, data[0]);
+	}
+
+	/**
 	 * Performs a get request to specified endpoint
 	 * @param id
 	 * @private

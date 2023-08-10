@@ -71,6 +71,7 @@ For more information on retrieving this key visit: https://developers.meethue.co
 
 ```ts
 import { Hue, ArcheType, SceneAction } from 'hue.ts';
+import { fromHex } from "./hex";
 
 // Create new Hue, with the ip address and application key
 const hue = new Hue({
@@ -87,49 +88,35 @@ hue.on('ready', async () => {
    const light2 = hue.lights.cache.find((light) => light.name == 'Demo Light 2')!;
 
    // Create the zone
-   await hue.zones.create({
+   const zoneId = await hue.zones.create({
       name: 'Demo',
       archeType: ArcheType.ManCave,
       children: [light1.id, light2.id],
    });
-});
 
-// Listen to the 'zoneAdd' event, emitted on creation of a new zone
-hue.on('zoneAdd', async (zone) => {
-    // Ignore if the zone is not the one created above
-   if (zone.name !== 'Demo') return;
-
-   // Find the lights belonging to the zone again, in this case these will be Demo Light 1 & Demo Light 2
-   const lights = hue.lights.cache.filter((light) => zone.childIds.includes(light.id));
+   // Fetch the newly created zone
+   const zone = await hue.zones.fetch(zoneId);
 
    // Make the actions
-   const actions = lights.map((light) => {
-      const action: SceneAction = {
-         id: light.id,
-         on: true,
-      };
-
+   // These actions will be executed once the scene is recalled
+   const actions = [light1, light2].map((light) => Object({
+      id: light.id,
+      on: true,
       // Check if the light can do dimming, and if so, set the brightness of the light to 50%
-      if (light.isCapableOfDimming()) action.brightness = 50;
-
+      brightness: light.isCapableOfDimming() ? 50 : undefined,
       // Check if the light can display color, and if so, set the color to #eb403
-      if (light.isCapableOfColor()) action.color = fromHex('#eb403');
-
-      return action;
-   });
+      color: light.isCapableOfColor() ? fromHex('#eb403') : undefined,
+   }));
 
    // Create the scene
-   await zone.createScene({
+   const sceneId = await zone.createScene({
       name: 'Awesome scene',
       actions,
    });
-});
-
-// Listen to the sceneAdd event, emitted on creation of a new scene
-hue.on('sceneAdd', async (scene) => {
-    // Ignore if not the scene just created above
-   if (scene.name !== 'Awesome scene') return;
-
+   
+   // Fetch the newly created scene
+   const scene = await hue.scenes.fetch(sceneId);
+   
    // Recall the scene
    await scene.recall();
 });
