@@ -6,7 +6,7 @@ import { GroupedLightManager } from '../managers/GroupedLightManager';
 export interface GroupedLightEditOptions {
 	on?: boolean;
 	brightness?: number;
-	mirek?: number;
+	colorTemperature?: number;
 	color?: XyPoint;
 }
 
@@ -45,8 +45,8 @@ export class GroupedLight extends Resource<APIResourceType.GroupedLight> {
 		return await this.edit({ brightness });
 	}
 
-	public async setMirek(mirek: GroupedLightEditOptions['mirek']): Promise<string> {
-		return await this.edit({ mirek });
+	public async setColorTemperature(colorTemperature: GroupedLightEditOptions['colorTemperature']): Promise<string> {
+		return await this.edit({ colorTemperature: colorTemperature });
 	}
 
 	public async setColor(color: GroupedLightEditOptions['color']): Promise<string> {
