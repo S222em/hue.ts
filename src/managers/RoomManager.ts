@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { Room, RoomCreateOptions, RoomEditOptions } from '../structures/Room';
-import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
+import { createRoomPostPayload, createRoomPutPayload } from '../payloads/roomPayload';
 
 /**
  * Manages the room resource
@@ -23,10 +23,7 @@ export class RoomManager extends Manager<APIResourceType.Room> {
 	 * ```
 	 */
 	public async create(options: RoomCreateOptions): Promise<string> {
-		return await this._post({
-			metadata: transformMetadataWithArcheType(options)!,
-			children: transformChildren(options.children)!,
-		});
+		return await this._post(createRoomPostPayload(options));
 	}
 
 	/**
@@ -41,10 +38,7 @@ export class RoomManager extends Manager<APIResourceType.Room> {
 	 * ```
 	 */
 	public async edit(id: string, options: RoomEditOptions): Promise<string> {
-		return await this._put(id, {
-			metadata: transformMetadataWithArcheType(options),
-			children: transformChildren(options.children),
-		});
+		return await this._put(id, createRoomPutPayload(options));
 	}
 
 	/**

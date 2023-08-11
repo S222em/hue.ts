@@ -1,11 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
-import {
-	ZigbeeDeviceDiscovery,
-	ZigbeeDeviceDiscoveryActionType,
-	ZigbeeDeviceDiscoveryEdit,
-} from '../structures/ZigbeeDeviceDiscovery';
-import { transformAction } from '../util/Transformers';
+import { ZigbeeDeviceDiscovery, ZigbeeDeviceDiscoveryEditOptions } from '../structures/ZigbeeDeviceDiscovery';
+import { createZigbeeDeviceDiscoveryPutPayload } from '../payloads/zigbeeDeviceDiscoveryPayload';
 
 /**
  * Manages the zigbee_device_discovery resource
@@ -26,9 +22,7 @@ export class ZigbeeDeviceDiscoveryManager extends Manager<APIResourceType.Zigbee
 	 * });
 	 * ```
 	 */
-	public async edit(id: string, options: ZigbeeDeviceDiscoveryEdit): Promise<string> {
-		return await this._put(id, {
-			action: transformAction({ ...options, actionType: ZigbeeDeviceDiscoveryActionType.Search }),
-		});
+	public async edit(id: string, options: ZigbeeDeviceDiscoveryEditOptions): Promise<string> {
+		return await this._put(id, createZigbeeDeviceDiscoveryPutPayload(options));
 	}
 }

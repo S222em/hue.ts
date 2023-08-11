@@ -70,7 +70,7 @@ export enum LightMode {
 	Streaming = 'streaming',
 }
 
-// TODO add effects and timed_effects getters
+// TODO add effects and timed_effects
 // TODO dimming_delta & color_temperature_delta
 export class Light extends ArcheTypeResource<APIResourceType.Light> {
 	type = APIResourceType.Light;

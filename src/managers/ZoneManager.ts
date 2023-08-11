@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { Zone, ZoneCreateOptions, ZoneEditOptions } from '../structures/Zone';
-import { transformChildren, transformMetadataWithArcheType } from '../util/Transformers';
+import { createZonePostPayload, createZonePutPayload } from '../payloads/zonePayload';
 
 /**
  * Manages the zone resource
@@ -23,10 +23,7 @@ export class ZoneManager extends Manager<APIResourceType.Zone> {
 	 * ```
 	 */
 	public async create(options: ZoneCreateOptions): Promise<string> {
-		return await this._post({
-			metadata: transformMetadataWithArcheType(options)!,
-			children: transformChildren(options.children)!,
-		});
+		return await this._post(createZonePostPayload(options));
 	}
 
 	/**
@@ -41,10 +38,7 @@ export class ZoneManager extends Manager<APIResourceType.Zone> {
 	 * ```
 	 */
 	public async edit(id: string, options: ZoneEditOptions): Promise<string> {
-		return await this._put(id, {
-			metadata: transformMetadataWithArcheType(options),
-			children: transformChildren(options.children),
-		});
+		return await this._put(id, createZonePutPayload(options));
 	}
 
 	/**

@@ -1,6 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { Geolocation, GeolocationEditOptions } from '../structures/Geolocation';
+import { createGeolocationPutPayload } from '../payloads/geolocationPayload';
 
 /**
  * Manages the geolocation resource
@@ -22,9 +23,6 @@ export class GeolocationManager extends Manager<APIResourceType.Geolocation> {
 	 * ```
 	 */
 	public async edit(id: string, options: GeolocationEditOptions): Promise<string> {
-		return await this._put(id, {
-			latitude: options.latitude,
-			longitude: options.longitude,
-		});
+		return await this._put(id, createGeolocationPutPayload(options));
 	}
 }

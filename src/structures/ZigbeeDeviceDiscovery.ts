@@ -11,7 +11,7 @@ export enum ZigbeeDeviceDiscoveryActionType {
 	Search = 'search',
 }
 
-export interface ZigbeeDeviceDiscoveryEdit {
+export interface ZigbeeDeviceDiscoveryEditOptions {
 	actionType: ZigbeeDeviceDiscoveryActionType;
 }
 
@@ -34,7 +34,7 @@ export class ZigbeeDeviceDiscovery extends Resource<APIResourceType.ZigbeeDevice
 		return await this.edit({ actionType: ZigbeeDeviceDiscoveryActionType.Search });
 	}
 
-	public async edit(options: ZigbeeDeviceDiscoveryEdit): Promise<string> {
+	public async edit(options: ZigbeeDeviceDiscoveryEditOptions): Promise<string> {
 		return await this.manager.edit(this.id, options);
 	}
 }

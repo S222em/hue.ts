@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { Device, DeviceEditOptions } from '../structures/Device';
-import { transformMetadataWithArcheType } from '../util/Transformers';
+import { createDevicePutPayload } from '../payloads/devicePayload';
 
 /**
  * Manages the device resource
@@ -9,15 +9,6 @@ import { transformMetadataWithArcheType } from '../util/Transformers';
 export class DeviceManager extends Manager<APIResourceType.Device> {
 	type = APIResourceType.Device;
 	holds = Device;
-
-	/**
-	 * Sends an identify request for specified device
-	 * This causes the device to blink
-	 * @param id
-	 */
-	public async identify(id: string): Promise<string> {
-		return await this._put(id, { identify: { action: 'identify' } });
-	}
 
 	/**
 	 * Edits specified device
@@ -31,9 +22,7 @@ export class DeviceManager extends Manager<APIResourceType.Device> {
 	 * ```
 	 */
 	public async edit(id: string, options: DeviceEditOptions): Promise<string> {
-		return await this._put(id, {
-			metadata: transformMetadataWithArcheType(options),
-		});
+		return await this._put(id, createDevicePutPayload(options));
 	}
 
 	/**

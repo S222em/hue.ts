@@ -1,7 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { GroupedLight, GroupedLightEditOptions } from '../structures/GroupedLight';
-import { transformColor, transformColorTemperature, transformDimming, transformOn } from '../util/Transformers';
+import { createGroupedLightPutPayload } from '../payloads/groupedLightPayload';
 
 /**
  * Manages the grouped_light resource
@@ -23,11 +23,6 @@ export class GroupedLightManager extends Manager<APIResourceType.GroupedLight> {
 	 * ```
 	 */
 	public async edit(id: string, options: GroupedLightEditOptions): Promise<string> {
-		return await this._put(id, {
-			on: transformOn(options.on),
-			dimming: transformDimming(options.brightness),
-			color_temperature: transformColorTemperature(options.mirek),
-			color: transformColor(options.color),
-		});
+		return await this._put(id, createGroupedLightPutPayload(options));
 	}
 }

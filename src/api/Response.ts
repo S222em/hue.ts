@@ -17,7 +17,7 @@ import { RESTResponseError } from './Error';
 
 type RESTGenericResponseData<TAPIResourceType extends APIResourceType> = Array<APIResourceIdentifier<TAPIResourceType>>;
 
-interface RestGetPossibleResponseData {
+interface RESTGetAllResponseData {
 	[APIResourceType.Device]: RESTDeviceGetResponseData;
 	[APIResourceType.BridgeHome]: RESTBridgeHomeGetResponseData;
 	[APIResourceType.Room]: RESTRoomGetResponseData;
@@ -45,8 +45,7 @@ interface RestGetPossibleResponseData {
 	[APIResourceType.Geolocation]: RESTGeolocationGetResponseData;
 }
 
-export type RESTGetResponseData<TAPIResourceType extends APIResourceType> =
-	RestGetPossibleResponseData[TAPIResourceType];
+export type RESTGetResponseData<TAPIResourceType extends APIResourceType> = RESTGetAllResponseData[TAPIResourceType];
 
 export type RESTPutResponseData<TAPIResourceType extends APIResourceType> = RESTGenericResponseData<TAPIResourceType>;
 

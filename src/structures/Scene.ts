@@ -12,7 +12,7 @@ export interface SceneAction {
 	color?: XyPoint;
 	gradient?: XyPoint[];
 	effects?: LightEffect;
-	dynamics?: { duration?: number };
+	dynamics?: { duration: number };
 }
 
 export interface ScenePalette {
@@ -83,7 +83,7 @@ export class Scene extends NamedResource<APIResourceType.Scene> {
 	}
 
 	public async recall(options?: SceneEditOptions['recall']): Promise<string> {
-		return await this.edit({ recall: { ...options } });
+		return await this.edit({ recall: options });
 	}
 
 	public async createActionFor(id: string, options: Omit<SceneAction, 'id'>): Promise<string> {

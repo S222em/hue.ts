@@ -1,9 +1,7 @@
 import { Manager } from './Manager';
 import { APIResourceType } from '../api/ResourceType';
 import { Scene, SceneCreateOptions, SceneEditOptions } from '../structures/Scene';
-import { transformMetadata, transformRecall, transformSceneActions } from '../util/Transformers';
-import { createResourceIdentifier } from '../util/resourceIdentifier';
-import { ifNotNull } from '../util/ifNotNull';
+import { createScenePostPayload, createScenePutPayload } from '../payloads/scenePayload';
 
 /**
  * Manages the scene resource
@@ -33,11 +31,7 @@ export class SceneManager extends Manager<APIResourceType.Scene> {
 	public async create(groupId: string, options: SceneCreateOptions): Promise<string> {
 		const group = this.hue.zones.cache.get(groupId) ?? this.hue.rooms.cache.get(groupId)!;
 
-		return await this._post({
-			group: createResourceIdentifier(groupId, group.type),
-			metadata: transformMetadata(options)!,
-			actions: transformSceneActions(options.actions)!,
-		});
+		return await this._post(createScenePostPayload(group.identifier, options));
 	}
 
 	/**
@@ -58,12 +52,7 @@ export class SceneManager extends Manager<APIResourceType.Scene> {
 	 * ```
 	 */
 	public async edit(id: string, options: SceneEditOptions): Promise<string> {
-		return await this._put(id, {
-			metadata: transformMetadata(options),
-			speed: ifNotNull(options.speed, () => options.speed),
-			recall: transformRecall(options.recall),
-			actions: transformSceneActions(options.actions),
-		});
+		return await this._put(id, createScenePutPayload(options));
 	}
 
 	/**

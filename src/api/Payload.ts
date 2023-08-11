@@ -9,7 +9,7 @@ import { RESTZigbeeDeviceDiscoveryPutPayload } from './ZigbeeDeviceDiscovery';
 import { RESTScenePostPayload, RESTScenePutPayload } from './Scene';
 import { RESTGeolocationPutPayload } from './Geolocation';
 
-interface RESTPutPossiblePayload {
+interface RESTPutPayloads {
 	[APIResourceType.Device]: RESTDevicePutPayload;
 	[APIResourceType.BridgeHome]: never;
 	[APIResourceType.Room]: RESTRoomPutPayload;
@@ -37,9 +37,9 @@ interface RESTPutPossiblePayload {
 	[APIResourceType.Geolocation]: RESTGeolocationPutPayload;
 }
 
-export type RESTPutPayload<TAPIResourceType extends APIResourceType> = RESTPutPossiblePayload[TAPIResourceType];
+export type RESTPutPayload<TAPIResourceType extends APIResourceType> = RESTPutPayloads[TAPIResourceType];
 
-interface RESTPostPossiblePayload {
+interface RESTPostPayloads {
 	[APIResourceType.Device]: never;
 	[APIResourceType.BridgeHome]: never;
 	[APIResourceType.Room]: RESTRoomPostPayload;
@@ -67,4 +67,4 @@ interface RESTPostPossiblePayload {
 	[APIResourceType.Geolocation]: never;
 }
 
-export type RESTPostPayload<TAPIResourceType extends APIResourceType> = RESTPostPossiblePayload[TAPIResourceType];
+export type RESTPostPayload<TAPIResourceType extends APIResourceType> = RESTPostPayloads[TAPIResourceType];

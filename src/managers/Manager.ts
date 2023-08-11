@@ -7,6 +7,10 @@ import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 
 export type ResourceConstructorSignature<T extends APIResourceType> = new (bridge: Hue, data: any) => NarrowResource<T>;
 
+export interface FetchOptions {
+	overwriteCache?: boolean;
+}
+
 /**
  * Manages and caches resources
  */
@@ -58,15 +62,26 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	/**
 	 * Fetches a resource
 	 * @param id
+	 * @param options
+	 *
+	 * @example ```
+	 * const id = await manager.create({ ... });
+	 *
+	 * const resource = await manager.fetch(id);
+	 * ```
 	 */
-	public async fetch(id: string): Promise<NarrowResource<TAPIResourceType>> {
+	public async fetch(id: string, options: FetchOptions = {}): Promise<NarrowResource<TAPIResourceType>> {
 		const data = await this._get(id);
 
-		return new this.holds(this.hue, data[0]);
+		const resource = new this.holds(this.hue, data[0]);
+
+		if (options.overwriteCache) this.cache.set(id, resource);
+
+		return resource;
 	}
 
 	/**
-	 * Performs a get request to specified endpoint
+	 * Performs a get request to specified ID
 	 * @param id
 	 * @private
 	 */
@@ -77,7 +92,7 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	}
 
 	/**
-	 * Performs a put request to specified endpoint
+	 * Performs a put request to specified ID
 	 * @param id
 	 * @param payload
 	 * @private
@@ -89,7 +104,7 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	}
 
 	/**
-	 * Performs a post request to specified endpoint
+	 * Performs a post request
 	 * @param payload
 	 * @private
 	 */
@@ -100,7 +115,7 @@ export abstract class Manager<TAPIResourceType extends APIResourceType> {
 	}
 
 	/**
-	 * Performs a delete request to specified endpoint
+	 * Performs a delete request to specified ID
 	 * @param id
 	 * @private
 	 */

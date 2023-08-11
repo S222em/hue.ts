@@ -2,7 +2,13 @@ import { APIResourceType } from '../api/ResourceType';
 import { ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 import { DeviceManager } from '../managers/DeviceManager';
 
-export type DeviceEditOptions = ArcheTypeResourceEditOptions;
+export enum DeviceAction {
+	Identify = 'identify',
+}
+
+export interface DeviceEditOptions extends ArcheTypeResourceEditOptions {
+	action: DeviceAction;
+}
 
 export class Device extends ArcheTypeResource<APIResourceType.Device> {
 	type = APIResourceType.Device;
@@ -40,7 +46,7 @@ export class Device extends ArcheTypeResource<APIResourceType.Device> {
 	}
 
 	public async identify(): Promise<string> {
-		return await this.manager.identify(this.id);
+		return await this.edit({ action: DeviceAction.Identify });
 	}
 
 	public async edit(options: DeviceEditOptions): Promise<string> {
