@@ -1,4 +1,4 @@
-import { Rest } from './Rest';
+import { REST } from './Rest';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { setTimeout } from 'node:timers';
 
@@ -13,7 +13,7 @@ export const RateLimits: RateLimits = {
 export class Limit extends AsyncQueue {
 	public rateLimit: number;
 
-	constructor(rest: Rest, route: string) {
+	constructor(rest: REST, route: string) {
 		super();
 		this.rateLimit = RateLimits[route] ?? 1000;
 	}

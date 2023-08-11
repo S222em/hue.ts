@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { Events, HueEvents } from './HueEvents';
-import { Rest } from '../connections/Rest';
-import { Sse } from '../connections/Sse';
+import { REST } from '../connections/Rest';
+import { SSE } from '../connections/Sse';
 import { LightManager } from '../managers/LightManager';
 import { DeviceManager } from '../managers/DeviceManager';
 import { RoomManager } from '../managers/RoomManager';
@@ -135,13 +135,13 @@ export class Hue extends EventEmitter {
 	 * The REST manager
 	 * @private
 	 */
-	public readonly _rest = new Rest(this);
+	public readonly _rest = new REST(this);
 
 	/**
 	 * The SSE manager
 	 * @private
 	 */
-	public readonly _sse = new Sse(this);
+	public readonly _sse = new SSE(this);
 
 	public constructor(options: HueOptions) {
 		super();

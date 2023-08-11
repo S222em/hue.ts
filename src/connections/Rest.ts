@@ -11,7 +11,7 @@ import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 
 export interface Request {
 	route: string;
-	method: RestRequestType;
+	method: RESTRequestType;
 
 	body?: Record<string, any>;
 }
@@ -20,14 +20,14 @@ export interface Response extends Request {
 	statusCode: number;
 }
 
-export enum RestRequestType {
+export enum RESTRequestType {
 	Get = 'GET',
 	Put = 'PUT',
 	Post = 'POST',
 	Delete = 'DELETE',
 }
 
-export class Rest {
+export class REST {
 	public readonly hue: Hue;
 	public readonly dispatcher: Agent;
 	public readonly limits: Collection<string, Limit>;
@@ -41,6 +41,8 @@ export class Rest {
 				rejectUnauthorized: false,
 				checkServerIdentity: () => undefined,
 			},
+			keepAliveTimeout: 15000,
+			keepAliveMaxTimeout: 15000,
 		});
 		this.limits = new Collection<string, Limit>();
 	}
@@ -48,30 +50,30 @@ export class Rest {
 	public async get<TAPIResourceType extends APIResourceType>(
 		route: string,
 	): Promise<RESTGetResponse<TAPIResourceType>> {
-		return await this._queue(route, RestRequestType.Get);
+		return await this._queue(route, RESTRequestType.Get);
 	}
 
 	public async put<TAPIResourceType extends APIResourceType>(
 		route: string,
 		payload: RESTPutPayload<TAPIResourceType>,
 	): Promise<RESTPutResponse<TAPIResourceType>> {
-		return await this._queue(route, RestRequestType.Put, payload);
+		return await this._queue(route, RESTRequestType.Put, payload);
 	}
 
 	public async post<TAPIResourceType extends APIResourceType>(
 		route: string,
 		payload: RESTPostPayload<TAPIResourceType>,
 	): Promise<RESTPostResponse<TAPIResourceType>> {
-		return await this._queue(route, RestRequestType.Post, payload);
+		return await this._queue(route, RESTRequestType.Post, payload);
 	}
 
 	public async delete<TAPIResourceType extends APIResourceType>(
 		route: string,
 	): Promise<RESTDeleteResponse<TAPIResourceType>> {
-		return await this._queue(route, RestRequestType.Delete);
+		return await this._queue(route, RESTRequestType.Delete);
 	}
 
-	public async _queue(route: string, method: RestRequestType, payload?: Record<string, any>): Promise<any> {
+	public async _queue(route: string, method: RESTRequestType, payload?: Record<string, any>): Promise<any> {
 		this.hue.emit(Events.Request, {
 			route,
 			method,
@@ -81,7 +83,7 @@ export class Rest {
 		const limit = this._getLimit(route);
 		await limit.wait();
 
-		const { body, statusCode } = await request(`${this.hue._url}/clip/v2${route}`, {
+		const response = await request(`${this.hue._url}/clip/v2${route}`, {
 			method,
 			body: payload ? JSON.stringify(payload) : null,
 			headers: {
@@ -96,19 +98,21 @@ export class Rest {
 			dispatcher: this.dispatcher,
 		});
 
-		const responseData = await body.json();
+		if (response.statusCode === 403) throw new APIError(`Invalid applicationKey`);
 
-		const possibleError = responseData?.errors?.[0]?.description;
-		if (possibleError) {
-			if (statusCode == 400) throw new APITypeError(possibleError);
-			throw new APIError(possibleError);
+		const responseData = await response.body.json();
+
+		if (![200, 201].includes(response.statusCode)) {
+			const error = responseData?.errors?.[0]?.description;
+			if (response.statusCode == 400) throw new APITypeError(error);
+			throw new APIError(error);
 		}
 
 		this.hue.emit(Events.Response, {
 			route,
 			method,
 			body: responseData,
-			statusCode: statusCode,
+			statusCode: response.statusCode,
 		});
 
 		limit.shift();

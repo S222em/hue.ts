@@ -4,7 +4,7 @@ import BodyReadable from 'undici/types/readable';
 import { Events } from '../hue/HueEvents';
 import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
 
-export class Sse {
+export class SSE {
 	public readonly hue: Hue;
 	public readonly dispatcher: Agent;
 	public connection?: BodyReadable & Dispatcher.BodyMixin;
@@ -20,6 +20,7 @@ export class Sse {
 				// @ts-ignore this will be resolved with https://github.com/nodejs/undici/pull/1362
 				checkServerIdentity: () => undefined,
 			},
+			bodyTimeout: 0,
 		});
 	}
 
@@ -28,9 +29,7 @@ export class Sse {
 	}
 
 	public async connect(): Promise<void> {
-		this.connection = undefined;
-
-		const { body, statusCode } = await request(`${this.hue._url}/eventstream/clip/v2`, {
+		const response = await request(`${this.hue._url}/eventstream/clip/v2`, {
 			method: 'GET',
 			headers: {
 				Authorization:
@@ -40,16 +39,28 @@ export class Sse {
 				'hue-application-key': this.hue.options.connection.applicationKey,
 				Accept: 'text/event-stream',
 			},
-			bodyTimeout: 0,
 			dispatcher: this.dispatcher,
 		});
 
-		if (statusCode !== 200) return;
+		if (response.statusCode !== 200) return;
 
-		this.connection = body;
 		this.debug('Connected');
-		body.setEncoding('utf8');
-		body.on('data', (raw) => this.onData(raw));
+
+		this.connection = response.body;
+		this.connection.setEncoding('utf8');
+		this.connection.on('error', this.onError.bind(this));
+		this.connection.on('data', this.onData.bind(this));
+	}
+
+	public async onError(error: Error) {
+		if ('code' in error && error.code === 'ETIMEDOUT') {
+			this.debug('Disconnected, attempting reconnect');
+			this.connection = undefined;
+
+			await this.connect();
+		}
+
+		this.hue.emit(Events.Error, error);
 	}
 
 	public onData(data: string) {
