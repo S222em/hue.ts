@@ -1,33 +1,44 @@
-import { Hue } from '../hue/Hue';
+import { CA, Hue } from '../hue/Hue';
 import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../hue/HueEvents';
 import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
+import { Base } from '../structures/Base';
 
-export class SSE {
-	public readonly hue: Hue;
-	public readonly dispatcher: Agent;
+/**
+ * Provides the SSE connection with the hue system
+ */
+export class SSE extends Base {
+	/**
+	 * Dispatcher to be used for the connection
+	 * Used for https server authentication
+	 */
+	public readonly dispatcher = new Agent({
+		connect: {
+			ca: CA,
+			requestCert: true,
+			rejectUnauthorized: false,
+			checkServerIdentity: () => undefined,
+		},
+		bodyTimeout: 0,
+	});
+
+	/**
+	 * The connection with the hue system
+	 */
 	public connection?: BodyReadable & Dispatcher.BodyMixin;
 
-	constructor(hue: Hue) {
-		this.hue = hue;
-		this.dispatcher = new Agent({
-			connect: {
-				// ca: CA,
-				// requestCert: true,
-				rejectUnauthorized: false,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore this will be resolved with https://github.com/nodejs/undici/pull/1362
-				checkServerIdentity: () => undefined,
-			},
-			bodyTimeout: 0,
-		});
-	}
-
+	/**
+	 * Emits a prefixed debug message
+	 * @param message
+	 */
 	public debug(message: string) {
 		this.hue.emit(Events.Debug, `[SSE] ${message}`);
 	}
 
+	/**
+	 * Connects to the hue system
+	 */
 	public async connect(): Promise<void> {
 		const response = await request(`${this.hue._url}/eventstream/clip/v2`, {
 			method: 'GET',
@@ -52,6 +63,10 @@ export class SSE {
 		this.connection.on('data', this.onData.bind(this));
 	}
 
+	/**
+	 * Used for handling errors on the connection
+	 * @param error
+	 */
 	public async onError(error: Error) {
 		if ('code' in error && error.code === 'ETIMEDOUT') {
 			this.debug('Disconnected, attempting reconnect');
@@ -63,6 +78,10 @@ export class SSE {
 		this.hue.emit(Events.Error, error);
 	}
 
+	/**
+	 * Handles data packets from hue server
+	 * @param data
+	 */
 	public onData(data: string) {
 		if (data === ': hi\n' + '\n') return this.debug('Hi');
 
@@ -76,6 +95,10 @@ export class SSE {
 			queue = [...this.onEvent(event), ...queue];
 		}
 
+		//Emits all the processed events
+		//In case this is not delayed until every event is processed there might be missing cache
+		//For example, creating a room also creates a groupedLight
+		//If the creation of the room is emitted first, the groupedLight resource belonging to it will be missing
 		for (const emitter of queue) {
 			if (typeof emitter === 'function') emitter();
 		}
@@ -83,6 +106,10 @@ export class SSE {
 		this.hue.emit(Events.Raw, events);
 	}
 
+	/**
+	 * Handles a event type (add, update, delete)
+	 * @param event
+	 */
 	public onEvent(event: Record<string, any>): Array<(() => boolean) | undefined> {
 		const queue: Array<(() => boolean) | undefined> = [];
 
@@ -93,6 +120,11 @@ export class SSE {
 		return queue;
 	}
 
+	/**
+	 * Handles data inside a event type
+	 * @param type
+	 * @param data
+	 */
 	public onEventData(type: string, data: Record<string, any>): (() => boolean) | undefined {
 		let handler: ((data: any, hue: Hue) => (() => boolean) | undefined) | undefined;
 
@@ -103,6 +135,10 @@ export class SSE {
 		if (handler) return handler(data, this.hue);
 	}
 
+	/**
+	 * Parses data recieved from the stream
+	 * @param raw
+	 */
 	public _parse(raw: string): Array<Record<string, any>> {
 		const regex = /id: \d+:\d+\ndata: /;
 

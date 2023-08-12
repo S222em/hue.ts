@@ -1,26 +1,35 @@
-import { REST } from './Rest';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { setTimeout } from 'node:timers';
 
-export interface RateLimits {
-	[key: string]: number;
-}
-
-export const RateLimits: RateLimits = {
+/**
+ * Intervals for routes
+ * Default route '/'
+ */
+export const RequestIntervals: { [key: string]: number } = {
 	'/resource/light/': 100,
+	'/': 1000,
 } as const;
 
+/**
+ * Provides rate-limit protection
+ */
 export class Limit extends AsyncQueue {
-	public rateLimit: number;
+	/**
+	 * Request per ms
+	 */
+	public interval: number;
 
-	constructor(rest: REST, route: string) {
+	constructor(route: string) {
 		super();
-		this.rateLimit = RateLimits[route] ?? 1000;
+		this.interval = RequestIntervals[route] ?? RequestIntervals['/'];
 	}
 
+	/**
+	 * Free up the limit for the next item, after x amount of time has passed
+	 */
 	public shift(): void {
 		setTimeout(() => {
 			super.shift();
-		}, this.rateLimit);
+		}, this.interval);
 	}
 }

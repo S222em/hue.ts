@@ -1,4 +1,4 @@
-import { CA, Hue } from '../hue/Hue';
+import { CA } from '../hue/Hue';
 import { Agent, request } from 'undici';
 import { Collection } from '@discordjs/collection';
 import { Limit } from './Limit';
@@ -8,11 +8,11 @@ import { APITypeError } from '../errors/APITypeError';
 import { APIResourceType } from '../api/ResourceType';
 import { RESTDeleteResponse, RESTGetResponse, RESTPostResponse, RESTPutResponse } from '../api/Response';
 import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
+import { Base } from '../structures/Base';
 
 export interface Request {
 	route: string;
 	method: RESTRequestType;
-
 	body?: Record<string, any>;
 }
 
@@ -27,32 +27,43 @@ export enum RESTRequestType {
 	Delete = 'DELETE',
 }
 
-export class REST {
-	public readonly hue: Hue;
-	public readonly dispatcher: Agent;
-	public readonly limits: Collection<string, Limit>;
+/**
+ * Manages all requests to the API
+ */
+export class REST extends Base {
+	/**
+	 * Dispatcher to be used for requests
+	 * Used for https server authentication
+	 */
+	public readonly dispatcher = new Agent({
+		connect: {
+			ca: CA,
+			requestCert: true,
+			rejectUnauthorized: false,
+			checkServerIdentity: () => undefined,
+		},
+	});
 
-	constructor(hue: Hue) {
-		this.hue = hue;
-		this.dispatcher = new Agent({
-			connect: {
-				ca: CA,
-				requestCert: true,
-				rejectUnauthorized: false,
-				checkServerIdentity: () => undefined,
-			},
-			keepAliveTimeout: 15000,
-			keepAliveMaxTimeout: 15000,
-		});
-		this.limits = new Collection<string, Limit>();
-	}
+	/**
+	 * Limits for routes
+	 */
+	public readonly limits = new Collection<string, Limit>();
 
+	/**
+	 * Performs a get request to given route
+	 * @param route
+	 */
 	public async get<TAPIResourceType extends APIResourceType>(
 		route: string,
 	): Promise<RESTGetResponse<TAPIResourceType>> {
 		return await this._queue(route, RESTRequestType.Get);
 	}
 
+	/**
+	 * Performs a put request to the API
+	 * @param route
+	 * @param payload
+	 */
 	public async put<TAPIResourceType extends APIResourceType>(
 		route: string,
 		payload: RESTPutPayload<TAPIResourceType>,
@@ -60,6 +71,11 @@ export class REST {
 		return await this._queue(route, RESTRequestType.Put, payload);
 	}
 
+	/**
+	 * Performs a post request to the API
+	 * @param route
+	 * @param payload
+	 */
 	public async post<TAPIResourceType extends APIResourceType>(
 		route: string,
 		payload: RESTPostPayload<TAPIResourceType>,
@@ -67,12 +83,23 @@ export class REST {
 		return await this._queue(route, RESTRequestType.Post, payload);
 	}
 
+	/**
+	 * Performs a delete request to the API
+	 * @param route
+	 */
 	public async delete<TAPIResourceType extends APIResourceType>(
 		route: string,
 	): Promise<RESTDeleteResponse<TAPIResourceType>> {
 		return await this._queue(route, RESTRequestType.Delete);
 	}
 
+	/**
+	 * Queues the request
+	 * Goes through requests at a route based interval to prevent rate-limiting
+	 * @param route
+	 * @param method
+	 * @param payload
+	 */
 	public async _queue(route: string, method: RESTRequestType, payload?: Record<string, any>): Promise<any> {
 		this.hue.emit(Events.Request, {
 			route,
@@ -120,14 +147,23 @@ export class REST {
 		return responseData;
 	}
 
+	/**
+	 * Gets a limit
+	 * Creates a new one if one does not yet exist
+	 * @param route
+	 */
 	public _getLimit(route: string) {
 		const sanitized = this._sanitizeRoute(route);
 
-		return this.limits.ensure(sanitized, () => new Limit(this, sanitized));
+		return this.limits.ensure(sanitized, () => new Limit(sanitized));
 	}
 
+	/**
+	 * Removes ID from the end of a route
+	 * @param route
+	 */
 	public _sanitizeRoute(route: string) {
 		// Remove possible resource ID from the route
-		return route.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, '');
+		return route.replace(/\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/, '');
 	}
 }
