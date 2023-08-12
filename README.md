@@ -70,7 +70,7 @@ After, an application key can be acquired by the following method:
 For more information on retrieving this key visit: https://developers.meethue.com/develop/hue-api-v2/getting-started/
 
 ```ts
-import { Hue, ArcheType, SceneAction } from 'hue.ts';
+import { Hue, APIArcheType, SceneAction } from 'hue.ts';
 import { fromHex } from "./hex";
 
 // Create new Hue, with the ip address and application key
@@ -90,7 +90,7 @@ hue.on('ready', async () => {
    // Create the zone
    const zoneId = await hue.zones.create({
       name: 'Demo',
-      archeType: ArcheType.ManCave,
+      archeType: APIArcheType.ManCave,
       children: [light1.id, light2.id],
    });
 
