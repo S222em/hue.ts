@@ -1,7 +1,7 @@
 import { MotionEditOptions } from '../structures/Motion';
-import { RESTMotionPutPayload } from '../api/Motion';
+import { RESTPayload } from '../types/rest';
 
-export function createMotionPutPayload(options: MotionEditOptions): RESTMotionPutPayload {
+export function createMotionPutPayload(options: MotionEditOptions): RESTPayload {
 	return {
 		enabled: options.enabled,
 	};

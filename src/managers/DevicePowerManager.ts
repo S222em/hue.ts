@@ -1,11 +1,11 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { DevicePower } from '../structures/DevicePower';
 
 /**
  * Manages the device_power resource
  */
-export class DevicePowerManager extends Manager<APIResourceType.DevicePower> {
+export class DevicePowerManager extends ResourceManager<DevicePower> {
 	type = APIResourceType.DevicePower;
 	holds = DevicePower;
 }

@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSESceneDeleteData } from '../../api/Scene';
+import { SSEResource } from '../../types/sse';
 
-export default function sceneDelete(data: SSESceneDeleteData, hue: Hue) {
+export default function sceneDelete(data: SSEResource, hue: Hue) {
 	const scene = hue.scenes.cache.get(data.id);
 	if (!scene) return;
 

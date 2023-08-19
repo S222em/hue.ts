@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSELightUpdateData } from '../../api/Light';
+import { SSEResource } from '../../types/sse';
 
-export default function lightUpdate(data: SSELightUpdateData, hue: Hue) {
+export default function lightUpdate(data: SSEResource, hue: Hue) {
 	const light = hue.lights.cache.get(data.id);
 	if (!light) return;
 

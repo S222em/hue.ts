@@ -1,5 +1,4 @@
-import { APIResourceType } from '../api/ResourceType';
-import { APIResourceIdentifier } from '../api/ResourceIdentifier';
+import { APIResourceIdentifier, APIResourceType } from '../types/api';
 
 export function createResourceIdentifier<TAPIResourceType extends APIResourceType>(
 	id: string,

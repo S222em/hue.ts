@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEGeolocationUpdateData } from '../../api/Geolocation';
+import { SSEResource } from '../../types/sse';
 
-export default function geolocationUpdate(data: SSEGeolocationUpdateData, hue: Hue) {
+export default function geolocationUpdate(data: SSEResource, hue: Hue) {
 	const geolocation = hue.geolocations.cache.get(data.id);
 	if (!geolocation) return;
 

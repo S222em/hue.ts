@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { ZigbeeDeviceDiscovery, ZigbeeDeviceDiscoveryEditOptions } from '../structures/ZigbeeDeviceDiscovery';
 import { createZigbeeDeviceDiscoveryPutPayload } from '../payloads/zigbeeDeviceDiscoveryPayload';
 
 /**
  * Manages the zigbee_device_discovery resource
  */
-export class ZigbeeDeviceDiscoveryManager extends Manager<APIResourceType.ZigbeeDeviceDiscovery> {
+export class ZigbeeDeviceDiscoveryManager extends ResourceManager<ZigbeeDeviceDiscovery> {
 	type = APIResourceType.ZigbeeDeviceDiscovery;
 	holds = ZigbeeDeviceDiscovery;
 

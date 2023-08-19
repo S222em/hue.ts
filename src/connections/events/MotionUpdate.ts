@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEMotionUpdateData } from '../../api/Motion';
+import { SSEResource } from '../../types/sse';
 
-export default function motionUpdate(data: SSEMotionUpdateData, hue: Hue) {
+export default function motionUpdate(data: SSEResource, hue: Hue) {
 	const motion = hue.motions.cache.get(data.id);
 	if (!motion) return;
 

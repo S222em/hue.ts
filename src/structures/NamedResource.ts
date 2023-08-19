@@ -1,7 +1,9 @@
-import { APIResourceType } from '../api/ResourceType';
-import { Hue } from '../hue/Hue';
 import { Resource } from './Resource';
-import { APIResource } from '../api/Resource';
+import { APIResource, APIResourceType } from '../types/api';
+
+export interface APINamedResource<T extends APIResourceType = APIResourceType> extends APIResource<T> {
+	metadata: { name: string };
+}
 
 export interface NamedResourceEditOptions {
 	name?: string;
@@ -9,18 +11,21 @@ export interface NamedResourceEditOptions {
 
 export type NamedResourceCreateOptions = Required<NamedResourceEditOptions>;
 
-export abstract class NamedResource<TAPIResourceType extends APIResourceType> extends Resource<TAPIResourceType> {
-	public data: APIResource<TAPIResourceType> & { metadata: { name: string } };
-
-	constructor(bridge: Hue, data: APIResource<TAPIResourceType> & { metadata: { name: string } }) {
-		super(bridge, data);
-		this.data = data;
-	}
-
+/**
+ * Represents any resource from the hue API that include a name
+ */
+export abstract class NamedResource<TData extends APINamedResource = APINamedResource> extends Resource<TData> {
+	/**
+	 * The name of this resource
+	 */
 	get name(): string {
 		return this.data.metadata.name;
 	}
 
+	/**
+	 * Sets the name of this resource
+	 * @param name
+	 */
 	public async setName(name: string): Promise<string> {
 		return await this.edit({ name });
 	}

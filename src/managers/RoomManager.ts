@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
 import { Room, RoomCreateOptions, RoomEditOptions } from '../structures/Room';
 import { createRoomPostPayload, createRoomPutPayload } from '../payloads/roomPayload';
+import { APIResourceType } from '../types/api';
 
 /**
  * Manages the room resource
  */
-export class RoomManager extends Manager<APIResourceType.Room> {
+export class RoomManager extends ResourceManager<Room> {
 	type = APIResourceType.Room;
 	holds = Room;
 

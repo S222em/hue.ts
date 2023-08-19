@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Motion, MotionEditOptions } from '../structures/Motion';
 import { createMotionPutPayload } from '../payloads/motionPayload';
 
 /**
  * Manages the motion resource
  */
-export class MotionManager extends Manager<APIResourceType.Motion> {
+export class MotionManager extends ResourceManager<Motion> {
 	type = APIResourceType.Motion;
 	holds = Motion;
 

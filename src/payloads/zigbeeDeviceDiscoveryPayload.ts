@@ -1,8 +1,6 @@
 import { ZigbeeDeviceDiscoveryEditOptions } from '../structures/ZigbeeDeviceDiscovery';
-import { RESTZigbeeDeviceDiscoveryPutPayload } from '../api/ZigbeeDeviceDiscovery';
+import { RESTPayload } from '../types/rest';
 
-export function createZigbeeDeviceDiscoveryPutPayload(
-	options: ZigbeeDeviceDiscoveryEditOptions,
-): RESTZigbeeDeviceDiscoveryPutPayload {
+export function createZigbeeDeviceDiscoveryPutPayload(options: ZigbeeDeviceDiscoveryEditOptions): RESTPayload {
 	return { action: { action_type: options.actionType } };
 }

@@ -5,10 +5,8 @@ import { Limit } from './Limit';
 import { Events } from '../hue/HueEvents';
 import { APIError } from '../errors/APIError';
 import { APITypeError } from '../errors/APITypeError';
-import { APIResourceType } from '../api/ResourceType';
-import { RESTDeleteResponse, RESTGetResponse, RESTPostResponse, RESTPutResponse } from '../api/Response';
-import { RESTPostPayload, RESTPutPayload } from '../api/Payload';
 import { Base } from '../structures/Base';
+import { RESTPayload, RESTResponse } from '../types/rest';
 
 export interface Request {
 	route: string;
@@ -53,9 +51,7 @@ export class REST extends Base {
 	 * Performs a get request to given route
 	 * @param route
 	 */
-	public async get<TAPIResourceType extends APIResourceType>(
-		route: string,
-	): Promise<RESTGetResponse<TAPIResourceType>> {
+	public async get(route: string): Promise<RESTResponse> {
 		return await this._queue(route, RESTRequestType.Get);
 	}
 
@@ -64,10 +60,7 @@ export class REST extends Base {
 	 * @param route
 	 * @param payload
 	 */
-	public async put<TAPIResourceType extends APIResourceType>(
-		route: string,
-		payload: RESTPutPayload<TAPIResourceType>,
-	): Promise<RESTPutResponse<TAPIResourceType>> {
+	public async put(route: string, payload: RESTPayload): Promise<RESTResponse> {
 		return await this._queue(route, RESTRequestType.Put, payload);
 	}
 
@@ -76,10 +69,7 @@ export class REST extends Base {
 	 * @param route
 	 * @param payload
 	 */
-	public async post<TAPIResourceType extends APIResourceType>(
-		route: string,
-		payload: RESTPostPayload<TAPIResourceType>,
-	): Promise<RESTPostResponse<TAPIResourceType>> {
+	public async post(route: string, payload: RESTPayload): Promise<RESTResponse> {
 		return await this._queue(route, RESTRequestType.Post, payload);
 	}
 
@@ -87,9 +77,7 @@ export class REST extends Base {
 	 * Performs a delete request to the API
 	 * @param route
 	 */
-	public async delete<TAPIResourceType extends APIResourceType>(
-		route: string,
-	): Promise<RESTDeleteResponse<TAPIResourceType>> {
+	public async delete(route: string): Promise<RESTResponse> {
 		return await this._queue(route, RESTRequestType.Delete);
 	}
 

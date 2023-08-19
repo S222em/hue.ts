@@ -1,28 +1,22 @@
 import { RoomCreateOptions, RoomEditOptions } from '../structures/Room';
-import { RESTRoomPostPayload, RESTRoomPutPayload } from '../api/Room';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
-import { APIResourceType } from '../api/ResourceType';
+import { APIResourceType } from '../types/api';
+import { RESTPayload } from '../types/rest';
 
-export function createRoomPutPayload(options: RoomEditOptions): RESTRoomPutPayload {
+export function createRoomPutPayload(options: RoomEditOptions): RESTPayload {
 	return {
 		metadata: { name: options.name, archetype: options.archeType },
-		children: options.children ? createRoomChildrenPutPayload(options.children) : undefined,
+		children: options.children ? createRoomChildrenPayload(options.children) : undefined,
 	};
 }
 
-export function createRoomPostPayload(options: RoomCreateOptions): RESTRoomPostPayload {
+export function createRoomPostPayload(options: RoomCreateOptions): RESTPayload {
 	return {
 		metadata: { name: options.name, archetype: options.archeType },
-		children: createRoomChildrenPostPayload(options.children),
+		children: createRoomChildrenPayload(options.children),
 	};
 }
 
-export function createRoomChildrenPutPayload(children: RoomEditOptions['children']): RESTRoomPutPayload['children'] {
-	return children!.map((child) => createResourceIdentifier(child, APIResourceType.Light));
-}
-
-export function createRoomChildrenPostPayload(
-	children: RoomCreateOptions['children'],
-): RESTRoomPostPayload['children'] {
+export function createRoomChildrenPayload(children: string[]): RESTPayload[] {
 	return children.map((child) => createResourceIdentifier(child, APIResourceType.Light));
 }

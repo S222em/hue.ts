@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Zone, ZoneCreateOptions, ZoneEditOptions } from '../structures/Zone';
 import { createZonePostPayload, createZonePutPayload } from '../payloads/zonePayload';
 
 /**
  * Manages the zone resource
  */
-export class ZoneManager extends Manager<APIResourceType.Zone> {
+export class ZoneManager extends ResourceManager<Zone> {
 	type = APIResourceType.Zone;
 	holds = Zone;
 

@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEDeviceDeleteData } from '../../api/Device';
+import { SSEResource } from '../../types/sse';
 
-export default function deviceDelete(data: SSEDeviceDeleteData, hue: Hue) {
+export default function deviceDelete(data: SSEResource, hue: Hue) {
 	const device = hue.devices.cache.get(data.id);
 	if (!device) return;
 

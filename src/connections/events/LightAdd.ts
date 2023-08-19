@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSELightAddData } from '../../api/Light';
+import { SSEResource } from '../../types/sse';
 
-export default function lightAdd(data: SSELightAddData, hue: Hue) {
+export default function lightAdd(data: SSEResource, hue: Hue) {
 	const light = hue.lights._add(data);
 	if (!light) return;
 

@@ -3,7 +3,7 @@ export * from './hue/Hue';
 export * from './hue/HueEvents';
 
 // Managers
-export * from './managers/Manager';
+export * from './managers/ResourceManager';
 export * from './managers/BridgeHomeManager';
 export * from './managers/BridgeManager';
 export * from './managers/DeviceManager';
@@ -37,10 +37,10 @@ export * from './structures/ZigbeeConnectivity';
 export * from './structures/ZigbeeDeviceDiscovery';
 export * from './structures/Zone';
 
-// API
-export * from './api/ResourceType';
-export * from './api/ResourceIdentifier';
-export * from './api/ArcheType';
+// Types
+export * from './types/api';
+export * from './types/rest';
+export * from './types/sse';
 
 // Util
 export * from './util/resourceIdentifier';
@@ -50,3 +50,5 @@ export * from './color/xy';
 export * from './color/gamut';
 export * from './color/rgb';
 export * from './color/hex';
+
+// TODO add .ownerType, .owner, .children, .services

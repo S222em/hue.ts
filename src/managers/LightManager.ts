@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Light, LightEditOptions } from '../structures/Light';
 import { createLightPutPayload } from '../payloads/lightPayload';
 
 /**
  * Manages the light resource
  */
-export class LightManager extends Manager<APIResourceType.Light> {
+export class LightManager extends ResourceManager<Light> {
 	type = APIResourceType.Light;
 	holds = Light;
 

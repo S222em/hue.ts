@@ -1,24 +1,33 @@
 import { Resource } from './Resource';
-import { APIResourceType } from '../api/ResourceType';
-import { GeolocationManager } from '../managers/GeolocationManager';
+import { APIResource, APIResourceType } from '../types/api';
+
+export interface APIGeolocation extends APIResource<APIResourceType.Geolocation> {
+	is_configured: boolean;
+}
 
 export interface GeolocationEditOptions {
 	longitude: number;
 	latitude: number;
 }
 
-export class Geolocation extends Resource<APIResourceType.Geolocation> {
+/**
+ * Represents the geolocation resource from the hue API
+ */
+export class Geolocation extends Resource<APIGeolocation> {
 	type = APIResourceType.Geolocation;
 
-	get manager(): GeolocationManager {
-		return this.hue.geolocations;
-	}
-
+	/**
+	 * Whether this geolocation is configured
+	 */
 	public isConfigured(): boolean {
 		return this.data.is_configured;
 	}
 
+	/**
+	 * Edits this geolocation
+	 * @param options
+	 */
 	public async edit(options: GeolocationEditOptions): Promise<string> {
-		return await this.manager.edit(this.id, options);
+		return await this.hue.geolocations.edit(this.id, options);
 	}
 }

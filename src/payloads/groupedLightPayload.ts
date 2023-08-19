@@ -1,7 +1,7 @@
 import { GroupedLightEditOptions } from '../structures/GroupedLight';
-import { RESTGroupedLightPutPayload } from '../api/GroupedLight';
+import { RESTPayload } from '../types/rest';
 
-export function createGroupedLightPutPayload(options: GroupedLightEditOptions): RESTGroupedLightPutPayload {
+export function createGroupedLightPutPayload(options: GroupedLightEditOptions): RESTPayload {
 	return {
 		on: options.on ? { on: options.on } : undefined,
 		dimming: options.brightness ? { brightness: options.brightness } : undefined,

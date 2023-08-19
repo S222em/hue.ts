@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSESceneAddData } from '../../api/Scene';
+import { SSEResource } from '../../types/sse';
 
-export default function sceneAdd(data: SSESceneAddData, hue: Hue) {
+export default function sceneAdd(data: SSEResource, hue: Hue) {
 	const scene = hue.scenes._add(data);
 	if (!scene) return;
 

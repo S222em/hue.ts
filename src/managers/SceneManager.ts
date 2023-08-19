@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Scene, SceneCreateOptions, SceneEditOptions } from '../structures/Scene';
 import { createScenePostPayload, createScenePutPayload } from '../payloads/scenePayload';
 
 /**
  * Manages the scene resource
  */
-export class SceneManager extends Manager<APIResourceType.Scene> {
+export class SceneManager extends ResourceManager<Scene> {
 	type = APIResourceType.Scene;
 	holds = Scene;
 

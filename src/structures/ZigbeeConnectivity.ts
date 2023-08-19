@@ -1,6 +1,12 @@
 import { Resource } from './Resource';
-import { APIResourceType } from '../api/ResourceType';
+import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
+
+export interface APIZigbeeConnectivity extends APIResource<APIResourceType.ZigbeeConnectivity> {
+	owner: APIResourceIdentifier;
+	status: 'connected' | 'disconnected' | 'connectivity_issue' | 'unidirectional_incoming';
+	mac_address: string;
+}
 
 export enum ZigbeeConnectivityStatus {
 	Connected = 'connected',
@@ -9,21 +15,33 @@ export enum ZigbeeConnectivityStatus {
 	UnidirectionalIncoming = 'unidirectional_incoming',
 }
 
-export class ZigbeeConnectivity extends Resource<APIResourceType.ZigbeeConnectivity> {
+/**
+ * Represents the zigbee_connectivity resource from the hue API
+ */
+export class ZigbeeConnectivity extends Resource<APIZigbeeConnectivity> {
 	type = APIResourceType.ZigbeeConnectivity;
 
 	get manager(): ZigbeeConnectivityManager {
 		return this.hue.zigbeeConnectivities;
 	}
 
+	/**
+	 * ID of this zigbee connectivities owner
+	 */
 	get ownerId(): string {
 		return this.data.owner.rid;
 	}
 
+	/**
+	 * Status of the zigbee connection
+	 */
 	get status(): ZigbeeConnectivityStatus {
 		return this.data.status as ZigbeeConnectivityStatus;
 	}
 
+	/**
+	 * The MAC address of the zigbee connection
+	 */
 	get macAddress(): string {
 		return this.data.mac_address;
 	}

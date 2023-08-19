@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEZigbeeConnectivityAddData } from '../../api/ZigbeeConnectivity';
+import { SSEResource } from '../../types/sse';
 
-export default function zigbeeConnectivityAdd(data: SSEZigbeeConnectivityAddData, hue: Hue) {
+export default function zigbeeConnectivityAdd(data: SSEResource, hue: Hue) {
 	const zigbeeConnectivity = hue.zigbeeConnectivities._add(data);
 	if (!zigbeeConnectivity) return;
 

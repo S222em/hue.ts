@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEDevicePowerUpdateData } from '../../api/DevicePower';
+import { SSEResource } from '../../types/sse';
 
-export default function devicePowerUpdate(data: SSEDevicePowerUpdateData, hue: Hue) {
+export default function devicePowerUpdate(data: SSEResource, hue: Hue) {
 	const devicePower = hue.devicePowers.cache.get(data.id);
 	if (!devicePower) return;
 

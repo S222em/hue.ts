@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEMotionDeleteData } from '../../api/Motion';
+import { SSEResource } from '../../types/sse';
 
-export default function motionDelete(data: SSEMotionDeleteData, hue: Hue) {
+export default function motionDelete(data: SSEResource, hue: Hue) {
 	const motion = hue.motions.cache.get(data.id);
 	if (!motion) return;
 

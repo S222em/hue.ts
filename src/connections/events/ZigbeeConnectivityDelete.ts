@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEZigbeeConnectivityDeleteData } from '../../api/ZigbeeConnectivity';
+import { SSEResource } from '../../types/sse';
 
-export default function zigbeeConnectivityDelete(data: SSEZigbeeConnectivityDeleteData, hue: Hue) {
+export default function zigbeeConnectivityDelete(data: SSEResource, hue: Hue) {
 	const zigbeeConnectivity = hue.zigbeeConnectivities.cache.get(data.id);
 	if (!zigbeeConnectivity) return;
 

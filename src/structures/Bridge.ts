@@ -1,22 +1,38 @@
 import { Resource } from './Resource';
-import { APIResourceType } from '../api/ResourceType';
-import { BridgeManager } from '../managers/BridgeManager';
+import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 
-export class Bridge extends Resource<APIResourceType.Bridge> {
+export interface APIBridge extends APIResource<APIResourceType.Bridge> {
+	owner: APIResourceIdentifier;
+	bridge_id: string;
+	time_zone: {
+		time_zone: string;
+	};
+}
+
+/**
+ * Represents the bridge resource from the hue API
+ */
+export class Bridge extends Resource<APIBridge> {
 	type = APIResourceType.Bridge;
 
-	get manager(): BridgeManager {
-		return this.hue.bridges;
-	}
-
+	/**
+	 * ID of this bridge's owner
+	 */
 	get ownerId(): string {
 		return this.data.owner.rid;
 	}
 
+	/**
+	 * The unique ID of this bridge
+	 * This ID is given by the manufacturer
+	 */
 	get bridgeId(): string {
 		return this.data.bridge_id;
 	}
 
+	/**
+	 * The time zone this bridge is in (or set to)
+	 */
 	get timeZone(): string {
 		return this.data.time_zone.time_zone;
 	}

@@ -1,7 +1,7 @@
 import { DeviceEditOptions } from '../structures/Device';
-import { RESTDevicePutPayload } from '../api/Device';
+import { RESTPayload } from '../types/rest';
 
-export function createDevicePutPayload(options: DeviceEditOptions): RESTDevicePutPayload {
+export function createDevicePutPayload(options: DeviceEditOptions): RESTPayload {
 	return {
 		metadata: {
 			name: options.name,

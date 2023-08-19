@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Geolocation, GeolocationEditOptions } from '../structures/Geolocation';
 import { createGeolocationPutPayload } from '../payloads/geolocationPayload';
 
 /**
  * Manages the geolocation resource
  */
-export class GeolocationManager extends Manager<APIResourceType.Geolocation> {
+export class GeolocationManager extends ResourceManager<Geolocation> {
 	type = APIResourceType.Geolocation;
 	holds = Geolocation;
 

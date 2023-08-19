@@ -1,3 +1,38 @@
+export enum APIResourceType {
+	Device = 'device',
+	BridgeHome = 'bridge_home',
+	Room = 'room',
+	Zone = 'zone',
+	Light = 'light',
+	Button = 'button',
+	Temperature = 'temperature',
+	LightLevel = 'light_level',
+	Motion = 'motion',
+	Entertainment = 'entertainment',
+	GroupedLight = 'grouped_light',
+	DevicePower = 'device_power',
+	ZigbeeConnectivity = 'zigbee_connectivity',
+	ZgpConnectivity = 'zgp_connectivity',
+	ZigbeeDeviceDiscovery = 'zigbee_device_discovery',
+	Bridge = 'bridge',
+	Homekit = 'homekit',
+	Scene = 'scene',
+	EntertainmentConfiguration = 'entertainment_configuration',
+	PublicImage = 'public_image',
+	BehaviourScript = 'behaviour_script',
+	BehaviourInstance = 'behaviour_instance',
+	Geofence = 'geofence',
+	GeofenceClient = 'geofence_client',
+	Geolocation = 'geolocation',
+}
+
+export type APIResource<T extends APIResourceType = APIResourceType> = { id: string; type: T } & Record<string, any>;
+
+export interface APIResourceIdentifier<T extends APIResourceType = APIResourceType> {
+	rid: string;
+	rtype: T;
+}
+
 export enum APIArcheType {
 	Unknown = 'unknown_archetype',
 	ClassicBulb = 'classic_bulb',

@@ -1,7 +1,6 @@
 import { Hue } from './Hue';
 import { Request, Response } from '../connections/Rest';
 import { Light } from '../structures/Light';
-import { NarrowResource } from '../structures/Resource';
 import { Device } from '../structures/Device';
 import { Room } from '../structures/Room';
 import { Zone } from '../structures/Zone';
@@ -22,9 +21,6 @@ export const Events = {
 	Debug: 'debug',
 	Request: 'request',
 	Response: 'response',
-	Add: 'add',
-	Update: 'update',
-	Delete: 'delete',
 	DeviceAdd: 'deviceAdd',
 	DeviceUpdate: 'deviceUpdate',
 	DeviceDelete: 'deviceDelete',
@@ -73,9 +69,6 @@ export interface HueEvents {
 	[Events.Debug]: [debug: string];
 	[Events.Request]: [request: Request];
 	[Events.Response]: [response: Response];
-	[Events.Add]: [resource: NarrowResource<any>];
-	[Events.Update]: [newResource: NarrowResource<any>, oldResource: NarrowResource<any>];
-	[Events.Delete]: [NarrowResource<any>];
 	[Events.DeviceAdd]: [device: Device];
 	[Events.DeviceUpdate]: [newDevice: Device, oldDevice: Device];
 	[Events.DeviceDelete]: [device: Device];

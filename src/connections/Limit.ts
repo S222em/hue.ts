@@ -15,7 +15,7 @@ export const RequestIntervals: { [key: string]: number } = {
  */
 export class Limit extends AsyncQueue {
 	/**
-	 * Request per ms
+	 * Millisecond interval for requests
 	 */
 	public interval: number;
 

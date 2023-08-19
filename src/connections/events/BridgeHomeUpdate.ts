@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEBridgeHomeUpdateData } from '../../api/BridgeHome';
+import { SSEResource } from '../../types/sse';
 
-export default function bridgeHomeUpdate(data: SSEBridgeHomeUpdateData, hue: Hue) {
+export default function bridgeHomeUpdate(data: SSEResource, hue: Hue) {
 	const bridgeHome = hue.bridgeHomes.cache.get(data.id);
 	if (!bridgeHome) return;
 

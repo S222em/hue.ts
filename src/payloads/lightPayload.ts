@@ -1,9 +1,8 @@
 import { LightEditOptions } from '../structures/Light';
-import { RESTLightPutPayload } from '../api/Light';
+import { RESTPayload } from '../types/rest';
 
-export function createLightPutPayload(options: LightEditOptions): RESTLightPutPayload {
+export function createLightPutPayload(options: LightEditOptions): RESTPayload {
 	return {
-		metadata: { name: options.name, archetype: options.archeType },
 		on: options.on ? { on: options.on } : undefined,
 		dynamics: options.dynamics ? { duration: options.dynamics.duration, speed: options.dynamics.speed } : undefined,
 		effects: options.effect ? { effect: options.effect } : undefined,
@@ -17,7 +16,7 @@ export function createLightPutPayload(options: LightEditOptions): RESTLightPutPa
 	};
 }
 
-export function createLightGradientPayload(gradient: LightEditOptions['gradient']): RESTLightPutPayload['gradient'] {
+export function createLightGradientPayload(gradient: LightEditOptions['gradient']): RESTPayload {
 	return {
 		points: gradient!.map((point) => {
 			return {

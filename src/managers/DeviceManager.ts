@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { Device, DeviceEditOptions } from '../structures/Device';
 import { createDevicePutPayload } from '../payloads/devicePayload';
 
 /**
  * Manages the device resource
  */
-export class DeviceManager extends Manager<APIResourceType.Device> {
+export class DeviceManager extends ResourceManager<Device> {
 	type = APIResourceType.Device;
 	holds = Device;
 

@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEGroupedLightUpdateData } from '../../api/GroupedLight';
+import { SSEResource } from '../../types/sse';
 
-export default function groupedLightUpdate(data: SSEGroupedLightUpdateData, hue: Hue) {
+export default function groupedLightUpdate(data: SSEResource, hue: Hue) {
 	const groupedLight = hue.groupedLights.cache.get(data.id);
 	if (!groupedLight) return;
 

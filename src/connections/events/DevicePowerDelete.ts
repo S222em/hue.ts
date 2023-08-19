@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEDevicePowerDeleteData } from '../../api/DevicePower';
+import { SSEResource } from '../../types/sse';
 
-export default function devicePowerDelete(data: SSEDevicePowerDeleteData, hue: Hue) {
+export default function devicePowerDelete(data: SSEResource, hue: Hue) {
 	const devicePower = hue.devicePowers.cache.get(data.id);
 	if (!devicePower) return;
 

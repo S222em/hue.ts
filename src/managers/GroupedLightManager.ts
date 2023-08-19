@@ -1,12 +1,12 @@
-import { Manager } from './Manager';
-import { APIResourceType } from '../api/ResourceType';
+import { ResourceManager } from './ResourceManager';
+import { APIResourceType } from '../types/api';
 import { GroupedLight, GroupedLightEditOptions } from '../structures/GroupedLight';
 import { createGroupedLightPutPayload } from '../payloads/groupedLightPayload';
 
 /**
  * Manages the grouped_light resource
  */
-export class GroupedLightManager extends Manager<APIResourceType.GroupedLight> {
+export class GroupedLightManager extends ResourceManager<GroupedLight> {
 	type = APIResourceType.GroupedLight;
 	holds = GroupedLight;
 

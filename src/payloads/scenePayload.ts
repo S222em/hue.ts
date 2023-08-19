@@ -1,10 +1,9 @@
 import { SceneAction, SceneCreateOptions, SceneEditOptions } from '../structures/Scene';
-import { RESTScenePostPayload, RESTScenePutPayload } from '../api/Scene';
 import { createResourceIdentifier } from '../util/resourceIdentifier';
-import { APIResourceType } from '../api/ResourceType';
-import { APIResourceIdentifier } from '../api/ResourceIdentifier';
+import { APIResourceIdentifier, APIResourceType } from '../types/api';
+import { RESTPayload } from '../types/rest';
 
-export function createScenePutPayload(options: SceneEditOptions): RESTScenePutPayload {
+export function createScenePutPayload(options: SceneEditOptions): RESTPayload {
 	return {
 		metadata: options.name ? { name: options.name } : undefined,
 		speed: options.speed,
@@ -15,39 +14,22 @@ export function createScenePutPayload(options: SceneEditOptions): RESTScenePutPa
 					duration: options.recall.duration,
 			  }
 			: undefined,
-		actions: options.actions ? createSceneActionsPutPayload(options.actions) : undefined,
+		actions: options.actions ? createSceneActionsPayload(options.actions) : undefined,
 	};
 }
 
 export function createScenePostPayload(
 	groupIdentifier: APIResourceIdentifier,
 	options: SceneCreateOptions,
-): RESTScenePostPayload {
+): RESTPayload {
 	return {
 		metadata: { name: options.name },
 		group: groupIdentifier,
-		actions: createSceneActionsPostPayload(options.actions),
+		actions: createSceneActionsPayload(options.actions),
 	};
 }
 
-export function createSceneActionsPutPayload(actions: SceneEditOptions['actions']): RESTScenePutPayload['actions'] {
-	return actions!.map((action) => {
-		return {
-			target: createResourceIdentifier(action.id, APIResourceType.Light),
-			action: {
-				on: action.on ? { on: action.on } : undefined,
-				dimming: { brightness: action.brightness ?? action.color?.z },
-				color: action.color ? { xy: { x: action.color.x, y: action.color.y } } : undefined,
-				color_temperature: action.colorTemperature ? { mirek: action.colorTemperature } : undefined,
-				gradient: action.gradient ? createSceneActionGradientPayload(action.gradient) : undefined,
-				effects: action.effects,
-				dynamics: action.dynamics ? { duration: action.dynamics.duration } : undefined,
-			},
-		};
-	});
-}
-
-export function createSceneActionsPostPayload(actions: SceneCreateOptions['actions']): RESTScenePostPayload['actions'] {
+export function createSceneActionsPayload(actions: SceneAction[]): RESTPayload[] {
 	return actions.map((action) => {
 		const brightness = action.brightness ?? action.color?.z;
 
@@ -66,7 +48,7 @@ export function createSceneActionsPostPayload(actions: SceneCreateOptions['actio
 	});
 }
 
-export function createSceneActionGradientPayload(gradient: SceneAction['gradient']) {
+export function createSceneActionGradientPayload(gradient: SceneAction['gradient']): RESTPayload {
 	return {
 		points: gradient!.map((point) => {
 			return {

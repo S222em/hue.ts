@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSERoomAddData } from '../../api/Room';
+import { SSEResource } from '../../types/sse';
 
-export default function roomAdd(data: SSERoomAddData, hue: Hue) {
+export default function roomAdd(data: SSEResource, hue: Hue) {
 	const room = hue.rooms._add(data);
 	if (!room) return;
 

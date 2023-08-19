@@ -1,8 +1,8 @@
 import { Hue } from '../../hue/Hue';
 import { Events } from '../../hue/HueEvents';
-import { SSEZoneAddData } from '../../api/Zone';
+import { SSEResource } from '../../types/sse';
 
-export default function zoneAdd(data: SSEZoneAddData, hue: Hue) {
+export default function zoneAdd(data: SSEResource, hue: Hue) {
 	const zone = hue.zones._add(data);
 	if (!zone) return;
 
