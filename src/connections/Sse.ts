@@ -2,7 +2,7 @@ import { CA, Hue } from '../hue/Hue';
 import { Agent, Dispatcher, request } from 'undici';
 import BodyReadable from 'undici/types/readable';
 import { Events } from '../hue/HueEvents';
-import { RESOURCE_ADD, RESOURCE_DELETE, RESOURCE_UPDATE } from './events';
+import { RESOURCE_ADD_ACTION, RESOURCE_DELETE_ACTION, RESOURCE_UPDATE_ACTION } from '../actions';
 import { Base } from '../structures/Base';
 
 /**
@@ -95,7 +95,7 @@ export class SSE extends Base {
 			queue = [...this.onEvent(event), ...queue];
 		}
 
-		//Emits all the processed events
+		//Emits all the processed actions
 		//In case this is not delayed until every event is processed there might be missing cache
 		//For example, creating a room also creates a groupedLight
 		//If the creation of the room is emitted first, the groupedLight resource belonging to it will be missing
@@ -128,9 +128,9 @@ export class SSE extends Base {
 	public onEventData(type: string, data: Record<string, any>): (() => boolean) | undefined {
 		let handler: ((data: any, hue: Hue) => (() => boolean) | undefined) | undefined;
 
-		if (type == 'add') handler = RESOURCE_ADD[data.type];
-		else if (type == 'delete') handler = RESOURCE_DELETE[data.type];
-		else if (type == 'update') handler = RESOURCE_UPDATE[data.type];
+		if (type == 'add') handler = RESOURCE_ADD_ACTION[data.type];
+		else if (type == 'delete') handler = RESOURCE_DELETE_ACTION[data.type];
+		else if (type == 'update') handler = RESOURCE_UPDATE_ACTION[data.type];
 
 		if (handler) return handler(data, this.hue);
 	}

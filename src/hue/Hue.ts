@@ -15,8 +15,9 @@ import { ZigbeeDeviceDiscoveryManager } from '../managers/ZigbeeDeviceDiscoveryM
 import { BridgeManager } from '../managers/BridgeManager';
 import { BridgeHomeManager } from '../managers/BridgeHomeManager';
 import { GeolocationManager } from '../managers/GeolocationManager';
-import { RESOURCE_ADD } from '../connections/events';
+import { RESOURCE_ADD_ACTION } from '../actions';
 import { ButtonManager } from '../managers/ButtonManager';
+import { TemperatureManager } from '../managers/TemperatureManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -139,6 +140,11 @@ export class Hue extends EventEmitter {
 	public readonly buttons = new ButtonManager(this);
 
 	/**
+	 * All of the {@link Temperature} objects that have been cached, mapped by their ids
+	 */
+	public readonly temperatures = new TemperatureManager(this);
+
+	/**
 	 * The REST manager
 	 * @private
 	 */
@@ -171,7 +177,7 @@ export class Hue extends EventEmitter {
 		const data = await this._rest.get('/resource');
 
 		for (const resource of data.data) {
-			const handler = RESOURCE_ADD[resource.type];
+			const handler = RESOURCE_ADD_ACTION[resource.type];
 			if (handler) handler(resource, this);
 		}
 
