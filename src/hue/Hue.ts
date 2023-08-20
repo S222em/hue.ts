@@ -16,6 +16,7 @@ import { BridgeManager } from '../managers/BridgeManager';
 import { BridgeHomeManager } from '../managers/BridgeHomeManager';
 import { GeolocationManager } from '../managers/GeolocationManager';
 import { RESOURCE_ADD } from '../connections/events';
+import { ButtonManager } from '../managers/ButtonManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -55,6 +56,7 @@ export interface Hue {
 	off: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
 	removeListener: <T extends keyof HueEvents>(event: T, listener: (...args: HueEvents[T]) => any) => this;
 	removeAllListeners: <T extends keyof HueEvents>(event?: T) => this;
+	emit: <T extends keyof HueEvents>(event: T, ...args: HueEvents[T]) => boolean;
 }
 
 /**
@@ -130,6 +132,11 @@ export class Hue extends EventEmitter {
 	 * All of the {@link Geolocation} objects that have been cached, mapped by their ids
 	 */
 	public readonly geolocations = new GeolocationManager(this);
+
+	/**
+	 * All of the {@link Button} objects that have been cached, mapped by their ids
+	 */
+	public readonly buttons = new ButtonManager(this);
 
 	/**
 	 * The REST manager

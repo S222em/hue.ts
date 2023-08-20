@@ -10,5 +10,5 @@ export default function zigbeeDeviceDiscoveryDelete(data: SSEResource, hue: Hue)
 
 	hue.zigbeeDeviceDiscoveries.cache.delete(data.id);
 
-	return () => hue.emit(Events.ZigbeeDeviceDiscoveryUpdate, clone);
+	return () => hue.emit(Events.ZigbeeDeviceDiscoveryDelete, clone);
 }

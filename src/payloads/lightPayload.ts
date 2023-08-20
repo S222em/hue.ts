@@ -3,7 +3,7 @@ import { RESTPayload } from '../types/rest';
 
 export function createLightPutPayload(options: LightEditOptions): RESTPayload {
 	return {
-		on: options.on ? { on: options.on } : undefined,
+		on: options.on != undefined ? { on: options.on } : undefined,
 		dynamics: options.dynamics ? { duration: options.dynamics.duration, speed: options.dynamics.speed } : undefined,
 		effects: options.effect ? { effect: options.effect } : undefined,
 		timed_effects: options.timedEffects

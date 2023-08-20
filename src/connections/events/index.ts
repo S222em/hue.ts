@@ -40,6 +40,9 @@ import geolocationAdd from './GeolocationAdd';
 import geolocationDelete from './GeolocationDelete';
 import geolocationUpdate from './GeolocationUpdate';
 import { SSEResource } from '../../types/sse';
+import buttonAdd from './ButtonAdd';
+import buttonDelete from './ButtonDelete';
+import buttonUpdate from './ButtonUpdate';
 
 export const RESOURCE_ADD: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
 	[APIResourceType.Device]: deviceAdd,
@@ -55,6 +58,7 @@ export const RESOURCE_ADD: { [key: string]: (data: SSEResource, hue: Hue) => (()
 	[APIResourceType.Bridge]: bridgeAdd,
 	[APIResourceType.BridgeHome]: bridgeHomeAdd,
 	[APIResourceType.Geolocation]: geolocationAdd,
+	[APIResourceType.Button]: buttonAdd,
 };
 
 export const RESOURCE_DELETE: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -71,6 +75,7 @@ export const RESOURCE_DELETE: { [key: string]: (data: SSEResource, hue: Hue) => 
 	[APIResourceType.Bridge]: bridgeDelete,
 	[APIResourceType.BridgeHome]: bridgeHomeDelete,
 	[APIResourceType.Geolocation]: geolocationDelete,
+	[APIResourceType.Button]: buttonDelete,
 };
 
 export const RESOURCE_UPDATE: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -87,4 +92,5 @@ export const RESOURCE_UPDATE: { [key: string]: (data: SSEResource, hue: Hue) => 
 	[APIResourceType.Bridge]: bridgeUpdate,
 	[APIResourceType.BridgeHome]: bridgeHomeUpdate,
 	[APIResourceType.Geolocation]: geolocationUpdate,
+	[APIResourceType.Button]: buttonUpdate,
 };

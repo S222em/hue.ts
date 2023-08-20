@@ -13,6 +13,7 @@ import { ZigbeeDeviceDiscovery } from '../structures/ZigbeeDeviceDiscovery';
 import { Bridge } from '../structures/Bridge';
 import { BridgeHome } from '../structures/BridgeHome';
 import { Geolocation } from '../structures/Geolocation';
+import { Button } from '../structures/Button';
 
 export const Events = {
 	Ready: 'ready',
@@ -60,6 +61,9 @@ export const Events = {
 	GeolocationAdd: 'geolocationAdd',
 	GeolocationUpdate: 'geolocationUpdate',
 	GeolocationDelete: 'geolocationDelete',
+	ButtonAdd: 'buttonAdd',
+	ButtonUpdate: 'buttonUpdate',
+	ButtonDelete: 'buttonDelete',
 } as const;
 
 export interface HueEvents {
@@ -114,4 +118,7 @@ export interface HueEvents {
 	[Events.GeolocationAdd]: [geolocation: Geolocation];
 	[Events.GeolocationUpdate]: [newGeolocation: Geolocation, oldGeolocation: Geolocation];
 	[Events.GeolocationDelete]: [geolocation: Geolocation];
+	[Events.ButtonAdd]: [button: Button];
+	[Events.ButtonUpdate]: [newButton: Button, oldButton: Button];
+	[Events.ButtonDelete]: [button: Button];
 }
