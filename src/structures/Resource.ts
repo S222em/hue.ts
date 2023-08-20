@@ -39,6 +39,36 @@ export abstract class Resource<TData extends APIResource = APIResource> extends 
 	}
 
 	/**
+	 * Whether this resource is a service of specified resource
+	 * @param resource
+	 *
+	 * @example
+	 * ```
+	 * const button = hue.buttons.cache.first()!;
+	 *
+	 * const device = hue.devices.cache.find((device) => button.isServiceOf(device))!;
+	 * ```
+	 */
+	public isServiceOf(resource: Resource & { serviceIds: string[] }): boolean {
+		return resource.serviceIds.includes(this.id);
+	}
+
+	/**
+	 * Whether this resource is a child of specified resource
+	 * @param resource
+	 *
+	 * @example
+	 * ```
+	 * const light = hue.lights.cache.first()!;
+	 *
+	 * const room = hue.rooms.cache.find((room) => light.isChildOf(room))!;
+	 * ```
+	 */
+	public isChildOf(resource: Resource & { childIds: string[] }): boolean {
+		return resource.childIds.includes(this.id);
+	}
+
+	/**
 	 * Merges .data with data recieved from SSE
 	 * @param data
 	 */
