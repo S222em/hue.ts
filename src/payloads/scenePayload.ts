@@ -36,7 +36,7 @@ export function createSceneActionsPayload(actions: SceneAction[]): RESTPayload[]
 		return {
 			target: createResourceIdentifier(action.id, APIResourceType.Light),
 			action: {
-				on: action.on ? { on: action.on } : undefined,
+				on: action.on != undefined ? { on: action.on } : undefined,
 				dimming: brightness ? { brightness } : undefined,
 				color: action.color ? { xy: { x: action.color.x, y: action.color.y } } : undefined,
 				color_temperature: action.colorTemperature ? { mirek: action.colorTemperature } : undefined,
