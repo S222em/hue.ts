@@ -4,7 +4,7 @@ import { Temperature, TemperatureEditOptions } from '../structures/Temperature';
 import { createTemperaturePutPayload } from '../payloads/temperaturePayload';
 
 /**
- * Manages the motion resource
+ * Manages the temperature resource
  */
 export class TemperatureManager extends ResourceManager<Temperature> {
 	type = APIResourceType.Temperature;

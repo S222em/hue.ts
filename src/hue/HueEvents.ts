@@ -15,6 +15,7 @@ import { BridgeHome } from '../structures/BridgeHome';
 import { Geolocation } from '../structures/Geolocation';
 import { Button } from '../structures/Button';
 import { Temperature } from '../structures/Temperature';
+import { LightLevel } from '../structures/LightLevel';
 
 export const Events = {
 	Ready: 'ready',
@@ -68,6 +69,9 @@ export const Events = {
 	TemperatureAdd: 'temperatureAdd',
 	TemperatureUpdate: 'temperatureUpdate',
 	TemperatureDelete: 'temperatureDelete',
+	LightLevelAdd: 'lightLevelAdd',
+	LightLevelUpdate: 'lightLevelUpdate',
+	LightLevelDelete: 'lightLevelDelete',
 } as const;
 
 export interface HueEvents {
@@ -128,4 +132,7 @@ export interface HueEvents {
 	[Events.TemperatureAdd]: [temperature: Temperature];
 	[Events.TemperatureUpdate]: [newTemperature: Temperature, oldTemperature: Temperature];
 	[Events.TemperatureDelete]: [temperature: Temperature];
+	[Events.LightLevelAdd]: [lightLevel: LightLevel];
+	[Events.LightLevelUpdate]: [newLightLevel: LightLevel, oldLightLevel: LightLevel];
+	[Events.LightLevelDelete]: [lightLevel: LightLevel];
 }

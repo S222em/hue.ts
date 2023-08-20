@@ -46,6 +46,9 @@ import buttonUpdate from './ButtonUpdate';
 import temperatureAdd from './TemperatureAdd';
 import temperatureDelete from './TemperatureDelete';
 import temperatureUpdate from './TemperatureUpdate';
+import lightLevelAdd from './LightLevelAdd';
+import lightLevelDelete from './LightLevelDelete';
+import lightLevelUpdate from './LightLevelUpdate';
 
 export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
 	[APIResourceType.Device]: deviceAdd,
@@ -63,6 +66,7 @@ export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue)
 	[APIResourceType.Geolocation]: geolocationAdd,
 	[APIResourceType.Button]: buttonAdd,
 	[APIResourceType.Temperature]: temperatureAdd,
+	[APIResourceType.LightLevel]: lightLevelAdd,
 };
 
 export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -81,6 +85,7 @@ export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Geolocation]: geolocationDelete,
 	[APIResourceType.Button]: buttonDelete,
 	[APIResourceType.Temperature]: temperatureDelete,
+	[APIResourceType.LightLevel]: lightLevelDelete,
 };
 
 export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -99,4 +104,5 @@ export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Geolocation]: geolocationUpdate,
 	[APIResourceType.Button]: buttonUpdate,
 	[APIResourceType.Temperature]: temperatureUpdate,
+	[APIResourceType.LightLevel]: lightLevelUpdate,
 };
