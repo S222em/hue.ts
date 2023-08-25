@@ -10,7 +10,19 @@ export function createLightPutPayload(options: LightEditOptions): RESTPayload {
 			? { duration: options.timedEffects.duration, effect: options.timedEffects.effect }
 			: undefined,
 		dimming: { brightness: options.brightness ?? options.color?.z },
+		dimming_delta: options.brightnessDelta
+			? {
+					action: options.brightnessDelta.action,
+					brightness_delta: options.brightnessDelta.brightness,
+			  }
+			: undefined,
 		color_temperature: options.colorTemperature ? { mirek: options.colorTemperature } : undefined,
+		color_temperature_delta: options.colorTemperatureDelta
+			? {
+					action: options.colorTemperatureDelta.action,
+					mirek_delta: options.colorTemperatureDelta.colorTemperature,
+			  }
+			: undefined,
 		color: options.color ? { xy: { x: options.color.x, y: options.color.y } } : undefined,
 		gradient: options.gradient ? createLightGradientPayload(options.gradient) : undefined,
 	};

@@ -124,3 +124,9 @@ export enum APIArcheType {
 	Pool = 'pool',
 	Other = 'other',
 }
+
+export enum APIDeltaAction {
+	Up = 'up',
+	Stop = 'stop',
+	Down = 'down',
+}

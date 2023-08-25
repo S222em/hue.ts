@@ -1,5 +1,5 @@
 import { Resource } from './Resource';
-import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
+import { APIDeltaAction, APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { XyPoint } from '../color/xy';
 
 export interface APIGroupedLight extends APIResource<APIResourceType.GroupedLight> {
@@ -15,9 +15,19 @@ export interface APIGroupedLight extends APIResource<APIResourceType.GroupedLigh
 export interface GroupedLightEditOptions {
 	on?: boolean;
 	brightness?: number;
+	brightnessDelta?: {
+		action: APIDeltaAction;
+		brightness: number;
+	};
 	colorTemperature?: number;
+	colorTemperatureDelta?: {
+		action: APIDeltaAction;
+		colorTemperature: number;
+	};
 	color?: XyPoint;
 }
+
+//TODO add dynamics (duration)
 
 /**
  * Represents the grouped_light resource from the hue API
@@ -76,11 +86,27 @@ export class GroupedLight extends Resource<APIGroupedLight> {
 	}
 
 	/**
+	 * Sets the brightness delta (up action increments, down action decrements) for all lights in this grouped light
+	 * @param delta
+	 */
+	public async setBrightnessDelta(delta: GroupedLightEditOptions['brightnessDelta']): Promise<string> {
+		return await this.edit({ brightnessDelta: delta });
+	}
+
+	/**
 	 * Sets the color temperature for all lights in this grouped light
 	 * @param colorTemperature
 	 */
 	public async setColorTemperature(colorTemperature: GroupedLightEditOptions['colorTemperature']): Promise<string> {
 		return await this.edit({ colorTemperature: colorTemperature });
+	}
+
+	/**
+	 * Sets the color temperature delta (up action increments, down action decrements) for all lights in this grouped light
+	 * @param delta
+	 */
+	public async setColorTemperatureDelta(delta: GroupedLightEditOptions['colorTemperatureDelta']): Promise<string> {
+		return await this.edit({ colorTemperatureDelta: delta });
 	}
 
 	/**

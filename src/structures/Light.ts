@@ -1,4 +1,4 @@
-import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
+import { APIDeltaAction, APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../color/xy';
 import { createGamut, Gamut, resolveGamutByType } from '../color/gamut';
 import { Resource } from './Resource';
@@ -123,7 +123,15 @@ export interface LightEditOptions {
 		duration?: number;
 	};
 	brightness?: number;
+	brightnessDelta?: {
+		action: APIDeltaAction;
+		brightness: number;
+	};
 	colorTemperature?: number;
+	colorTemperatureDelta?: {
+		action: APIDeltaAction;
+		colorTemperature: number;
+	};
 	color?: XyPoint;
 	gradient?: XyPoint[];
 }
@@ -145,7 +153,6 @@ export enum LightMode {
 }
 
 // TODO add effects and timed_effects
-// TODO dimming_delta & color_temperature_delta
 
 /**
  * Represents the light resource from the hue API
@@ -286,7 +293,7 @@ export class Light extends Resource<APILight> {
 	 * Sets the light to a dynamic effect
 	 * @param effect
 	 */
-	public async effect(effect: LightEditOptions['effect']): Promise<string> {
+	public async setEffect(effect: LightEditOptions['effect']): Promise<string> {
 		return await this.edit({ effect });
 	}
 
@@ -294,7 +301,7 @@ export class Light extends Resource<APILight> {
 	 * Sets the light to a dynamic effect that has a duration
 	 * @param timedEffects
 	 */
-	public async timedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<string> {
+	public async setTimedEffect(timedEffects: LightEditOptions['timedEffects']): Promise<string> {
 		return await this.edit({ timedEffects });
 	}
 
@@ -308,6 +315,15 @@ export class Light extends Resource<APILight> {
 	}
 
 	/**
+	 * Sets the lights brightness delta (up action increments, down action decrements)
+	 * @param delta
+	 * @param duration
+	 */
+	public async setBrightnessDelta(delta: LightEditOptions['brightnessDelta'], duration?: number): Promise<string> {
+		return await this.edit({ brightnessDelta: delta, on: true, dynamics: { duration } });
+	}
+
+	/**
 	 * Sets the lights color temperature
 	 * @param colorTemperature
 	 * @param duration
@@ -317,6 +333,18 @@ export class Light extends Resource<APILight> {
 		duration?: number,
 	): Promise<string> {
 		return await this.edit({ colorTemperature: colorTemperature, on: true, dynamics: { duration } });
+	}
+
+	/**
+	 * Sets the lights color temperature delta (up action increments, down action decrements)
+	 * @param delta
+	 * @param duration
+	 */
+	public async setColorTemperatureDelta(
+		delta: LightEditOptions['colorTemperatureDelta'],
+		duration?: number,
+	): Promise<string> {
+		return await this.edit({ colorTemperatureDelta: delta, on: true, dynamics: { duration } });
 	}
 
 	/**

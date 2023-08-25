@@ -64,6 +64,13 @@ export class SSE extends Base {
 	}
 
 	/**
+	 * Closes the connection to the hue system
+	 */
+	public close(): void {
+		this.connection?.destroy();
+	}
+
+	/**
 	 * Used for handling errors on the connection
 	 * @param error
 	 */
