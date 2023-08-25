@@ -7,6 +7,10 @@ export function createDevicePutPayload(options: DeviceEditOptions): RESTPayload 
 			name: options.name,
 			archetype: options.archeType,
 		},
-		identify: options.action ? { action: options.action } : undefined,
+		identify: options.action
+			? {
+					action: options.action,
+			  }
+			: undefined,
 	};
 }

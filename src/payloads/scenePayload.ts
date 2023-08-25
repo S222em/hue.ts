@@ -5,7 +5,11 @@ import { RESTPayload } from '../types/rest';
 
 export function createScenePutPayload(options: SceneEditOptions): RESTPayload {
 	return {
-		metadata: options.name ? { name: options.name } : undefined,
+		metadata: options.name
+			? {
+					name: options.name,
+			  }
+			: undefined,
 		speed: options.speed,
 		recall: options.recall
 			? {
@@ -36,13 +40,34 @@ export function createSceneActionsPayload(actions: SceneAction[]): RESTPayload[]
 		return {
 			target: createResourceIdentifier(action.id, APIResourceType.Light),
 			action: {
-				on: action.on != undefined ? { on: action.on } : undefined,
-				dimming: brightness ? { brightness } : undefined,
-				color: action.color ? { xy: { x: action.color.x, y: action.color.y } } : undefined,
-				color_temperature: action.colorTemperature ? { mirek: action.colorTemperature } : undefined,
+				on:
+					action.on != undefined
+						? {
+								on: action.on,
+						  }
+						: undefined,
+				dimming: brightness
+					? {
+							brightness,
+					  }
+					: undefined,
+				color: action.color
+					? {
+							xy: { x: action.color.x, y: action.color.y },
+					  }
+					: undefined,
+				color_temperature: action.colorTemperature
+					? {
+							mirek: action.colorTemperature,
+					  }
+					: undefined,
 				gradient: action.gradient ? createSceneActionGradientPayload(action.gradient) : undefined,
 				effects: action.effects,
-				dynamics: action.dynamics ? { duration: action.dynamics.duration } : undefined,
+				dynamics: action.dynamics
+					? {
+							duration: action.dynamics.duration,
+					  }
+					: undefined,
 			},
 		};
 	});

@@ -25,9 +25,10 @@ export interface GroupedLightEditOptions {
 		colorTemperature: number;
 	};
 	color?: XyPoint;
+	dynamics?: {
+		duration?: number;
+	};
 }
-
-//TODO add dynamics (duration)
 
 /**
  * Represents the grouped_light resource from the hue API
@@ -58,63 +59,80 @@ export class GroupedLight extends Resource<APIGroupedLight> {
 
 	/**
 	 * Turns all lights in this grouped light on
+	 * @param duration
 	 */
-	public async on(): Promise<string> {
-		return await this.edit({ on: true });
+	public async on(duration?: number): Promise<string> {
+		return await this.edit({ on: true, dynamics: { duration } });
 	}
 
 	/**
 	 * Turns all lights in this grouped light off
+	 * @param duration
 	 */
-	public async off(): Promise<string> {
-		return await this.edit({ on: false });
+	public async off(duration?: number): Promise<string> {
+		return await this.edit({ on: false, dynamics: { duration } });
 	}
 
 	/**
 	 * Toggles all lights in this grouped light, toggle state is based on majority of lights
+	 * @param duration
 	 */
-	public async toggle(): Promise<string> {
-		return await this.edit({ on: !this.isOn() });
+	public async toggle(duration?: number): Promise<string> {
+		return await this.edit({ on: !this.isOn(), dynamics: { duration } });
 	}
 
 	/**
 	 * Sets the brightness for all lights in this grouped light
 	 * @param brightness
+	 * @param duration
 	 */
-	public async setBrightness(brightness: GroupedLightEditOptions['brightness']): Promise<string> {
-		return await this.edit({ brightness });
+	public async setBrightness(brightness: GroupedLightEditOptions['brightness'], duration?: number): Promise<string> {
+		return await this.edit({ brightness, dynamics: { duration } });
 	}
 
 	/**
 	 * Sets the brightness delta (up action increments, down action decrements) for all lights in this grouped light
 	 * @param delta
+	 * @param duration
 	 */
-	public async setBrightnessDelta(delta: GroupedLightEditOptions['brightnessDelta']): Promise<string> {
-		return await this.edit({ brightnessDelta: delta });
+	public async setBrightnessDelta(
+		delta: GroupedLightEditOptions['brightnessDelta'],
+		duration?: number,
+	): Promise<string> {
+		return await this.edit({ brightnessDelta: delta, dynamics: { duration } });
 	}
 
 	/**
 	 * Sets the color temperature for all lights in this grouped light
 	 * @param colorTemperature
+	 * @param duration
 	 */
-	public async setColorTemperature(colorTemperature: GroupedLightEditOptions['colorTemperature']): Promise<string> {
-		return await this.edit({ colorTemperature: colorTemperature });
+	public async setColorTemperature(
+		colorTemperature: GroupedLightEditOptions['colorTemperature'],
+		duration?: number,
+	): Promise<string> {
+		return await this.edit({ colorTemperature: colorTemperature, dynamics: { duration } });
 	}
 
 	/**
 	 * Sets the color temperature delta (up action increments, down action decrements) for all lights in this grouped light
 	 * @param delta
+	 * @param duration
 	 */
-	public async setColorTemperatureDelta(delta: GroupedLightEditOptions['colorTemperatureDelta']): Promise<string> {
-		return await this.edit({ colorTemperatureDelta: delta });
+	public async setColorTemperatureDelta(
+		delta: GroupedLightEditOptions['colorTemperatureDelta'],
+		duration?: number,
+	): Promise<string> {
+		return await this.edit({ colorTemperatureDelta: delta, dynamics: { duration } });
 	}
 
 	/**
 	 * Sets the color for all lights in this grouped light
 	 * @param color
+	 * @param duration
 	 */
-	public async setColor(color: GroupedLightEditOptions['color']): Promise<string> {
-		return await this.edit({ color });
+	public async setColor(color: GroupedLightEditOptions['color'], duration?: number): Promise<string> {
+		return await this.edit({ color, dynamics: { duration } });
 	}
 
 	/**
