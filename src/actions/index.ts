@@ -22,6 +22,7 @@ import { buttonAdd, buttonDelete, buttonUpdate } from './Button';
 import { temperatureAdd, temperatureDelete, temperatureUpdate } from './Temperature';
 import { lightLevelAdd, lightLevelDelete, lightLevelUpdate } from './LightLevel';
 import { zgpConnectivityAdd, zgpConnectivityDelete, zgpConnectivityUpdate } from './ZgpConnectivity';
+import { geofenceClientAdd, geofenceClientDelete, geofenceClientUpdate } from './GeofenceClient';
 
 export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
 	[APIResourceType.Device]: deviceAdd,
@@ -41,6 +42,7 @@ export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue)
 	[APIResourceType.Temperature]: temperatureAdd,
 	[APIResourceType.LightLevel]: lightLevelAdd,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityAdd,
+	[APIResourceType.GeofenceClient]: geofenceClientAdd,
 };
 
 export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -61,6 +63,7 @@ export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Temperature]: temperatureDelete,
 	[APIResourceType.LightLevel]: lightLevelDelete,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityDelete,
+	[APIResourceType.GeofenceClient]: geofenceClientDelete,
 };
 
 export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -81,4 +84,5 @@ export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Temperature]: temperatureUpdate,
 	[APIResourceType.LightLevel]: lightLevelUpdate,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityUpdate,
+	[APIResourceType.GeofenceClient]: geofenceClientUpdate,
 };

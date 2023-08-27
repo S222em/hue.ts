@@ -17,6 +17,7 @@ import { Button } from '../structures/Button';
 import { Temperature } from '../structures/Temperature';
 import { LightLevel } from '../structures/LightLevel';
 import { ZgpConnectivity } from '../structures/ZgpConnectivity';
+import { GeofenceClient } from '../structures/GeofenceClient';
 
 export const Events = {
 	Ready: 'ready',
@@ -76,6 +77,9 @@ export const Events = {
 	ZgpConnectivityAdd: 'zgpConnectivityAdd',
 	ZgpConnectivityUpdate: 'zgpConnectivityUpdate',
 	ZgpConnectivityDelete: 'zgpConnectivityDelete',
+	GeofenceClientAdd: 'geofenceClientAdd',
+	GeofenceClientUpdate: 'geofenceClientUpdate',
+	GeofenceClientDelete: 'geofenceClientDelete',
 } as const;
 
 export interface HueEvents {
@@ -142,4 +146,7 @@ export interface HueEvents {
 	[Events.ZgpConnectivityAdd]: [zgpConnectivity: ZgpConnectivity];
 	[Events.ZgpConnectivityUpdate]: [newZgpConnectivity: ZgpConnectivity, oldZgpConnectivity: ZgpConnectivity];
 	[Events.ZgpConnectivityDelete]: [zgpConnectivity: ZgpConnectivity];
+	[Events.GeofenceClientAdd]: [geofenceClient: GeofenceClient];
+	[Events.GeofenceClientUpdate]: [newGeofenceClient: GeofenceClient, oldGeofenceClient: GeofenceClient];
+	[Events.GeofenceClientDelete]: [geofenceClient: GeofenceClient];
 }
