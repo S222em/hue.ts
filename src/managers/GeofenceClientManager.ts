@@ -17,7 +17,7 @@ export class GeofenceClientManager extends ResourceManager<GeofenceClient> {
 	 * ```
 	 * await hue.geofenceClients.create({
 	 *    name: 'Some awesome device name',
-	 *    is_at_home: true,
+	 *    isAtHome: true,
 	 * });
 	 * ```
 	 */
@@ -32,7 +32,7 @@ export class GeofenceClientManager extends ResourceManager<GeofenceClient> {
 	 * @example
 	 * ```
 	 * await hue.geofenceClients.create({
-	 *    is_at_home: false,
+	 *    isAtHome: false,
 	 * });
 	 * ```
 	 */
