@@ -16,6 +16,7 @@ import { Geolocation } from '../structures/Geolocation';
 import { Button } from '../structures/Button';
 import { Temperature } from '../structures/Temperature';
 import { LightLevel } from '../structures/LightLevel';
+import { ZgpConnectivity } from '../structures/ZgpConnectivity';
 
 export const Events = {
 	Ready: 'ready',
@@ -72,6 +73,9 @@ export const Events = {
 	LightLevelAdd: 'lightLevelAdd',
 	LightLevelUpdate: 'lightLevelUpdate',
 	LightLevelDelete: 'lightLevelDelete',
+	ZgpConnectivityAdd: 'zgpConnectivityAdd',
+	ZgpConnectivityUpdate: 'zgpConnectivityUpdate',
+	ZgpConnectivityDelete: 'zgpConnectivityDelete',
 } as const;
 
 export interface HueEvents {
@@ -135,4 +139,7 @@ export interface HueEvents {
 	[Events.LightLevelAdd]: [lightLevel: LightLevel];
 	[Events.LightLevelUpdate]: [newLightLevel: LightLevel, oldLightLevel: LightLevel];
 	[Events.LightLevelDelete]: [lightLevel: LightLevel];
+	[Events.ZgpConnectivityAdd]: [zgpConnectivity: ZgpConnectivity];
+	[Events.ZgpConnectivityUpdate]: [newZgpConnectivity: ZgpConnectivity, oldZgpConnectivity: ZgpConnectivity];
+	[Events.ZgpConnectivityDelete]: [zgpConnectivity: ZgpConnectivity];
 }

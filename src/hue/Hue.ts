@@ -19,6 +19,7 @@ import { RESOURCE_ADD_ACTION } from '../actions';
 import { ButtonManager } from '../managers/ButtonManager';
 import { TemperatureManager } from '../managers/TemperatureManager';
 import { LightLevelManager } from '../managers/LightLevelManager';
+import { ZgpConnectivityManager } from '../managers/ZgpConnectivityManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -149,6 +150,11 @@ export class Hue extends EventEmitter {
 	 * All of the {@link LightLevel} objects that have been cached, mapped by their ids
 	 */
 	public readonly lightLevels = new LightLevelManager(this);
+
+	/**
+	 * All of the {@link ZgpConnectivity} objects that have been cached, mapped by their ids
+	 */
+	public readonly zgpConnectivities = new ZgpConnectivityManager(this);
 
 	/**
 	 * The REST manager

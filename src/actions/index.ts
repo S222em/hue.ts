@@ -1,54 +1,27 @@
 import { APIResourceType } from '../types/api';
-import deviceAdd from './DeviceAdd';
-import devicePowerAdd from './DevicePowerAdd';
-import groupedLightAdd from './GroupedLightAdd';
-import lightAdd from './LightAdd';
-import motionAdd from './MotionAdd';
-import roomAdd from './RoomAdd';
-import sceneAdd from './SceneAdd';
-import zoneAdd from './ZoneAdd';
-import deviceDelete from './DeviceDelete';
-import devicePowerDelete from './DevicePowerDelete';
-import groupedLightDelete from './GroupedLightDelete';
-import lightDelete from './LightDelete';
-import motionDelete from './MotionDelete';
-import roomDelete from './RoomDelete';
-import sceneDelete from './SceneDelete';
-import zoneDelete from './ZoneDelete';
-import deviceUpdate from './DeviceUpdate';
-import devicePowerUpdate from './DevicePowerUpdate';
-import groupedLightUpdate from './GroupedLightUpdate';
-import lightUpdate from './LightUpdate';
-import motionUpdate from './MotionUpdate';
-import roomUpdate from './RoomUpdate';
-import sceneUpdate from './SceneUpdate';
-import zoneUpdate from './ZoneUpdate';
 import { Hue } from '../hue/Hue';
-import zigbeeConnectivityAdd from './ZigbeeConnectivityAdd';
-import zigbeeConnectivityDelete from './ZigbeeConnectivityDelete';
-import zigbeeConnectivityUpdate from './ZigbeeConnectivityUpdate';
-import zigbeeDeviceDiscoveryAdd from './ZigbeeDeviceDiscoveryAdd';
-import zigbeeDeviceDiscoveryDelete from './ZigbeeDeviceDiscoveryDelete';
-import zigbeeDeviceDiscoveryUpdate from './ZigbeeDeviceDiscoveryUpdate';
-import bridgeAdd from './BridgeAdd';
-import bridgeDelete from './BridgeDelete';
-import bridgeUpdate from './BridgeUpdate';
-import bridgeHomeAdd from './BridgeHomeAdd';
-import bridgeHomeDelete from './BridgeHomeDelete';
-import bridgeHomeUpdate from './BridgeHomeUpdate';
-import geolocationAdd from './GeolocationAdd';
-import geolocationDelete from './GeolocationDelete';
-import geolocationUpdate from './GeolocationUpdate';
 import { SSEResource } from '../types/sse';
-import buttonAdd from './ButtonAdd';
-import buttonDelete from './ButtonDelete';
-import buttonUpdate from './ButtonUpdate';
-import temperatureAdd from './TemperatureAdd';
-import temperatureDelete from './TemperatureDelete';
-import temperatureUpdate from './TemperatureUpdate';
-import lightLevelAdd from './LightLevelAdd';
-import lightLevelDelete from './LightLevelDelete';
-import lightLevelUpdate from './LightLevelUpdate';
+import { devicePowerAdd, devicePowerDelete, devicePowerUpdate } from './DevicePower';
+import { deviceAdd, deviceDelete, deviceUpdate } from './Device';
+import { groupedLightAdd, groupedLightDelete, groupedLightUpdate } from './GroupedLight';
+import { lightAdd, lightDelete, lightUpdate } from './Light';
+import { motionAdd, motionDelete, motionUpdate } from './Motion';
+import { roomAdd, roomDelete, roomUpdate } from './Room';
+import { sceneAdd, sceneDelete, sceneUpdate } from './Scene';
+import { zoneAdd, zoneDelete, zoneUpdate } from './Zone';
+import { zigbeeConnectivityAdd, zigbeeConnectivityDelete, zigbeeConnectivityUpdate } from './ZigbeeConnectivity';
+import {
+	zigbeeDeviceDiscoveryAdd,
+	zigbeeDeviceDiscoveryDelete,
+	zigbeeDeviceDiscoveryUpdate,
+} from './ZigbeeDeviceDiscovery';
+import { bridgeAdd, bridgeDelete, bridgeUpdate } from './Bridge';
+import { bridgeHomeAdd, bridgeHomeDelete, bridgeHomeUpdate } from './BridgeHome';
+import { geolocationAdd, geolocationDelete, geolocationUpdate } from './Geolocation';
+import { buttonAdd, buttonDelete, buttonUpdate } from './Button';
+import { temperatureAdd, temperatureDelete, temperatureUpdate } from './Temperature';
+import { lightLevelAdd, lightLevelDelete, lightLevelUpdate } from './LightLevel';
+import { zgpConnectivityAdd, zgpConnectivityDelete, zgpConnectivityUpdate } from './ZgpConnectivity';
 
 export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
 	[APIResourceType.Device]: deviceAdd,
@@ -67,6 +40,7 @@ export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue)
 	[APIResourceType.Button]: buttonAdd,
 	[APIResourceType.Temperature]: temperatureAdd,
 	[APIResourceType.LightLevel]: lightLevelAdd,
+	[APIResourceType.ZgpConnectivity]: zgpConnectivityAdd,
 };
 
 export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -86,6 +60,7 @@ export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Button]: buttonDelete,
 	[APIResourceType.Temperature]: temperatureDelete,
 	[APIResourceType.LightLevel]: lightLevelDelete,
+	[APIResourceType.ZgpConnectivity]: zgpConnectivityDelete,
 };
 
 export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -105,4 +80,5 @@ export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.Button]: buttonUpdate,
 	[APIResourceType.Temperature]: temperatureUpdate,
 	[APIResourceType.LightLevel]: lightLevelUpdate,
+	[APIResourceType.ZgpConnectivity]: zgpConnectivityUpdate,
 };

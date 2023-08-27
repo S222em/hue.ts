@@ -1,6 +1,5 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
-import { ZigbeeConnectivityManager } from '../managers/ZigbeeConnectivityManager';
 
 export interface APIZigbeeConnectivity extends APIResource<APIResourceType.ZigbeeConnectivity> {
 	owner: APIResourceIdentifier;
@@ -20,10 +19,6 @@ export enum ZigbeeConnectivityStatus {
  */
 export class ZigbeeConnectivity extends Resource<APIZigbeeConnectivity> {
 	type = APIResourceType.ZigbeeConnectivity;
-
-	get manager(): ZigbeeConnectivityManager {
-		return this.hue.zigbeeConnectivities;
-	}
 
 	/**
 	 * ID of this zigbee connectivities owner
