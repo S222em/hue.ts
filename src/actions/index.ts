@@ -23,6 +23,7 @@ import { temperatureAdd, temperatureDelete, temperatureUpdate } from './Temperat
 import { lightLevelAdd, lightLevelDelete, lightLevelUpdate } from './LightLevel';
 import { zgpConnectivityAdd, zgpConnectivityDelete, zgpConnectivityUpdate } from './ZgpConnectivity';
 import { geofenceClientAdd, geofenceClientDelete, geofenceClientUpdate } from './GeofenceClient';
+import { relativeRotaryAdd, relativeRotaryDelete, relativeRotaryUpdate } from './RelativeRotary';
 
 export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
 	[APIResourceType.Device]: deviceAdd,
@@ -43,6 +44,7 @@ export const RESOURCE_ADD_ACTION: { [key: string]: (data: SSEResource, hue: Hue)
 	[APIResourceType.LightLevel]: lightLevelAdd,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityAdd,
 	[APIResourceType.GeofenceClient]: geofenceClientAdd,
+	[APIResourceType.RelativeRotary]: relativeRotaryAdd,
 };
 
 export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -64,6 +66,7 @@ export const RESOURCE_DELETE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.LightLevel]: lightLevelDelete,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityDelete,
 	[APIResourceType.GeofenceClient]: geofenceClientDelete,
+	[APIResourceType.RelativeRotary]: relativeRotaryDelete,
 };
 
 export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: Hue) => (() => boolean) | undefined } = {
@@ -85,4 +88,5 @@ export const RESOURCE_UPDATE_ACTION: { [key: string]: (data: SSEResource, hue: H
 	[APIResourceType.LightLevel]: lightLevelUpdate,
 	[APIResourceType.ZgpConnectivity]: zgpConnectivityUpdate,
 	[APIResourceType.GeofenceClient]: geofenceClientUpdate,
+	[APIResourceType.RelativeRotary]: relativeRotaryUpdate,
 };

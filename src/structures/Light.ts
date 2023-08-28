@@ -3,89 +3,6 @@ import { checkXyInReach, createXy, getClosestXy, XyPoint } from '../color/xy';
 import { createGamut, Gamut, resolveGamutByType } from '../color/gamut';
 import { Resource } from './Resource';
 
-export interface APILight extends APIResource<APIResourceType.Light> {
-	owner: APIResourceIdentifier;
-	on: {
-		on: boolean;
-	};
-	dimming?: {
-		brightness: number;
-		min_dim_level?: number;
-	};
-	color_temperature?: {
-		mirek: number;
-		mirek_valid: boolean;
-		mirek_schema: {
-			mirek_minimum: number;
-			mirek_maximum: number;
-		};
-	};
-	color?: {
-		xy: {
-			x: number;
-			y: number;
-		};
-		gamut?: {
-			red: {
-				x: number;
-				y: number;
-			};
-			green: {
-				x: number;
-				y: number;
-			};
-			blue: {
-				x: number;
-				y: number;
-			};
-		};
-		gamut_type: 'A' | 'B' | 'C';
-	};
-	dynamics?: {
-		status: 'dynamic_palette' | 'none';
-		status_values: any[];
-		speed: number;
-		speed_valid: boolean;
-	};
-	mode: 'normal' | 'streaming';
-	gradient?: {
-		points: Array<{
-			color: {
-				xy: {
-					x: number;
-					y: number;
-				};
-			};
-		}>;
-		points_capable: number;
-	};
-	effects?: {
-		effect: 'fire' | 'candle' | 'no_effect';
-		// TODO any[] not correct type
-		status_value: any[];
-		status: 'fire' | 'candle' | 'no_effect';
-		// TODO any[] not correct type
-		effect_values: any[];
-	};
-	timed_effects?: {
-		effect: 'sunrise' | 'no_effect';
-		duration: number;
-		// TODO any[] not correct type
-		status_values: any[];
-		status: 'sunrise' | 'no_effect';
-		// TODO any[] not correct type
-		effect_values: any[];
-	};
-}
-
-export enum LightCapabilities {
-	None = 'none',
-	Dimming = 'dimming',
-	Mirek = 'mirek',
-	Xy = 'xy',
-	Xys = 'xys',
-}
-
 export interface LightIsCapableOfDimming {
 	brightness: number;
 	minBrightnessLevel: number;
@@ -117,9 +34,9 @@ export interface LightEditOptions {
 		duration?: number;
 		speed?: number;
 	};
-	effect?: LightEffect;
+	effect?: APILightEffect;
 	timedEffects?: {
-		effect?: LightTimedEffect;
+		effect?: APILightTimedEffect;
 		duration?: number;
 	};
 	brightness?: number;
@@ -136,23 +53,7 @@ export interface LightEditOptions {
 	gradient?: XyPoint[];
 }
 
-export enum LightEffect {
-	Fire = 'fire',
-	Candle = 'candle',
-	NoEffect = 'no_effect',
-}
-
-export enum LightTimedEffect {
-	Sunrise = 'sunrise',
-	NoEffect = 'no_effect',
-}
-
-export enum LightMode {
-	Normal = 'normal',
-	Streaming = 'streaming',
-}
-
-// TODO add effects and timed_effects
+// TODO add effects and timed_effects (and other missing)
 
 /**
  * Represents the light resource from the hue API
@@ -261,8 +162,8 @@ export class Light extends Resource<APILight> {
 	/**
 	 * The mode of this light
 	 */
-	get mode(): LightMode {
-		return this.data.mode as LightMode;
+	get mode(): APILightMode {
+		return this.data.mode as APILightMode;
 	}
 
 	/**
@@ -416,4 +317,95 @@ export class Light extends Resource<APILight> {
 	public supportsGradient(): this is this & LightIsCapableOfGradient {
 		return typeof this.data.gradient != 'undefined';
 	}
+}
+
+export enum APILightEffect {
+	Fire = 'fire',
+	Candle = 'candle',
+	NoEffect = 'no_effect',
+}
+
+export enum APILightTimedEffect {
+	Sunrise = 'sunrise',
+	NoEffect = 'no_effect',
+}
+
+export enum APILightMode {
+	Normal = 'normal',
+	Streaming = 'streaming',
+}
+
+export interface APILight extends APIResource<APIResourceType.Light> {
+	owner: APIResourceIdentifier;
+	on: {
+		on: boolean;
+	};
+	dimming?: {
+		brightness: number;
+		min_dim_level?: number;
+	};
+	color_temperature?: {
+		mirek: number;
+		mirek_valid: boolean;
+		mirek_schema: {
+			mirek_minimum: number;
+			mirek_maximum: number;
+		};
+	};
+	color?: {
+		xy: {
+			x: number;
+			y: number;
+		};
+		gamut?: {
+			red: {
+				x: number;
+				y: number;
+			};
+			green: {
+				x: number;
+				y: number;
+			};
+			blue: {
+				x: number;
+				y: number;
+			};
+		};
+		gamut_type: 'A' | 'B' | 'C';
+	};
+	dynamics?: {
+		status: 'dynamic_palette' | 'none';
+		status_values: any[];
+		speed: number;
+		speed_valid: boolean;
+	};
+	mode: APILightMode;
+	gradient?: {
+		points: Array<{
+			color: {
+				xy: {
+					x: number;
+					y: number;
+				};
+			};
+		}>;
+		points_capable: number;
+	};
+	effects?: {
+		effect: APILightEffect;
+		// TODO any[] not correct type
+		status_value: any[];
+		status: APILightEffect;
+		// TODO any[] not correct type
+		effect_values: any[];
+	};
+	timed_effects?: {
+		effect: APILightTimedEffect;
+		duration: number;
+		// TODO any[] not correct type
+		status_values: any[];
+		status: APILightTimedEffect;
+		// TODO any[] not correct type
+		effect_values: any[];
+	};
 }

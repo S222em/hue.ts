@@ -4,11 +4,6 @@ import { APIArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeR
 import { ZoneManager } from '../managers/ZoneManager';
 import { SceneCreateOptions } from './Scene';
 
-export interface APIZone extends APIArcheTypeResource<APIResourceType.Zone> {
-	children: Array<APIResourceIdentifier>;
-	services: Array<APIResourceIdentifier>;
-}
-
 export interface ZoneEditOptions extends ArcheTypeResourceEditOptions {
 	children?: string[];
 }
@@ -89,4 +84,9 @@ export class Zone extends NamedResource<APIZone> {
 	public async delete(): Promise<string> {
 		return await this.hue.zones.delete(this.id);
 	}
+}
+
+export interface APIZone extends APIArcheTypeResource<APIResourceType.Zone> {
+	children: Array<APIResourceIdentifier>;
+	services: Array<APIResourceIdentifier>;
 }

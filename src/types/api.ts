@@ -24,8 +24,10 @@ export enum APIResourceType {
 	Geofence = 'geofence',
 	GeofenceClient = 'geofence_client',
 	Geolocation = 'geolocation',
+	RelativeRotary = 'relative_rotary',
 }
 
+// todo move to Resource.ts
 export type APIResource<T extends APIResourceType = APIResourceType> = { id: string; type: T } & Record<string, any>;
 
 export interface APIResourceIdentifier<T extends APIResourceType = APIResourceType> {

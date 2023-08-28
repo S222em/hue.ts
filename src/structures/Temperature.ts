@@ -1,15 +1,6 @@
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { Resource } from './Resource';
 
-export interface APITemperature extends APIResource<APIResourceType.Temperature> {
-	owner: APIResourceIdentifier;
-	enabled: boolean;
-	temperature: {
-		temperature: number;
-		temperature_valid: boolean;
-	};
-}
-
 export interface TemperatureEditOptions {
 	enabled?: boolean;
 }
@@ -69,4 +60,13 @@ export class Temperature extends Resource<APITemperature> {
 	public async edit(options: TemperatureEditOptions): Promise<string> {
 		return await this.hue.temperatures.edit(this.id, options);
 	}
+}
+
+export interface APITemperature extends APIResource<APIResourceType.Temperature> {
+	owner: APIResourceIdentifier;
+	enabled: boolean;
+	temperature: {
+		temperature: number;
+		temperature_valid: boolean;
+	};
 }

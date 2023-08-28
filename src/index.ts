@@ -58,3 +58,13 @@ export * from './color/xy';
 export * from './color/gamut';
 export * from './color/rgb';
 export * from './color/hex';
+
+//todo entertainment_configuration
+//todo entertainment
+//todo homekit
+//todo matter
+//todo matter_fabric
+//todo smart_scene
+//todo relative_rotary
+//todo behaviour_script
+//todo behaviour_instance

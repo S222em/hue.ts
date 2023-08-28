@@ -3,11 +3,6 @@ import { APIArcheTypeResource, ArcheTypeResource, ArcheTypeResourceEditOptions }
 import { ZoneEditOptions } from './Zone';
 import { SceneCreateOptions } from './Scene';
 
-export interface APIRoom extends APIArcheTypeResource<APIResourceType.Room> {
-	children: Array<APIResourceIdentifier>;
-	services: Array<APIResourceIdentifier>;
-}
-
 export interface RoomEditOptions extends ArcheTypeResourceEditOptions {
 	children?: string[];
 }
@@ -84,4 +79,9 @@ export class Room extends ArcheTypeResource<APIRoom> {
 	public async delete(): Promise<string> {
 		return await this.hue.rooms.delete(this.id);
 	}
+}
+
+export interface APIRoom extends APIArcheTypeResource<APIResourceType.Room> {
+	children: Array<APIResourceIdentifier>;
+	services: Array<APIResourceIdentifier>;
 }

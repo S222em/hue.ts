@@ -1,14 +1,6 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 
-export interface APIBridge extends APIResource<APIResourceType.Bridge> {
-	owner: APIResourceIdentifier;
-	bridge_id: string;
-	time_zone: {
-		time_zone: string;
-	};
-}
-
 /**
  * Represents the bridge resource from the hue API
  */
@@ -36,4 +28,12 @@ export class Bridge extends Resource<APIBridge> {
 	get timeZone(): string {
 		return this.data.time_zone.time_zone;
 	}
+}
+
+export interface APIBridge extends APIResource<APIResourceType.Bridge> {
+	owner: APIResourceIdentifier;
+	bridge_id: string;
+	time_zone: {
+		time_zone: string;
+	};
 }

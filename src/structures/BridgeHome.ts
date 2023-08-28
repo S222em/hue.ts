@@ -2,11 +2,6 @@ import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { BridgeHomeManager } from '../managers/BridgeHomeManager';
 
-export interface APIBridgeHome extends APIResource<APIResourceType.BridgeHome> {
-	children: APIResourceIdentifier[];
-	services: APIResourceIdentifier[];
-}
-
 /**
  * Represents the bridge_home resource from the hue API
  */
@@ -30,4 +25,9 @@ export class BridgeHome extends Resource<APIBridgeHome> {
 	get serviceIds(): string[] {
 		return this.data.services.map((service) => service.rid);
 	}
+}
+
+export interface APIBridgeHome extends APIResource<APIResourceType.BridgeHome> {
+	children: APIResourceIdentifier[];
+	services: APIResourceIdentifier[];
 }

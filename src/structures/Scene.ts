@@ -1,42 +1,7 @@
 import { APINamedResource, NamedResource } from './NamedResource';
 import { APIResourceIdentifier, APIResourceType } from '../types/api';
 import { XyPoint } from '../color/xy';
-import { LightEffect } from './Light';
-
-export interface APIScene extends APINamedResource<APIResourceType.Scene> {
-	metadata: {
-		name: string;
-		image?: APIResourceIdentifier;
-	};
-	group: APIResourceIdentifier;
-	actions: Array<{
-		target: APIResourceIdentifier;
-		action: {
-			on?: { on: boolean };
-			dimming?: { brightness: number };
-			color?: { xy: { x: number; y: number } };
-			color_temperature?: { mirek: number };
-			gradient?: {
-				points: Array<{
-					color: { xy: { x: number; y: number } };
-				}>;
-			};
-			effects?: 'fire' | 'candle' | 'no_effect';
-			dynamics?: {
-				duration: number;
-			};
-		};
-	}>;
-	palette?: {
-		color: Array<{
-			color: { xy: { x: number; y: number } };
-			dimming: { brightness: number };
-		}>;
-		dimming: { brightness: number };
-		color_temperature: { color_temperature: { mirek: number }; dimming: { brightness: number } };
-	};
-	speed: number;
-}
+import { APILightEffect } from './Light';
 
 export interface SceneAction {
 	id: string;
@@ -45,7 +10,7 @@ export interface SceneAction {
 	colorTemperature?: number;
 	color?: XyPoint;
 	gradient?: XyPoint[];
-	effects?: LightEffect;
+	effects?: APILightEffect;
 	dynamics?: { duration: number };
 }
 
@@ -75,11 +40,6 @@ export interface SceneEditOptions {
 
 export type SceneCreateOptions = Pick<Required<SceneEditOptions>, 'name' | 'actions'>;
 
-export enum SceneRecallAction {
-	Active = 'active',
-	DynamicPalette = 'dynamic_palette',
-}
-
 // TODO scene palette
 
 /**
@@ -107,7 +67,7 @@ export class Scene extends NamedResource<APIScene> {
 				colorTemperature: action.color_temperature?.mirek,
 				color: action.color?.xy,
 				gradient: action.gradient ? action.gradient.points.map((p) => p.color.xy) : undefined,
-				effects: action.effects as LightEffect,
+				effects: action.effects as APILightEffect,
 				dynamics: action.dynamics,
 			};
 		});
@@ -181,4 +141,44 @@ export class Scene extends NamedResource<APIScene> {
 	public async delete(): Promise<string> {
 		return await this.hue.scenes.delete(this.id);
 	}
+}
+
+export enum APISceneRecallAction {
+	Active = 'active',
+	DynamicPalette = 'dynamic_palette',
+}
+
+export interface APIScene extends APINamedResource<APIResourceType.Scene> {
+	metadata: {
+		name: string;
+		image?: APIResourceIdentifier;
+	};
+	group: APIResourceIdentifier;
+	actions: Array<{
+		target: APIResourceIdentifier;
+		action: {
+			on?: { on: boolean };
+			dimming?: { brightness: number };
+			color?: { xy: { x: number; y: number } };
+			color_temperature?: { mirek: number };
+			gradient?: {
+				points: Array<{
+					color: { xy: { x: number; y: number } };
+				}>;
+			};
+			effects?: 'fire' | 'candle' | 'no_effect';
+			dynamics?: {
+				duration: number;
+			};
+		};
+	}>;
+	palette?: {
+		color: Array<{
+			color: { xy: { x: number; y: number } };
+			dimming: { brightness: number };
+		}>;
+		dimming: { brightness: number };
+		color_temperature: { color_temperature: { mirek: number }; dimming: { brightness: number } };
+	};
+	speed: number;
 }

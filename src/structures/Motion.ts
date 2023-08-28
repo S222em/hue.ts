@@ -1,15 +1,6 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 
-export interface APIMotion extends APIResource<APIResourceType.Motion> {
-	owner: APIResourceIdentifier;
-	enabled: boolean;
-	motion: {
-		motion: boolean;
-		motion_valid: boolean;
-	};
-}
-
 export interface MotionEditOptions {
 	enabled?: boolean;
 }
@@ -62,4 +53,13 @@ export class Motion extends Resource<APIMotion> {
 	public async edit(options: MotionEditOptions): Promise<string> {
 		return await this.hue.motions.edit(this.id, options);
 	}
+}
+
+export interface APIMotion extends APIResource<APIResourceType.Motion> {
+	owner: APIResourceIdentifier;
+	enabled: boolean;
+	motion: {
+		motion: boolean;
+		motion_valid: boolean;
+	};
 }

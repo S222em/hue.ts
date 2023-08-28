@@ -1,25 +1,8 @@
 import { APIArcheType, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { APIArcheTypeResource, ArcheTypeResource, ArcheTypeResourceEditOptions } from './ArcheTypeResource';
 
-export interface APIDevice extends APIArcheTypeResource<APIResourceType.Device> {
-	product_data: {
-		model_id: string;
-		manufacturer_name: string;
-		product_name: string;
-		product_archetype: APIArcheType;
-		certified: boolean;
-		software_version: string;
-		hardware_platform_type?: string;
-	};
-	services: APIResourceIdentifier[];
-}
-
-export enum DeviceAction {
-	Identify = 'identify',
-}
-
 export interface DeviceEditOptions extends ArcheTypeResourceEditOptions {
-	action: DeviceAction;
+	action: APIDeviceAction;
 }
 
 /**
@@ -82,7 +65,7 @@ export class Device extends ArcheTypeResource<APIDevice> {
 	 * This causes the device (light) to blink
 	 */
 	public async identify(): Promise<string> {
-		return await this.edit({ action: DeviceAction.Identify });
+		return await this.edit({ action: APIDeviceAction.Identify });
 	}
 
 	/**
@@ -99,4 +82,21 @@ export class Device extends ArcheTypeResource<APIDevice> {
 	public async delete(): Promise<string> {
 		return await this.hue.devices.delete(this.id);
 	}
+}
+
+export enum APIDeviceAction {
+	Identify = 'identify',
+}
+
+export interface APIDevice extends APIArcheTypeResource<APIResourceType.Device> {
+	product_data: {
+		model_id: string;
+		manufacturer_name: string;
+		product_name: string;
+		product_archetype: APIArcheType;
+		certified: boolean;
+		software_version: string;
+		hardware_platform_type?: string;
+	};
+	services: APIResourceIdentifier[];
 }

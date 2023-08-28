@@ -21,6 +21,7 @@ import { TemperatureManager } from '../managers/TemperatureManager';
 import { LightLevelManager } from '../managers/LightLevelManager';
 import { ZgpConnectivityManager } from '../managers/ZgpConnectivityManager';
 import { GeofenceClientManager } from '../managers/GeofenceClientManager';
+import { RelativeRotaryManager } from '../managers/RelativeRotaryManager';
 
 export const CA =
 	'-----BEGIN CERTIFICATE-----\n' +
@@ -161,6 +162,11 @@ export class Hue extends EventEmitter {
 	 * All of the {@link GeofenceClient} objects that have been cached, mapped by their ids
 	 */
 	public readonly geofenceClients = new GeofenceClientManager(this);
+
+	/**
+	 * All of the {@link RelativeRotary} objects that have been cached, mapped by their ids
+	 */
+	public readonly relativeRotaries = new RelativeRotaryManager(this);
 
 	/**
 	 * The REST manager

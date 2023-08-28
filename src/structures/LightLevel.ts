@@ -1,15 +1,6 @@
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { Resource } from './Resource';
 
-export interface APILightLevel extends APIResource<APIResourceType.LightLevel> {
-	owner: APIResourceIdentifier;
-	enabled: boolean;
-	light: {
-		light_level: number;
-		light_level_valid: boolean;
-	};
-}
-
 export interface LightLevelEditOptions {
 	enabled?: boolean;
 }
@@ -21,14 +12,14 @@ export class LightLevel extends Resource<APILightLevel> {
 	type = APIResourceType.LightLevel;
 
 	/**
-	 * ID of this temperature's owner
+	 * ID of this light level's owner
 	 */
 	get ownerId(): string {
 		return this.data.owner.rid;
 	}
 
 	/**
-	 * Whether this temperature sensor is enabled
+	 * Whether this light level sensor is enabled
 	 */
 	get enabled(): boolean {
 		return this.data.enabled;
@@ -69,4 +60,13 @@ export class LightLevel extends Resource<APILightLevel> {
 	public async edit(options: LightLevelEditOptions): Promise<string> {
 		return await this.hue.lightLevels.edit(this.id, options);
 	}
+}
+
+export interface APILightLevel extends APIResource<APIResourceType.LightLevel> {
+	owner: APIResourceIdentifier;
+	enabled: boolean;
+	light: {
+		light_level: number;
+		light_level_valid: boolean;
+	};
 }

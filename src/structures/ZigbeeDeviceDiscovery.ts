@@ -1,22 +1,8 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 
-export interface APIZigbeeDeviceDiscovery extends APIResource<APIResourceType.ZigbeeDeviceDiscovery> {
-	owner: APIResourceIdentifier;
-	status: 'active' | 'ready';
-}
-
-export enum ZigbeeDeviceDiscoveryStatus {
-	Active = 'active',
-	Ready = 'ready',
-}
-
-export enum ZigbeeDeviceDiscoveryActionType {
-	Search = 'search',
-}
-
 export interface ZigbeeDeviceDiscoveryEditOptions {
-	actionType: ZigbeeDeviceDiscoveryActionType;
+	actionType: APIZigbeeDeviceDiscoveryActionType;
 }
 
 /**
@@ -36,15 +22,15 @@ export class ZigbeeDeviceDiscovery extends Resource<APIZigbeeDeviceDiscovery> {
 	 * Status of this zigbee device discovery
 	 * Will be 'active' when searching for new devices
 	 */
-	get status(): ZigbeeDeviceDiscoveryStatus {
-		return this.data.status as ZigbeeDeviceDiscoveryStatus;
+	get status(): APIZigbeeDeviceDiscoveryStatus {
+		return this.data.status as APIZigbeeDeviceDiscoveryStatus;
 	}
 
 	/**
 	 * Starts a search for new devices
 	 */
 	public async search(): Promise<string> {
-		return await this.edit({ actionType: ZigbeeDeviceDiscoveryActionType.Search });
+		return await this.edit({ actionType: APIZigbeeDeviceDiscoveryActionType.Search });
 	}
 
 	/**
@@ -54,4 +40,18 @@ export class ZigbeeDeviceDiscovery extends Resource<APIZigbeeDeviceDiscovery> {
 	public async edit(options: ZigbeeDeviceDiscoveryEditOptions): Promise<string> {
 		return await this.hue.zigbeeDeviceDiscoveries.edit(this.id, options);
 	}
+}
+
+export enum APIZigbeeDeviceDiscoveryActionType {
+	Search = 'search',
+}
+
+export enum APIZigbeeDeviceDiscoveryStatus {
+	Active = 'active',
+	Ready = 'ready',
+}
+
+export interface APIZigbeeDeviceDiscovery extends APIResource<APIResourceType.ZigbeeDeviceDiscovery> {
+	owner: APIResourceIdentifier;
+	status: APIZigbeeDeviceDiscoveryStatus;
 }

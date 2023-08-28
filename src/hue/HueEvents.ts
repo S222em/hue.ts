@@ -18,6 +18,7 @@ import { Temperature } from '../structures/Temperature';
 import { LightLevel } from '../structures/LightLevel';
 import { ZgpConnectivity } from '../structures/ZgpConnectivity';
 import { GeofenceClient } from '../structures/GeofenceClient';
+import { RelativeRotary } from '../structures/RelativeRotary';
 
 export const Events = {
 	Ready: 'ready',
@@ -80,6 +81,9 @@ export const Events = {
 	GeofenceClientAdd: 'geofenceClientAdd',
 	GeofenceClientUpdate: 'geofenceClientUpdate',
 	GeofenceClientDelete: 'geofenceClientDelete',
+	RelativeRotaryAdd: 'relativeRotaryAdd',
+	RelativeRotaryUpdate: 'relativeRotaryUpdate',
+	RelativeRotaryDelete: 'relativeRotaryDelete',
 } as const;
 
 export interface HueEvents {
@@ -149,4 +153,7 @@ export interface HueEvents {
 	[Events.GeofenceClientAdd]: [geofenceClient: GeofenceClient];
 	[Events.GeofenceClientUpdate]: [newGeofenceClient: GeofenceClient, oldGeofenceClient: GeofenceClient];
 	[Events.GeofenceClientDelete]: [geofenceClient: GeofenceClient];
+	[Events.RelativeRotaryAdd]: [relativeRotary: RelativeRotary];
+	[Events.RelativeRotaryUpdate]: [newRelativeRotary: RelativeRotary, oldRelativeRotary: RelativeRotary];
+	[Events.RelativeRotaryDelete]: [geofenceClient: RelativeRotary];
 }

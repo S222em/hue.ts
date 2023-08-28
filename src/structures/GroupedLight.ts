@@ -2,16 +2,6 @@ import { Resource } from './Resource';
 import { APIDeltaAction, APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { XyPoint } from '../color/xy';
 
-export interface APIGroupedLight extends APIResource<APIResourceType.GroupedLight> {
-	owner: APIResourceIdentifier;
-	on?: { on: boolean };
-	dimming?: { brightness: number };
-	alert: {
-		// TODO action_values
-		action_values?: string[];
-	};
-}
-
 export interface GroupedLightEditOptions {
 	on?: boolean;
 	brightness?: number;
@@ -142,4 +132,14 @@ export class GroupedLight extends Resource<APIGroupedLight> {
 	public async edit(options: GroupedLightEditOptions): Promise<string> {
 		return await this.hue.groupedLights.edit(this.id, options);
 	}
+}
+
+export interface APIGroupedLight extends APIResource<APIResourceType.GroupedLight> {
+	owner: APIResourceIdentifier;
+	on?: { on: boolean };
+	dimming?: { brightness: number };
+	alert: {
+		// TODO action_values
+		action_values?: string[];
+	};
 }

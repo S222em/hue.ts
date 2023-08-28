@@ -1,10 +1,6 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceType } from '../types/api';
 
-export interface APINamedResource<T extends APIResourceType = APIResourceType> extends APIResource<T> {
-	metadata: { name: string };
-}
-
 export interface NamedResourceEditOptions {
 	name?: string;
 }
@@ -31,4 +27,8 @@ export abstract class NamedResource<TData extends APINamedResource = APINamedRes
 	}
 
 	public abstract edit(options: NamedResourceEditOptions): Promise<string>;
+}
+
+export interface APINamedResource<T extends APIResourceType = APIResourceType> extends APIResource<T> {
+	metadata: { name: string };
 }

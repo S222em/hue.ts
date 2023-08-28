@@ -1,13 +1,6 @@
 import { APINamedResource, NamedResource, NamedResourceEditOptions } from './NamedResource';
 import { APIArcheType, APIResourceType } from '../types/api';
 
-export interface APIArcheTypeResource<T extends APIResourceType = APIResourceType> extends APINamedResource<T> {
-	metadata: {
-		name: string;
-		archetype: APIArcheType;
-	};
-}
-
 export interface ArcheTypeResourceEditOptions extends NamedResourceEditOptions {
 	archeType?: APIArcheType;
 }
@@ -41,4 +34,11 @@ export abstract class ArcheTypeResource<
 	}
 
 	public abstract edit(options: ArcheTypeResourceEditOptions): Promise<string>;
+}
+
+export interface APIArcheTypeResource<T extends APIResourceType = APIResourceType> extends APINamedResource<T> {
+	metadata: {
+		name: string;
+		archetype: APIArcheType;
+	};
 }

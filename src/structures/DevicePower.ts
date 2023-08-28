@@ -2,20 +2,6 @@ import { Resource } from './Resource';
 import { APIResource, APIResourceIdentifier, APIResourceType } from '../types/api';
 import { DevicePowerManager } from '../managers/DevicePowerManager';
 
-export interface APIDevicePower extends APIResource<APIResourceType.DevicePower> {
-	owner: APIResourceIdentifier;
-	power_state: {
-		battery_state: 'normal' | 'low' | 'critical';
-		battery_level: number;
-	};
-}
-
-export enum DevicePowerBatteryState {
-	Normal = 'normal',
-	Low = 'low',
-	Critical = 'critical',
-}
-
 /**
  * Represents the device_power resource from the hue API
  */
@@ -36,8 +22,8 @@ export class DevicePower extends Resource<APIDevicePower> {
 	/**
 	 * This device power's battery state
 	 */
-	get batteryState(): DevicePowerBatteryState {
-		return this.data.power_state.battery_state as DevicePowerBatteryState;
+	get batteryState(): APIDevicePowerBatteryState {
+		return this.data.power_state.battery_state as APIDevicePowerBatteryState;
 	}
 
 	/**
@@ -46,4 +32,18 @@ export class DevicePower extends Resource<APIDevicePower> {
 	get batteryLevel(): number {
 		return this.data.power_state.battery_level;
 	}
+}
+
+export enum APIDevicePowerBatteryState {
+	Normal = 'normal',
+	Low = 'low',
+	Critical = 'critical',
+}
+
+export interface APIDevicePower extends APIResource<APIResourceType.DevicePower> {
+	owner: APIResourceIdentifier;
+	power_state: {
+		battery_state: 'normal' | 'low' | 'critical';
+		battery_level: number;
+	};
 }

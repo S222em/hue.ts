@@ -1,10 +1,6 @@
 import { Resource } from './Resource';
 import { APIResource, APIResourceType } from '../types/api';
 
-export interface APIGeofenceClient extends APIResource<APIResourceType.GeofenceClient> {
-	name: string;
-}
-
 export interface GeofenceEditOptions {
 	isAtHome?: boolean;
 	name?: string;
@@ -56,4 +52,8 @@ export class GeofenceClient extends Resource<APIGeofenceClient> {
 	public async delete(): Promise<string> {
 		return this.hue.geofenceClients.delete(this.id);
 	}
+}
+
+export interface APIGeofenceClient extends APIResource<APIResourceType.GeofenceClient> {
+	name: string;
 }
