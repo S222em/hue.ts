@@ -24,7 +24,7 @@
   "dependencies": {
     "@discordjs/collection": "1.5.1",
     "@sapphire/async-queue": "1.5.0",
-    "undici": "5.22.1"
+    "undici": "5.26.2"
   },
   "devDependencies": {
     "@types/node": "20.1.4",
